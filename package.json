@@ -1,0 +1,49 @@
+{
+  "name": "folen",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "postinstall": "prisma generate",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:reset": "prisma db push --force-reset",
+    "db:seed": "prisma db seed",
+    "db:studio": "prisma studio",
+    "user:create": "tsx prisma/create-user.ts"
+  },
+  "dependencies": {
+    "@prisma/adapter-mariadb": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "goey-toast": "^0.5.0",
+    "lucide-react": "^1.46.0",
+    "next": "16.3.5",
+    "react": "19.2.8",
+    "react-datepicker": "^9.1.0",
+    "react-dom": "19.2.8",
+    "react-image-file-resizer": "^0.4.8",
+    "react-images-uploading": "^3.1.7",
+    "react-select": "^5.10.2",
+    "sanitize-html": "^2.17.7",
+    "yet-another-react-lightbox": "^3.32.2",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/typography": "^0.5.20",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "daisyui": "^5.7.37",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.5",
+    "prisma": "7.10.0",
+    "tailwindcss": "^4",
+    "tsx": "^4.23.13",
+    "typescript": "^5"
+  },
+  "packageManager": "yarn@1.22.22"
+}

@@ -1,0 +1,9 @@
+/mnt/myassets/PROJECTS/TA/2026/folen/website/AGENTS.md
+/mnt/myassets/PROJECTS/TA/2026/folen/website/CLAUDE.md
+/mnt/myassets/PROJECTS/TA/2026/folen/website/PRODUCT.md
+/mnt/myassets/PROJECTS/TA/2026/folen/website/README.md
+/mnt/myassets/PROJECTS/TA/2026/folen/website/public/file.svg
+/mnt/myassets/PROJECTS/TA/2026/folen/website/public/globe.svg
+/mnt/myassets/PROJECTS/TA/2026/folen/website/public/next.svg
+/mnt/myassets/PROJECTS/TA/2026/folen/website/public/vercel.svg
+/mnt/myassets/PROJECTS/TA/2026/folen/website/public/window.svg

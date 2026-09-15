@@ -1,0 +1,341 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// --- MODEL ENTITAS ---
+
+// Model Rayon berdasarkan pembagian wilayah di buletin
+model Rayon {
+  id       String   @id @default(cuid())
+  nm_rayon String   @unique // Nama rayon. Contoh: Galilea, Yerikho, Bethel, Elim, Kana, Hermon, Bukit Zaitun
+  jemaat   Jemaat[]
+
+  @@map("rayon")
+}
+
+// Model Unsur Kategorial
+model Unsur {
+  id             String          @id @default(cuid())
+  nm_unsur       String          @unique // Nama unsur. Contoh: PKB, PW, PAM, Remaja, Tunas Anak
+  ibadah         Ibadah[]
+  // Badan pengurus / kepengurusan unsur ini
+  badan_pengurus BadanPengurus[]
+
+  @@map("unsur")
+}
+
+// Model Jemaat berdasarkan daftar Ulang Tahun
+model Jemaat {
+  id            String   @id @default(cuid())
+  // Relasi
+  id_rayon      String?
+  rayon         Rayon?   @relation(fields: [id_rayon], references: [id])
+  nm_lengkap    String // Nama lengkap jemaat
+  tgl_lahir     DateTime @db.Date
+  jenkel        String // Nilai yang diizinkan: "L" (Laki-laki), "P" (Perempuan)
+  stat_keluarga String // Nilai yang diizinkan: "KK" (Kepala Keluarga), "Isteri", "Anak", "Lain_Lain"
+  alamat_blok   String // Contoh: G. 16, H. 04, B. 58
+  status        String   @default("AKTIF") // Status keanggotaan. Contoh: "AKTIF", "PINDAH", "MENINGGAL", "LAINNYA"
+
+  // Riwayat pelayanan sebagai Pendeta (lihat model Pendeta)
+  pendeta        Pendeta[]
+  // Riwayat pelayanan sebagai Penatua / Syamas (lihat model Majelis)
+  majelis        Majelis[]
+  // Kepengurusan unsur kategorial (lihat model BadanPengurus)
+  badan_pengurus BadanPengurus[]
+  // Ibadah yang dijamu / terkait jemaat ini sebagai tuan rumah
+  ibadah         Ibadah[]        @relation("TuanRumah")
+  // Ibadah tempat jemaat ini menjadi pelayan firman
+  ibadah_pelayan Ibadah[]        @relation("PelayanFirman")
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("jemaat")
+}
+
+// Model Ibadah & Jadwal Pelayanan
+model Ibadah {
+  id                String  @id @default(cuid())
+  // Tuan rumah / keluarga giliran minggu ini. Rayon & alamat default diturunkan dari jemaat ini.
+  // Tetap terisi walau ibadah dipindah (agar giliran & rayon tetap terekam).
+  id_jemaat         String?
+  jemaat            Jemaat? @relation("TuanRumah", fields: [id_jemaat], references: [id])
+  // Relasi opsional bila ibadah khusus unsur kategorial tertentu
+  id_unsur          String?
+  unsur             Unsur?  @relation(fields: [id_unsur], references: [id])
+  // Pelayan firman: jemaat (pendeta/majelis kini tercatat sbg jemaat) atau teks cadangan (isi salah satu).
+  id_pelayan_firman String?
+  pelayan           Jemaat? @relation("PelayanFirman", fields: [id_pelayan_firman], references: [id])
+
+  // Nama ibadah eksplisit (opsional). Diisi untuk kasus khusus mis. ibadah
+  // etnik; bila kosong, label diturunkan dari unsur/rayon/waktu.
+  nm_ibadah String?
+
+  // Ibadah gabungan: bila true, ibadah unsur dilaksanakan bersama di Gereja Kanaan.
+  gabungan Boolean @default(false)
+  // Sektor unsur (mis. PKB/PW), umumnya 1-10. Opsional.
+  sektor   Int?
+
+  tgl   DateTime  @db.Date
+  waktu DateTime @db.Time // Jam ibadah (kolom TIME), mis. 05:30, 09:00
+
+  // Lokasi aktual (override). Kosong = di rumah jemaat giliran (id_jemaat).
+  // Diisi bila ibadah dipindah ke gereja / rumah lain. Rayon TETAP dari id_jemaat.
+  tempat        String? // Contoh: Gereja, Kel. B
+  alamat_tempat String? // Contoh: B. 33, C. 96
+  catatan       String? // Alasan pemindahan, mis. "Kel. A berhalangan" (opsional)
+
+  pelayan_firman    String? // Cadangan teks bebas, mis. pengkhotbah tamu di luar data
+  liturgos          String?
+  pembacaan_alkitab String? // Contoh: Markus 16:1-8
+  piket             String? // Contoh: Majelis Rayon Hermon
+  p_organ           String? // Pemain Organ / Keyboard
+
+  // Relasi ke tabel Kehadiran & Keuangan
+  kehadiran Kehadiran?
+  keuangan  Keuangan[]
+
+  created_at DateTime @default(now())
+
+  @@map("ibadah")
+}
+
+// Model Statistik Kehadiran Jemaat
+model Kehadiran {
+  id        String @id @default(cuid())
+  id_ibadah String @unique
+  ibadah    Ibadah @relation(fields: [id_ibadah], references: [id], onDelete: Cascade)
+
+  laki_laki Int @default(0)
+  perempuan Int @default(0)
+  anak      Int @default(0)
+  total     Int @default(0)
+
+  @@map("kehadiran")
+}
+
+// Model Penerimaan Keuangan / Persembahan
+model Keuangan {
+  id         String  @id @default(cuid())
+  // Relasi ke ibadah (kapan persembahan ini dikumpulkan)
+  id_ibadah  String?
+  ibadah     Ibadah? @relation(fields: [id_ibadah], references: [id])
+  kategori   String // Nilai yang diizinkan: "TANGGUK", "DIAKONIA", "PENGUCAPAN_SYUKUR", "PERSEPULUHAN", "PEMBANGUNAN_RENOVASI", "PENUNJANG_PELAYANAN", "INKONVENSIONAL"
+  nm_pemberi String? // Contoh: Kel. Victor Pekpekay, atau "Yang tidak menyebut nama"
+  jumlah     Int
+  keterangan String? @db.Text // Penjelasan syukur, misal: "Atas peneguhan sidi anak..."
+
+  created_at DateTime @default(now())
+
+  @@map("keuangan")
+}
+
+// Model Pengumuman / Warta Jemaat
+model Pengumuman {
+  id          String   @id @default(cuid())
+  order       Int      @default(0)
+  judul       String // Contoh: SAKRAMEN BAPTISAN KUDUS
+  isi         String   @db.Text
+  tgl_publish DateTime @default(now())
+  status      Boolean  @default(true) // true = aktif, false = tidak aktif
+
+  @@map("pengumuman")
+}
+
+// Model Renungan Harian
+model Renungan {
+  id      String  @id @default(cuid())
+  judul   String // Contoh: KEBANGKITAN BUKAN KONSPIRASI
+  bacaan  String? // Contoh: Matius 28: 1-15
+  kutipan String? @db.Text // Teks penegas di bawah judul
+  isi     String  @db.Text // Teks lengkap isi renungan
+  sumber  String? // Contoh: HT/www.renunganharian.net
+
+  // Tanggal renungan ini diterbitkan/disampaikan ke jemaat
+  tgl_publish DateTime @db.Date
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("renungan")
+}
+
+// Model Galeri Album — satu album/kegiatan berisi banyak foto
+model GaleriAlbum {
+  id         String    @id @default(cuid())
+  order      Int       @default(0) // Untuk pengurutan manual
+  judul      String // Judul album. Contoh: Ibadah Natal 2025
+  keterangan String?   @db.Text // Deskripsi album (opsional)
+  kategori   String? // Pengelompokan opsional. Contoh: Ibadah, Baptisan, Natal, Paskah
+  tgl        DateTime? @db.Date // Tanggal kegiatan (opsional)
+  status     Boolean   @default(true) // true = tampil, false = disembunyikan
+
+  // Foto-foto di dalam album ini
+  foto GaleriFoto[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("galeri_album")
+}
+
+// Model Galeri Foto — satu berkas foto milik sebuah album
+model GaleriFoto {
+  id       String      @id @default(cuid())
+  id_album String
+  album    GaleriAlbum @relation(fields: [id_album], references: [id], onDelete: Cascade)
+
+  url     String // Path / URL berkas gambar
+  caption String? // Keterangan per foto (opsional)
+  order   Int     @default(0) // Urutan foto dalam album
+
+  created_at DateTime @default(now())
+
+  @@map("galeri_foto")
+}
+
+// Model Slide — gambar untuk carousel/banner beranda. Overlay (judul/teks) dan
+// tombol tautan bersifat opsional; bila kosong, slide tampil sebagai gambar saja.
+model Slide {
+  id String @id @default(cuid())
+
+  // Urutan tampil di carousel, mulai dari 1 dan selalu rapat (tanpa lompatan).
+  // Sekaligus menentukan nama berkas gambarnya, karena itu wajib UNIK.
+  order Int    @unique
+  url   String // Path publik berkas gambar — selalu "/uploads/slide/<order>.webp"
+
+  judul     String? // Judul overlay (opsional)
+  teks      String? @db.Text // Teks singkat di bawah judul (opsional)
+  link_url  String? // Tujuan tombol (opsional). Contoh: "/jadwal" atau "https://..."
+  link_teks String? // Label tombol (opsional). Contoh: "Lihat Jadwal"
+
+  status Boolean @default(true) // true = tampil, false = disembunyikan
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("slide")
+}
+
+// Model Akun Akses (Sistem)
+model User {
+  id         String   @id @default(cuid())
+  username   String   @unique
+  password   String
+  role       String // Nilai yang diizinkan: "ADMIN", "KETUA_UNSUR"
+
+  badan_pengurus BadanPengurus?
+
+  created_at DateTime @default(now())
+
+  // Jejak aktivitas yang dilakukan akun ini (audit trail)
+  log_aktivitas LogAktivitas[]
+
+  @@map("user")
+}
+
+// Model Pendeta — data pribadi (nama, keluarga, alamat) diambil dari data jemaat
+model Pendeta {
+  id        String @id @default(cuid())
+  // Relasi ke jemaat: pendeta tercatat sebagai jemaat (selalu membawa serta keluarga)
+  id_jemaat String
+  jemaat    Jemaat @relation(fields: [id_jemaat], references: [id])
+
+  gelar String? // Jenis/gelar pelayanan. Contoh: Pdt., Pdt. Emeritus, Vikaris
+
+  // Masa bakti
+  tgl_mulai   DateTime  @db.Date
+  tgl_selesai DateTime? @db.Date // Kosong bila masih menjabat / belum ditentukan
+  aktif       Boolean   @default(true) // Status pelayanan: aktif atau tidak
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("pendeta")
+}
+
+// Model Majelis — Penatua & Syamas (Diaken), diambil dari data jemaat
+model Majelis {
+  id        String @id @default(cuid())
+  // Relasi ke jemaat (sumber nama, rayon, dll.)
+  id_jemaat String
+  jemaat    Jemaat @relation(fields: [id_jemaat], references: [id])
+
+  jabatan String // Nilai yang diizinkan: "PENATUA", "SYAMAS"
+
+  // Masa bakti
+  tgl_mulai   DateTime  @db.Date
+  tgl_selesai DateTime? @db.Date // Kosong bila masih menjabat / belum ditentukan
+  aktif       Boolean   @default(true) // Status pelayanan: aktif atau tidak
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("majelis")
+}
+
+// Model Badan Pengurus — kepengurusan tiap unsur kategorial (mis. Bendahara PW, Ketua PKB)
+model BadanPengurus {
+  id        String @id @default(cuid())
+  // Akun akses untuk pengurus ini. Unik agar relasinya satu-ke-satu.
+  user_id String? @unique
+  user    User?   @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  // Orang yang menjabat (sumber nama, rayon, dll.)
+  id_jemaat String
+  jemaat    Jemaat @relation(fields: [id_jemaat], references: [id])
+  // Unsur kategorial tempat ia menjadi pengurus
+  id_unsur  String
+  unsur     Unsur  @relation(fields: [id_unsur], references: [id])
+  // Sektor unsur (mis. PKB/PW), umumnya 1-10. Kosong = kepengurusan tingkat unsur (bukan per-sektor).
+  sektor    Int?
+
+  jabatan String // Contoh: Ketua, Sekretaris, Bendahara, Wakil Ketua
+
+  // Masa bakti
+  tgl_mulai   DateTime  @db.Date
+  tgl_selesai DateTime? @db.Date // Kosong bila masih menjabat / belum ditentukan
+  aktif       Boolean   @default(true) // Status kepengurusan: aktif atau tidak
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("badan_pengurus")
+}
+
+// Model Log Aktivitas — audit trail admin.
+//
+// Mencatat SIAPA (akun user) melakukan aksi APA (input/edit/hapus) terhadap
+// data APA (entitas + id). `username`, `role`, dan `ip` disimpan sebagai
+// snapshot pada saat aksi, sehingga log tetap terbaca lengkap walau akun user
+// kelak diubah atau dihapus (relasi id_user di-set NULL, bukan ikut terhapus).
+model LogAktivitas {
+  id String @id @default(cuid())
+
+  // Pelaku aksi. onDelete: SetNull → hapus user tidak menghapus jejak lognya.
+  id_user  String?
+  user     User?   @relation(fields: [id_user], references: [id], onDelete: SetNull)
+  username String // Snapshot username pelaku saat aksi terjadi
+  role     String? // Snapshot role pelaku (ADMIN / KETUA_UNSUR)
+
+  aksi       String // "CREATE" | "UPDATE" | "DELETE"
+  entitas    String // Model/tabel terkait, mis. "Ibadah", "Pengumuman", "Renungan"
+  id_entitas String? // id baris yang terpengaruh (bila ada)
+  ringkasan  String? // Label ringkas terbaca, mis. judul / nama ibadah
+  detail     String? @db.Text // Cuplikan data (JSON) untuk kelengkapan (opsional)
+  ip         String? // Alamat IP pelaku (opsional)
+
+  created_at DateTime @default(now())
+
+  @@index([created_at])
+  @@index([entitas, id_entitas])
+  @@index([id_user])
+  @@map("log_aktivitas")
+}
