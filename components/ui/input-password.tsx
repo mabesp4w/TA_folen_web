@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
 import { FormField } from "./form-field";
+import { Button } from "./button";
 
 export type InputPasswordProps = Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & {
   error?: string;
@@ -53,17 +54,19 @@ export function InputPassword({
           required={required}
           type={isVisible ? "text" : "password"}
         />
-        <button
+        <Button
           aria-controls={inputId}
           aria-label={isVisible ? hidePasswordLabel : showPasswordLabel}
           aria-pressed={isVisible}
-          className="password-toggle btn btn-ghost btn-square"
+          className="password-toggle"
+          variant="ghost"
+          square
           disabled={props.disabled}
           onClick={() => setIsVisible((current) => !current)}
           type="button"
         >
           {isVisible ? <EyeOff aria-hidden="true" size={20} /> : <Eye aria-hidden="true" size={20} />}
-        </button>
+        </Button>
       </label>
     </FormField>
   );

@@ -1,4 +1,5 @@
 import { CalendarDays, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function DashboardHeader() {
   return (
@@ -9,12 +10,12 @@ export function DashboardHeader() {
         <p className="mt-2 text-sm leading-6 text-[var(--muted)]">Pantau pelayanan, data jemaat, dan agenda gereja dari satu ruang kerja.</p>
       </div>
       <div className="flex flex-wrap gap-2">
-        <button type="button" className="btn border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] shadow-none">
+        <Button variant="outline" className="border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] shadow-none">
           <CalendarDays size={18} aria-hidden="true" /> Lihat kalender
-        </button>
-        <button type="button" className="btn border-0 bg-[var(--forest)] text-[var(--paper)] shadow-none hover:bg-[var(--forest-deep)]">
+        </Button>
+        <Button>
           <Plus size={18} aria-hidden="true" /> Tambah data
-        </button>
+        </Button>
       </div>
     </header>
   );

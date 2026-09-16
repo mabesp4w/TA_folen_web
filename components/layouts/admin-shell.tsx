@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { useState } from "react";
 import { Bell, Menu, Search } from "lucide-react";
 import { AppSidebar } from "@/components/layouts/app-sidebar";
+import { Button } from "@/components/ui/button";
 
 export function AdminShell({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -13,24 +14,26 @@ export function AdminShell({ children }: { children: ReactNode }) {
       <AppSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="min-w-0">
         <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-[var(--line)] bg-[var(--paper)] px-4 sm:px-6 lg:px-8">
-          <button
+          <Button
             type="button"
-            className="btn btn-ghost btn-square lg:hidden"
+            variant="ghost"
+            square
+            className="lg:hidden"
             aria-label="Buka menu navigasi"
             aria-expanded={sidebarOpen}
             onClick={() => setSidebarOpen(true)}
           >
             <Menu size={22} aria-hidden="true" />
-          </button>
+          </Button>
           <label className="input input-bordered hidden h-10 max-w-md flex-1 items-center gap-2 bg-transparent md:flex">
             <Search size={17} className="text-[var(--muted)]" aria-hidden="true" />
             <span className="sr-only">Cari data</span>
             <input type="search" className="grow" placeholder="Cari jemaat, agenda, atau dokumen" />
           </label>
           <div className="ml-auto flex items-center gap-2">
-            <button type="button" className="btn btn-ghost btn-square" aria-label="Lihat notifikasi">
+            <Button variant="ghost" square aria-label="Lihat notifikasi">
               <Bell size={20} aria-hidden="true" />
-            </button>
+            </Button>
             <div className="hidden text-right sm:block">
               <p className="text-sm font-semibold text-[var(--ink)]">Administrator</p>
               <p className="text-xs text-[var(--muted)]">Sekretariat Gereja</p>

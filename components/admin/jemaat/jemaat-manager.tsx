@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { Pencil, Plus, Search, Trash2, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { InputText } from "@/components/ui/input-text";
 import { Select } from "@/components/ui/select";
 import {
@@ -102,8 +103,7 @@ export function JemaatManager({
             Kelola identitas, rayon, dan status keanggotaan jemaat.
           </p>
         </div>
-        <button
-          className="btn border-0 bg-[var(--forest)] text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+        <Button
           type="button"
           onClick={() => {
             setSelected(null);
@@ -112,7 +112,7 @@ export function JemaatManager({
         >
           <Plus size={18} aria-hidden="true" />
           Tambah jemaat
-        </button>
+        </Button>
       </header>
 
       <form
@@ -146,9 +146,9 @@ export function JemaatManager({
             ...JEMAAT_STATUSES.map((item) => ({ value: item, label: item })),
           ]}
         />
-        <button className="btn btn-outline" type="submit">
+        <Button variant="outline" type="submit">
           Terapkan
-        </button>
+        </Button>
       </form>
 
       {jemaat.length === 0 ? (
@@ -184,22 +184,27 @@ export function JemaatManager({
                     <td><span className="badge badge-outline">{row.status}</span></td>
                     <td>
                       <div className="flex justify-end gap-1">
-                        <button
-                          className="btn btn-ghost btn-sm"
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          square
                           type="button"
                           aria-label={`Edit ${row.nm_lengkap}`}
                           onClick={() => edit(row)}
                         >
                           <Pencil size={16} aria-hidden="true" />
-                        </button>
-                        <button
-                          className="btn btn-ghost btn-sm text-error"
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          square
+                          className="text-error"
                           type="button"
                           aria-label={`Hapus ${row.nm_lengkap}`}
                           onClick={() => remove(row)}
                         >
                           <Trash2 size={16} aria-hidden="true" />
-                        </button>
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -234,12 +239,12 @@ export function JemaatManager({
                   </div>
                 </dl>
                 <div className="mt-4 flex gap-2">
-                  <button className="btn btn-outline btn-sm flex-1" type="button" onClick={() => edit(row)}>
+                  <Button variant="outline" size="sm" className="flex-1" type="button" onClick={() => edit(row)}>
                     <Pencil size={15} aria-hidden="true" /> Edit
-                  </button>
-                  <button className="btn btn-outline btn-error btn-sm flex-1" type="button" onClick={() => remove(row)}>
+                  </Button>
+                  <Button variant="outline" size="sm" className="btn-error flex-1" type="button" onClick={() => remove(row)}>
                     <Trash2 size={15} aria-hidden="true" /> Hapus
-                  </button>
+                  </Button>
                 </div>
               </article>
             ))}
@@ -266,9 +271,9 @@ export function JemaatManager({
                     : "Lengkapi seluruh data wajib di bawah ini."}
                 </p>
               </div>
-              <button className="btn btn-ghost btn-square btn-sm" type="button" aria-label="Tutup dialog" onClick={closeDialog}>
+              <Button variant="ghost" size="sm" square type="button" aria-label="Tutup dialog" onClick={closeDialog}>
                 <X size={20} aria-hidden="true" />
-              </button>
+              </Button>
             </div>
 
             {mode === "delete" ? (
@@ -280,10 +285,10 @@ export function JemaatManager({
                   </div>
                 )}
                 <div className="flex justify-end gap-2">
-                  <button className="btn btn-ghost" type="button" onClick={closeDialog}>Batal</button>
-                  <button className="btn btn-error" disabled={deletePending} type="submit">
+                  <Button variant="ghost" type="button" onClick={closeDialog}>Batal</Button>
+                  <Button variant="danger" disabled={deletePending} loading={deletePending} type="submit">
                     {deletePending ? "Menghapus..." : "Hapus permanen"}
-                  </button>
+                  </Button>
                 </div>
               </form>
             ) : (
@@ -330,10 +335,10 @@ export function JemaatManager({
                 <Select defaultValue={selected?.id_rayon ?? ""} error={formState.errors?.id_rayon?.[0]} label="Rayon" name="id_rayon" options={rayons.map((item) => ({ value: item.id, label: item.nm_rayon }))} placeholder="Belum ditentukan" />
                 <Select defaultValue={selected?.status ?? "AKTIF"} error={formState.errors?.status?.[0]} label="Status jemaat" name="status" options={JEMAAT_STATUSES.map((item) => ({ value: item, label: item }))} required />
                 <div className="flex items-end justify-end gap-2">
-                  <button className="btn btn-ghost" type="button" onClick={closeDialog}>Batal</button>
-                  <button className="btn border-0 bg-[var(--forest)] text-white" disabled={formPending} type="submit">
+                  <Button variant="ghost" type="button" onClick={closeDialog}>Batal</Button>
+                  <Button disabled={formPending} loading={formPending} type="submit">
                     {formPending ? "Menyimpan..." : mode === "edit" ? "Simpan perubahan" : "Tambah jemaat"}
-                  </button>
+                  </Button>
                 </div>
               </form>
             )}

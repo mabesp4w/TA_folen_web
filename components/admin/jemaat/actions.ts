@@ -46,7 +46,7 @@ export async function createJemaatAction(
         tgl_lahir: new Date(`${parsed.data.tgl_lahir}T00:00:00.000Z`),
       },
     });
-    revalidatePath("/admin/jemaat");
+    revalidatePath("/app/admin/jemaat");
     return { status: "success", message: "Data jemaat berhasil ditambahkan." };
   } catch (error) {
     return failure(error);
@@ -77,7 +77,7 @@ export async function updateJemaatAction(
         tgl_lahir: new Date(`${parsed.data.tgl_lahir}T00:00:00.000Z`),
       },
     });
-    revalidatePath("/admin/jemaat");
+    revalidatePath("/app/admin/jemaat");
     return { status: "success", message: "Data jemaat berhasil diperbarui." };
   } catch (error) {
     return failure(error);
@@ -96,7 +96,7 @@ export async function deleteJemaatAction(
 
   try {
     await prisma.jemaat.delete({ where: { id } });
-    revalidatePath("/admin/jemaat");
+    revalidatePath("/app/admin/jemaat");
     return { status: "success", message: "Data jemaat berhasil dihapus." };
   } catch (error) {
     return failure(error);

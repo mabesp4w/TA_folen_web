@@ -8,6 +8,7 @@ export type Session = {
   id: string;
   username: string;
   role: string;
+  badan_pengurus?: string | null;
   exp: number;
 };
 
@@ -15,6 +16,7 @@ export type SafeUser = {
   id: string;
   username: string;
   role: string;
+  badan_pengurus?: string | null;
 };
 
 function getSecret(): string {
@@ -63,6 +65,7 @@ export function createSessionToken(user: SafeUser): string {
     id: user.id,
     username: user.username,
     role: user.role,
+    badan_pengurus: user.badan_pengurus,
     exp,
   };
   const payload = Buffer.from(JSON.stringify(session)).toString("base64url");
