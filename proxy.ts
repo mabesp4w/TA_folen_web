@@ -9,13 +9,13 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (pathname.startsWith("/app/admin")) {
+  if (pathname.startsWith("/admin")) {
     return session.role === "ADMIN"
       ? NextResponse.next()
       : NextResponse.redirect(new URL("/", request.url));
   }
 
-  const badanPengurus = pathname.split("/")[2];
+  const badanPengurus = pathname.split("/")[1];
   if (
     session.role === "ADMIN" ||
     !session.badan_pengurus ||
@@ -28,5 +28,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/app/:path*"],
+  matcher: ["/admin/:path*", "/[badan_pengurus]"],
 };

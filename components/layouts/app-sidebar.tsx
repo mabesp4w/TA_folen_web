@@ -2,37 +2,112 @@
 
 import type { LucideIcon } from "lucide-react";
 import {
+  BookOpenText,
   CalendarDays,
   Church,
   CircleDollarSign,
-  FileText,
+  GalleryHorizontalEnd,
   Images,
   LayoutDashboard,
+  MapPinned,
   Megaphone,
-  Settings,
+  Newspaper,
+  Settings2,
+  ShieldCheck,
+  SlidersHorizontal,
+  UserCog,
   Users,
+  UsersRound,
   X,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { createElement } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
-export type SidebarItem = {
+export type SidebarLink = {
   label: string;
   href: string;
   icon: LucideIcon;
 };
 
+export type SidebarGroup = {
+  label: string;
+  icon: LucideIcon;
+  children: SidebarLink[];
+};
+
+export type SidebarItem = SidebarLink | SidebarGroup;
+
+function isSidebarGroup(item: SidebarItem): item is SidebarGroup {
+  return "children" in item;
+}
+
+function isActiveHref(pathname: string, href: string) {
+  return href === "/admin" ? pathname === href : pathname.startsWith(href);
+}
+
+function isGroupActive(pathname: string, group: SidebarGroup) {
+  return group.children.some((child) => isActiveHref(pathname, child.href));
+}
+
+function getOpenGroups(pathname: string, items: SidebarItem[]) {
+  return Object.fromEntries(
+    items
+      .filter(isSidebarGroup)
+      .filter((group) => isGroupActive(pathname, group))
+      .map((group) => [group.label, true]),
+  );
+}
+
 const adminItems: SidebarItem[] = [
-  { label: "Dashboard", href: "/app/admin", icon: LayoutDashboard },
-  { label: "Data Jemaat", href: "/app/admin/jemaat", icon: Users },
-  { label: "Agenda & Ibadah", href: "/app/admin/agenda", icon: CalendarDays },
-  { label: "Pengumuman", href: "/app/admin/pengumuman", icon: Megaphone },
-  { label: "Keuangan", href: "/app/admin/keuangan", icon: CircleDollarSign },
-  { label: "Galeri", href: "/app/admin/galeri", icon: Images },
-  { label: "Laporan", href: "/app/admin/laporan", icon: FileText },
+  { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  {
+    label: "Jemaat & Organisasi",
+    icon: Users,
+    children: [
+      { label: "Data Jemaat", href: "/admin/jemaat", icon: Users },
+      { label: "Rayon", href: "/admin/rayon", icon: MapPinned },
+      { label: "Unsur", href: "/admin/unsur", icon: UsersRound },
+      { label: "Pelayan & Pengurus", href: "/admin/pelayanan", icon: UserCog },
+    ],
+  },
+  {
+    label: "Ibadah & Informasi",
+    icon: Newspaper,
+    children: [
+      { label: "Agenda & Ibadah", href: "/admin/agenda", icon: CalendarDays },
+      { label: "Pengumuman", href: "/admin/pengumuman", icon: Megaphone },
+      { label: "Renungan", href: "/admin/renungan", icon: BookOpenText },
+    ],
+  },
+  { label: "Keuangan", href: "/admin/keuangan", icon: CircleDollarSign },
+  {
+    label: "Publikasi",
+    icon: Images,
+    children: [
+      { label: "Galeri", href: "/admin/galeri", icon: Images },
+      { label: "Slide Beranda", href: "/admin/slide", icon: GalleryHorizontalEnd },
+    ],
+  },
+  {
+    label: "Pengaturan",
+    icon: Settings2,
+    children: [
+      { label: "Akun Akses", href: "/admin/pengaturan", icon: SlidersHorizontal },
+      { label: "Log Aktivitas", href: "/admin/log-aktivitas", icon: ShieldCheck },
+    ],
+  },
 ];
+
+const navLinkClassName = (active: boolean, nested = false) =>
+  `flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 whitespace-normal transition-colors ${
+    nested ? "text-[0.92rem]" : ""
+  } ${
+    active
+      ? "bg-white/10 font-semibold text-white ring-1 ring-inset ring-white/10"
+      : "text-white/70 hover:bg-white/10 hover:text-white"
+  }`;
 
 type AppSidebarProps = {
   items?: SidebarItem[];
@@ -46,6 +121,17 @@ export function AppSidebar({
   onClose,
 }: AppSidebarProps) {
   const pathname = usePathname();
+  const [openGroups, setOpenGroups] = useState(() => getOpenGroups(pathname, items));
+  const [seenPathname, setSeenPathname] = useState(pathname);
+
+  if (pathname !== seenPathname) {
+    setSeenPathname(pathname);
+    const autoOpen = getOpenGroups(pathname, items);
+    const shouldUpdate = Object.keys(autoOpen).some((label) => !openGroups[label]);
+    if (shouldUpdate) {
+      setOpenGroups({ ...openGroups, ...autoOpen });
+    }
+  }
 
   return (
     <>
@@ -91,47 +177,79 @@ export function AppSidebar({
           <p className="px-3 pb-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/45">
             Menu utama
           </p>
-          <ul className="menu gap-1 p-0">
-            {items.map(({ label, href, icon: Icon }) => {
-              const active =
-                href === "/app/admin" ? pathname === href : pathname.startsWith(href);
+          <ul className="menu w-full gap-1 p-0">
+            {items.map((item) => {
+              if (!isSidebarGroup(item)) {
+                const active = isActiveHref(pathname, item.href);
+                const Icon = item.icon;
+
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      onClick={onClose}
+                      aria-current={active ? "page" : undefined}
+                      className={navLinkClassName(active)}
+                    >
+                      <Icon size={19} aria-hidden="true" />
+                      {item.label}
+                    </Link>
+                  </li>
+                );
+              }
+
+              const groupActive = isGroupActive(pathname, item);
+              const GroupIcon = item.icon;
 
               return (
-                <li key={href}>
-                  {createElement(
-                    Link,
-                    {
-                      href,
-                      onClick: onClose,
-                      "aria-current": active ? "page" : undefined,
-                      className: `flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 transition-colors ${
-                        active
-                          ? "bg-white/10 font-semibold text-white ring-1 ring-inset ring-white/10"
+                <li key={item.label}>
+                  <details
+                    open={Boolean(openGroups[item.label])}
+                    onToggle={(event) => {
+                      const nextOpen = event.currentTarget.open;
+                      setOpenGroups((current) =>
+                        current[item.label] === nextOpen
+                          ? current
+                          : { ...current, [item.label]: nextOpen },
+                      );
+                    }}
+                  >
+                    <summary
+                      className={`min-h-11 cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 whitespace-normal transition-colors marker:content-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--pacific)] ${
+                        groupActive
+                          ? "bg-white/5 font-semibold text-white"
                           : "text-white/70 hover:bg-white/10 hover:text-white"
-                      }`,
-                    },
-                    <Icon size={19} aria-hidden="true" />,
-                    label,
-                  )}
+                      }`}
+                    >
+                      <GroupIcon size={19} aria-hidden="true" />
+                      {item.label}
+                    </summary>
+                    <ul className="mt-1 whitespace-normal before:!bg-white/25">
+                      {item.children.map((child) => {
+                        const active = isActiveHref(pathname, child.href);
+                        const ChildIcon = child.icon;
+
+                        return (
+                          <li key={child.href}>
+                            <Link
+                              href={child.href}
+                              onClick={onClose}
+                              aria-current={active ? "page" : undefined}
+                              className={navLinkClassName(active, true)}
+                            >
+                              <ChildIcon size={17} aria-hidden="true" />
+                              {child.label}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </details>
                 </li>
               );
             })}
           </ul>
         </nav>
-
-        <div className="border-t border-white/10 p-3">
-          {createElement(
-            Link,
-            {
-              href: "/app/admin/pengaturan",
-              onClick: onClose,
-              className:
-                "flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-white/70 transition-colors hover:bg-white/10 hover:text-white",
-            },
-            <Settings size={19} aria-hidden="true" />,
-            "Pengaturan",
-          )}
-        </div>
       </aside>
     </>
   );

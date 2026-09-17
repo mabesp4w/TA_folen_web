@@ -154,13 +154,23 @@ a { color: inherit; }
 .form-control { display: grid; gap: 8px; }
 .label { min-height: auto; padding: 0; }
 .label-text { color: var(--ink); font-size: .88rem; font-weight: 750; }
-.login-input { width: 100%; height: 54px; gap: 11px; color: var(--ink); background: #fff; border-color: #cbd4cd; border-radius: 14px; transition: border-color 160ms ease, box-shadow 160ms ease; }
+.login-input, .login-select, .react-select { width: 100%; color: var(--ink); background: #fff; border-color: #cbd4cd; border-radius: 14px; }
+.react-select { height: 54px; }
+.react-select .select__control { height: inherit !important; min-height: inherit !important; border-radius: inherit; border-color: inherit; background: inherit; box-shadow: none !important; }
+.react-select .select__control:hover { border-color: var(--forest) !important; }
+.react-select .select__value-container { height: 100%; padding: 0 0.75rem; }
+.react-select .select__placeholder { color: #909a94; }
+.react-select .select__indicators { height: 100%; }
+.react-select .select__dropdown-indicator { padding: 0; color: #728078; }
+.react-select .select__clear-indicator { padding: 0; color: #728078; }
+.react-select .select__single-value { color: var(--ink); margin: 0; }
+.react-select .select__input { color: var(--ink); margin: 0; }
 .login-input:focus-within { border-color: var(--pacific); box-shadow: 0 0 0 4px rgb(40 126 140 / 14%); outline: none; }
 .login-input svg { flex: 0 0 auto; color: #728078; }
 .login-input input { min-width: 0; }
 .login-input input::placeholder { color: #909a94; }
 .login-input.input-error { border-color: #b64d42; }
-.login-select { width: 100%; height: 54px; color: var(--ink); background: #fff; border-color: #cbd4cd; border-radius: 14px; }
+.login-select { color: var(--ink); }
 .login-select:focus { border-color: var(--pacific); box-shadow: 0 0 0 4px rgb(40 126 140 / 14%); outline: none; }
 .login-select.select-error { border-color: #b64d42; }
 .password-toggle { width: 42px; min-height: 42px; height: 42px; color: var(--forest); border-radius: 10px; }
@@ -190,6 +200,7 @@ a { color: inherit; }
   .login-heading p { line-height: 1.45; }
   .login-form { gap: 13px; margin-top: 20px; }
   .login-input, .login-select { height: 50px; }
+  .react-select { height: 50px; }
   .login-submit { min-height: 50px; }
   .login-help { margin-top: 12px; }
 }
@@ -236,6 +247,7 @@ a { color: inherit; }
   .login-form { gap: 10px; margin-top: 14px; }
   .form-control { gap: 5px; }
   .login-input, .login-select { height: 46px; }
+  .react-select { height: 46px; }
   .remember-option { min-height: 38px; }
   .login-submit { min-height: 46px; }
   .login-help { margin-top: 8px; }

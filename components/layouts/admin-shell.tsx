@@ -2,12 +2,29 @@
 
 import type { ReactNode } from "react";
 import { useState } from "react";
-import { Bell, Menu, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Bell, LogOut, Menu, Search } from "lucide-react";
 import { AppSidebar } from "@/components/layouts/app-sidebar";
 import { Button } from "@/components/ui/button";
 
 export function AdminShell({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  async function handleLogout() {
+    setIsLoggingOut(true);
+
+    try {
+      const response = await fetch("/api/auth/logout", { method: "POST" });
+      if (!response.ok) throw new Error("Gagal keluar");
+
+      router.replace("/");
+      router.refresh();
+    } finally {
+      setIsLoggingOut(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[var(--cream)] lg:grid lg:grid-cols-[272px_minmax(0,1fr)]">
@@ -41,6 +58,17 @@ export function AdminShell({ children }: { children: ReactNode }) {
             <span className="grid size-10 place-items-center rounded-full bg-[var(--forest)] text-sm font-bold text-[var(--paper)]" aria-hidden="true">
               AD
             </span>
+            <Button
+              type="button"
+              variant="ghost"
+              square
+              aria-label="Keluar dari akun"
+              title="Keluar"
+              disabled={isLoggingOut}
+              onClick={handleLogout}
+            >
+              <LogOut size={20} aria-hidden="true" />
+            </Button>
           </div>
         </header>
         {children}

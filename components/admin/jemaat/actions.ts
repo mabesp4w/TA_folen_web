@@ -1,8 +1,18 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { recordAdminAudit } from "@/lib/admin-audit";
+import { getAdminSession } from "@/lib/auth-server";
 import { prisma } from "@/lib/prisma";
 import { jemaatSchema, type ActionState } from "./schema";
+
+async function authorize(): Promise<ActionState | null> {
+  const session = await getAdminSession();
+
+  return session
+    ? null
+    : { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+}
 
 function parseForm(formData: FormData) {
   return jemaatSchema.safeParse({
@@ -28,6 +38,9 @@ export async function createJemaatAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const authorizationError = await authorize();
+  if (authorizationError) return authorizationError;
+
   const parsed = parseForm(formData);
 
   if (!parsed.success) {
@@ -39,14 +52,27 @@ export async function createJemaatAction(
   }
 
   try {
-    await prisma.jemaat.create({
+    const session = await getAdminSession();
+    if (!session) {
+      return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+    }
+
+    const jemaat = await prisma.jemaat.create({
       data: {
         ...parsed.data,
         id_rayon: parsed.data.id_rayon || null,
         tgl_lahir: new Date(`${parsed.data.tgl_lahir}T00:00:00.000Z`),
       },
     });
-    revalidatePath("/app/admin/jemaat");
+    await recordAdminAudit({
+      aksi: "CREATE",
+      detail: parsed.data,
+      entitas: "Jemaat",
+      id_entitas: jemaat.id,
+      ringkasan: jemaat.nm_lengkap,
+      session,
+    });
+    revalidatePath("/admin/jemaat");
     return { status: "success", message: "Data jemaat berhasil ditambahkan." };
   } catch (error) {
     return failure(error);
@@ -57,6 +83,9 @@ export async function updateJemaatAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const authorizationError = await authorize();
+  if (authorizationError) return authorizationError;
+
   const id = String(formData.get("id") ?? "");
   const parsed = parseForm(formData);
 
@@ -69,7 +98,12 @@ export async function updateJemaatAction(
   }
 
   try {
-    await prisma.jemaat.update({
+    const session = await getAdminSession();
+    if (!session) {
+      return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+    }
+
+    const jemaat = await prisma.jemaat.update({
       where: { id },
       data: {
         ...parsed.data,
@@ -77,7 +111,15 @@ export async function updateJemaatAction(
         tgl_lahir: new Date(`${parsed.data.tgl_lahir}T00:00:00.000Z`),
       },
     });
-    revalidatePath("/app/admin/jemaat");
+    await recordAdminAudit({
+      aksi: "UPDATE",
+      detail: parsed.data,
+      entitas: "Jemaat",
+      id_entitas: jemaat.id,
+      ringkasan: jemaat.nm_lengkap,
+      session,
+    });
+    revalidatePath("/admin/jemaat");
     return { status: "success", message: "Data jemaat berhasil diperbarui." };
   } catch (error) {
     return failure(error);
@@ -88,6 +130,9 @@ export async function deleteJemaatAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const authorizationError = await authorize();
+  if (authorizationError) return authorizationError;
+
   const id = String(formData.get("id") ?? "");
 
   if (!id) {
@@ -95,8 +140,20 @@ export async function deleteJemaatAction(
   }
 
   try {
-    await prisma.jemaat.delete({ where: { id } });
-    revalidatePath("/app/admin/jemaat");
+    const session = await getAdminSession();
+    if (!session) {
+      return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+    }
+
+    const jemaat = await prisma.jemaat.delete({ where: { id } });
+    await recordAdminAudit({
+      aksi: "DELETE",
+      entitas: "Jemaat",
+      id_entitas: jemaat.id,
+      ringkasan: jemaat.nm_lengkap,
+      session,
+    });
+    revalidatePath("/admin/jemaat");
     return { status: "success", message: "Data jemaat berhasil dihapus." };
   } catch (error) {
     return failure(error);

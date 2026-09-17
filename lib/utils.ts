@@ -1,5 +1,5 @@
 export function waktuToDate(value: string): Date | null {
-  const match = /^(\d{1,2})\d{2}$/.exec(value.trim());
+  const match = /^(\d{1,2})[.:]?(\d{2})$/.exec(value.trim());
 
   if (!match) {
     return null;

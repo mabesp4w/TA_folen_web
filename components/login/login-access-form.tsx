@@ -74,7 +74,7 @@ export function LoginAccessForm() {
       // Redirect berdasarkan role setelah 1 detik
       setTimeout(() => {
         if (data.user?.role === "ADMIN") {
-          router.replace("/app/admin");
+          router.replace("/admin");
           return;
         }
 
@@ -84,7 +84,7 @@ export function LoginAccessForm() {
           return;
         }
 
-        router.replace(`/app/${data.user.badan_pengurus}`);
+        router.replace(`/${data.user.badan_pengurus}`);
       }, 1000);
     } catch (error) {
       console.error("Login error:", error);

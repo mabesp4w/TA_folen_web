@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useActionState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Pencil, Plus, Search, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InputText } from "@/components/ui/input-text";
@@ -39,6 +40,26 @@ function formatDate(value: string) {
   }).format(new Date(value));
 }
 
+function useDebounce(callback: (value: string) => void, delay: number) {
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const callbackRef = useRef(callback);
+
+  useEffect(() => {
+    callbackRef.current = callback;
+  });
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  return useCallback((value: string) => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => callbackRef.current(value), delay);
+  }, [delay]);
+}
+
 export function JemaatManager({
   jemaat,
   rayons,
@@ -52,6 +73,9 @@ export function JemaatManager({
   rayon: string;
   status: string;
 }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [mode, setMode] = useState<DialogMode>(null);
   const [selected, setSelected] = useState<JemaatRow | null>(null);
   const mutationAction = mode === "edit" ? updateJemaatAction : createJemaatAction;
@@ -62,6 +86,29 @@ export function JemaatManager({
   const [deleteState, deleteAction, deletePending] = useActionState(
     deleteJemaatAction,
     initialActionState,
+  );
+
+  function applyFilter(key: string, value: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) {
+      params.set(key, value);
+    } else {
+      params.delete(key);
+    }
+    router.push(`?${params.toString()}`, { scroll: false });
+  }
+
+  const debouncedSearch = useDebounce(
+    (value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (value) {
+        params.set("q", value);
+      } else {
+        params.delete("q");
+      }
+      router.push(`?${params.toString()}`, { scroll: false });
+    },
+    400,
   );
 
   useEffect(() => {
@@ -116,8 +163,8 @@ export function JemaatManager({
       </header>
 
       <form
-        className="mb-5 grid gap-3 rounded-xl border border-[var(--line)] bg-[var(--paper)] p-4 md:grid-cols-[minmax(220px,1fr)_220px_180px_auto] md:items-end"
-        method="get"
+        className="mb-5 grid gap-3 rounded-xl border border-[var(--line)] bg-[var(--paper)] p-4 md:grid-cols-[minmax(220px,1fr)_220px_180px] md:items-end"
+        onSubmit={(e) => e.preventDefault()}
         aria-label="Cari dan filter data jemaat"
       >
         <InputText
@@ -127,15 +174,23 @@ export function JemaatManager({
           name="q"
           placeholder="Nama atau alamat blok"
           type="search"
+          onChange={(e) => debouncedSearch(e.currentTarget.value)}
         />
         <Select
-          defaultValue={rayon}
+          defaultValue={
+            rayon
+              ? { value: rayon, label: rayons.find((r) => r.id === rayon)?.nm_rayon ?? "" }
+              : undefined
+          }
           label="Rayon"
           name="rayon"
           options={[
             { value: "", label: "Semua rayon" },
             ...rayons.map((item) => ({ value: item.id, label: item.nm_rayon })),
           ]}
+          placeholder="Semua rayon"
+          variant="react-select"
+          onChange={(value: { value: string } | null) => applyFilter("rayon", value?.value ?? "")}
         />
         <Select
           defaultValue={status}
@@ -145,10 +200,8 @@ export function JemaatManager({
             { value: "", label: "Semua status" },
             ...JEMAAT_STATUSES.map((item) => ({ value: item, label: item })),
           ]}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => applyFilter("status", e.currentTarget.value)}
         />
-        <Button variant="outline" type="submit">
-          Terapkan
-        </Button>
       </form>
 
       {jemaat.length === 0 ? (
