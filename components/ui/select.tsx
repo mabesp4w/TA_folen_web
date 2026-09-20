@@ -44,6 +44,7 @@ export function Select<T extends string = string>({
   "aria-invalid": ariaInvalid,
   className = "",
   defaultValue,
+  disabled,
   error,
   helpText,
   id,
@@ -82,10 +83,13 @@ export function Select<T extends string = string>({
       >
         <div className="relative">
           <ReactSelect<SelectOption<T>>
+            aria-describedby={describedBy}
             aria-invalid={ariaInvalid ?? (error ? true : undefined)}
+            aria-required={required}
             className={`react-select ${className}`}
             defaultValue={defaultValue as SelectOption<T> | null | undefined}
             instanceId={selectId}
+            isDisabled={disabled}
             name={name}
             onChange={onChange as ReactSelectProps<SelectOption<T>>["onChange"]}
             options={options as SelectOption<T>[]}
@@ -99,6 +103,7 @@ export function Select<T extends string = string>({
                 borderColor: "var(--line)",
                 borderRadius: "0.5rem",
                 boxShadow: "none",
+                minHeight: "3.25rem",
               }),
               menu: (base) => ({
                 ...base,
@@ -113,6 +118,8 @@ export function Select<T extends string = string>({
                   ? "var(--forest)"
                   : "var(--paper)",
                 color: state.isSelected ? "var(--paper)" : "var(--ink)",
+                minHeight: "auto",
+                padding: "0.625rem 1rem",
                 "&:hover": {
                   backgroundColor: "var(--forest)",
                   color: "var(--paper)",

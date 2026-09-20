@@ -84,7 +84,7 @@ model Ibadah {
   // Sektor unsur (mis. PKB/PW), umumnya 1-10. Opsional.
   sektor   Int?
 
-  tgl   DateTime  @db.Date
+  tgl   DateTime @db.Date
   waktu DateTime @db.Time // Jam ibadah (kolom TIME), mis. 05:30, 09:00
 
   // Lokasi aktual (override). Kosong = di rumah jemaat giliran (id_jemaat).
@@ -227,10 +227,10 @@ model Slide {
 
 // Model Akun Akses (Sistem)
 model User {
-  id         String   @id @default(cuid())
-  username   String   @unique
-  password   String
-  role       String // Nilai yang diizinkan: "ADMIN", "KETUA_UNSUR"
+  id       String @id @default(cuid())
+  username String @unique
+  password String
+  role     String // Nilai yang diizinkan: "ADMIN", "KETUA_UNSUR"
 
   badan_pengurus BadanPengurus?
 
@@ -284,16 +284,16 @@ model Majelis {
 
 // Model Badan Pengurus — kepengurusan tiap unsur kategorial (mis. Bendahara PW, Ketua PKB)
 model BadanPengurus {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   // Akun akses untuk pengurus ini. Unik agar relasinya satu-ke-satu.
-  user_id String? @unique
-  user    User?   @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  user_id   String? @unique
+  user      User?   @relation(fields: [user_id], references: [id], onDelete: SetNull)
   // Orang yang menjabat (sumber nama, rayon, dll.)
   id_jemaat String
-  jemaat    Jemaat @relation(fields: [id_jemaat], references: [id])
+  jemaat    Jemaat  @relation(fields: [id_jemaat], references: [id])
   // Unsur kategorial tempat ia menjadi pengurus
   id_unsur  String
-  unsur     Unsur  @relation(fields: [id_unsur], references: [id])
+  unsur     Unsur   @relation(fields: [id_unsur], references: [id])
   // Sektor unsur (mis. PKB/PW), umumnya 1-10. Kosong = kepengurusan tingkat unsur (bukan per-sektor).
   sektor    Int?
 

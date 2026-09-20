@@ -6,6 +6,7 @@ import {
   CalendarDays,
   Church,
   CircleDollarSign,
+  ClipboardList,
   GalleryHorizontalEnd,
   Images,
   LayoutDashboard,
@@ -77,6 +78,7 @@ const adminItems: SidebarItem[] = [
     icon: Newspaper,
     children: [
       { label: "Agenda & Ibadah", href: "/admin/agenda", icon: CalendarDays },
+      { label: "Kehadiran", href: "/admin/kehadiran", icon: ClipboardList },
       { label: "Pengumuman", href: "/admin/pengumuman", icon: Megaphone },
       { label: "Renungan", href: "/admin/renungan", icon: BookOpenText },
     ],

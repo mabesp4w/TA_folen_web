@@ -1,23 +1,40 @@
 import type { Metadata } from "next";
-import { MasterDataManager } from "@/components/admin/master-data";
+import { RayonManager, type RayonRow } from "@/components/admin/rayon";
 import { prisma } from "@/lib/prisma";
 
-export const metadata: Metadata = { title: "Rayon" };
+export const metadata: Metadata = { title: "Data Rayon" };
 
-export default async function RayonPage() {
+type SearchParams = Promise<{
+  q?: string;
+}>;
+
+export default async function RayonPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const params = await searchParams;
+  const query = params.q?.trim() ?? "";
+
   const rows = await prisma.rayon.findMany({
+    where: {
+      ...(query ? { nm_rayon: { contains: query } } : {}),
+    },
     include: { _count: { select: { jemaat: true } } },
     orderBy: { nm_rayon: "asc" },
   });
 
+  const rayons: RayonRow[] = rows.map((row) => ({
+    id: row.id,
+    nm_rayon: row.nm_rayon,
+    _count: row._count,
+  }));
+
   return (
     <main className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">
-      <MasterDataManager
-        description="Kelola pembagian wilayah pelayanan yang digunakan pada data jemaat."
-        emptyMessage="Belum ada rayon yang tercatat."
-        items={rows.map((row) => ({ id: row.id, name: row.nm_rayon, usageCount: row._count.jemaat }))}
-        resource="rayon"
-        title="Rayon"
+      <RayonManager
+        rayons={rayons}
+        query={query}
       />
     </main>
   );

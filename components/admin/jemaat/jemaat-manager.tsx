@@ -3,7 +3,9 @@
 import { useCallback, useEffect, useRef, useState, useActionState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Pencil, Plus, Search, Trash2, X } from "lucide-react";
+import { gooeyToast } from "goey-toast";
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
 import { InputText } from "@/components/ui/input-text";
 import { Select } from "@/components/ui/select";
 import {
@@ -78,6 +80,7 @@ export function JemaatManager({
 
   const [mode, setMode] = useState<DialogMode>(null);
   const [selected, setSelected] = useState<JemaatRow | null>(null);
+  const [formResetKey, setFormResetKey] = useState(0);
   const mutationAction = mode === "edit" ? updateJemaatAction : createJemaatAction;
   const [formState, formAction, formPending] = useActionState(
     mutationAction,
@@ -87,6 +90,7 @@ export function JemaatManager({
     deleteJemaatAction,
     initialActionState,
   );
+  const handledStateRef = useRef<typeof initialActionState | null>(null);
 
   function applyFilter(key: string, value: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -112,8 +116,32 @@ export function JemaatManager({
   );
 
   useEffect(() => {
+    if (!mode) return;
+
     const state = mode === "delete" ? deleteState : formState;
+    if (!state.message || handledStateRef.current === state) {
+      return;
+    }
+
+    handledStateRef.current = state;
+
+    if (state.status === "error") {
+      gooeyToast.error(state.message);
+      return;
+    }
+
     if (state.status !== "success") return;
+
+    gooeyToast.success(state.message);
+
+    if (mode === "create") {
+      const timer = window.setTimeout(() => {
+        setSelected(null);
+        setFormResetKey((key) => key + 1);
+      }, 0);
+
+      return () => window.clearTimeout(timer);
+    }
 
     const timer = window.setTimeout(() => {
       setMode(null);
@@ -129,11 +157,13 @@ export function JemaatManager({
   }
 
   function edit(row: JemaatRow) {
+    handledStateRef.current = formState;
     setSelected(row);
     setMode("edit");
   }
 
   function remove(row: JemaatRow) {
+    handledStateRef.current = deleteState;
     setSelected(row);
     setMode("delete");
   }
@@ -153,6 +183,7 @@ export function JemaatManager({
         <Button
           type="button"
           onClick={() => {
+            handledStateRef.current = formState;
             setSelected(null);
             setMode("create");
           }}
@@ -332,11 +363,6 @@ export function JemaatManager({
             {mode === "delete" ? (
               <form action={deleteAction}>
                 <input name="id" type="hidden" value={selected?.id ?? ""} />
-                {deleteState.message && (
-                  <div className={`alert mb-4 ${deleteState.status === "error" ? "alert-error" : "alert-success"}`} role="status">
-                    {deleteState.message}
-                  </div>
-                )}
                 <div className="flex justify-end gap-2">
                   <Button variant="ghost" type="button" onClick={closeDialog}>Batal</Button>
                   <Button variant="danger" disabled={deletePending} loading={deletePending} type="submit">
@@ -347,17 +373,14 @@ export function JemaatManager({
             ) : (
               <form action={formAction} className="grid gap-4 sm:grid-cols-2">
                 <input name="id" type="hidden" value={selected?.id ?? ""} />
-                {formState.message && (
-                  <div className={`alert sm:col-span-2 ${formState.status === "error" ? "alert-error" : "alert-success"}`} role="status">
-                    {formState.message}
-                  </div>
-                )}
                 <InputText className="w-full" defaultValue={selected?.nm_lengkap} error={formState.errors?.nm_lengkap?.[0]} label="Nama lengkap" name="nm_lengkap" required />
-                <div>
-                  <label className="mb-2 block text-sm font-medium" htmlFor="tgl_lahir">Tanggal lahir <span aria-hidden="true">*</span></label>
-                  <input className="input input-bordered w-full" defaultValue={selected?.tgl_lahir.slice(0, 10)} id="tgl_lahir" name="tgl_lahir" required type="date" aria-invalid={Boolean(formState.errors?.tgl_lahir)} aria-describedby={formState.errors?.tgl_lahir ? "tgl_lahir-error" : undefined} />
-                  {formState.errors?.tgl_lahir?.[0] && <p className="mt-1 text-sm text-error" id="tgl_lahir-error">{formState.errors.tgl_lahir[0]}</p>}
-                </div>
+                <DatePicker
+                  defaultValue={selected?.tgl_lahir.slice(0, 10)}
+                  error={formState.errors?.tgl_lahir?.[0]}
+                  label="Tanggal lahir"
+                  name="tgl_lahir"
+                  required
+                />
                 <fieldset aria-describedby={formState.errors?.jenkel ? "jenkel-error" : undefined}>
                   <legend className="mb-2 text-sm font-medium">
                     Jenis kelamin <span aria-hidden="true">*</span>
@@ -385,7 +408,27 @@ export function JemaatManager({
                 </fieldset>
                 <Select defaultValue={selected?.stat_keluarga ?? ""} error={formState.errors?.stat_keluarga?.[0]} label="Status keluarga" name="stat_keluarga" options={FAMILY_STATUSES.map((item) => ({ value: item, label: item.replace("_", " ") }))} placeholder="Pilih status keluarga" required />
                 <InputText className="w-full" defaultValue={selected?.alamat_blok} error={formState.errors?.alamat_blok?.[0]} label="Alamat blok" name="alamat_blok" required />
-                <Select defaultValue={selected?.id_rayon ?? ""} error={formState.errors?.id_rayon?.[0]} label="Rayon" name="id_rayon" options={rayons.map((item) => ({ value: item.id, label: item.nm_rayon }))} placeholder="Belum ditentukan" />
+                <Select
+                  defaultValue={
+                    selected?.id_rayon
+                      ? {
+                          value: selected.id_rayon,
+                          label:
+                            rayons.find((item) => item.id === selected.id_rayon)
+                              ?.nm_rayon ?? selected.rayon?.nm_rayon ?? "",
+                        }
+                      : null
+                  }
+                  error={formState.errors?.id_rayon?.[0]}
+                  label="Rayon"
+                  name="id_rayon"
+                  options={rayons.map((item) => ({
+                    value: item.id,
+                    label: item.nm_rayon,
+                  }))}
+                  placeholder="Belum ditentukan"
+                  variant="react-select"
+                />
                 <Select defaultValue={selected?.status ?? "AKTIF"} error={formState.errors?.status?.[0]} label="Status jemaat" name="status" options={JEMAAT_STATUSES.map((item) => ({ value: item, label: item }))} required />
                 <div className="flex items-end justify-end gap-2">
                   <Button variant="ghost" type="button" onClick={closeDialog}>Batal</Button>

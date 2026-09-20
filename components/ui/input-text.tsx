@@ -7,7 +7,7 @@ export type InputTextProps = Omit<InputHTMLAttributes<HTMLInputElement>, "type">
   helpText?: string;
   icon?: ReactNode;
   label?: ReactNode;
-  type?: "email" | "search" | "tel" | "text" | "url";
+  type?: "email" | "number" | "search" | "tel" | "text" | "url";
 };
 
 export function InputText({
