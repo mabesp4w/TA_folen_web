@@ -19,7 +19,16 @@ export async function GET(request: Request, ctx: RouteContext<"/api/public/jemaa
     const { id } = await ctx.params;
     const j = await prisma.jemaat.findUnique({
       where: { id },
-      include: { rayon: { select: { nm_rayon: true } } },
+      include: {
+        keluarga: {
+          select: {
+            no_kk: true,
+            alamat_blok: true,
+            id_rayon: true,
+            rayon: { select: { nm_rayon: true } },
+          },
+        },
+      },
     });
     if (!j) return jsonError("Jemaat tidak ditemukan.", 404);
 
@@ -29,10 +38,12 @@ export async function GET(request: Request, ctx: RouteContext<"/api/public/jemaa
       tgl_lahir: formatDate(j.tgl_lahir),
       jenkel: j.jenkel,
       stat_keluarga: j.stat_keluarga,
-      alamat_blok: j.alamat_blok,
+      id_keluarga: j.id_keluarga,
+      no_kk: j.keluarga?.no_kk ?? null,
+      alamat_blok: j.keluarga?.alamat_blok ?? null,
       status: j.status,
-      rayon: j.rayon?.nm_rayon ?? null,
-      id_rayon: j.id_rayon,
+      rayon: j.keluarga?.rayon?.nm_rayon ?? null,
+      id_rayon: j.keluarga?.id_rayon ?? null,
     });
   } catch (error) {
     console.error("API jemaat detail error:", error);

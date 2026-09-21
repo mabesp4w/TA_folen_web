@@ -11,10 +11,8 @@ import {
   deleteUnsurAction,
   updateUnsurAction,
 } from "./actions";
-import {
-  initialUnsurActionState,
-  type UnsurActionState,
-} from "./schema";
+import { initialUnsurActionState } from "./schema";
+import { UnsurForm } from "./unsur-form";
 
 export type UnsurRow = {
   id: string;
@@ -67,16 +65,6 @@ export function UnsurManager({
     initialUnsurActionState,
   );
   const handledStateRef = useRef<typeof initialUnsurActionState | null>(null);
-
-  function applyFilter(key: string, value: string) {
-    const params = new URLSearchParams(searchParams.toString());
-    if (value) {
-      params.set(key, value);
-    } else {
-      params.delete(key);
-    }
-    router.push(`?${params.toString()}`, { scroll: false });
-  }
 
   const debouncedSearch = useDebounce(
     (value: string) => {
@@ -299,23 +287,15 @@ export function UnsurManager({
                 </div>
               </form>
             ) : (
-              <form action={formAction} className="space-y-4" key={formResetKey}>
-                {selected && <input name="id" type="hidden" value={selected.id} />}
-                <InputText
-                  autoFocus
-                  defaultValue={selected?.nm_unsur ?? ""}
-                  error={formState.errors?.name?.[0]}
-                  label="Nama unsur"
-                  name="name"
-                  required
-                />
-                <div className="flex justify-end gap-2">
-                  <Button variant="ghost" type="button" onClick={closeDialog}>Batal</Button>
-                  <Button disabled={formPending} loading={formPending} type="submit">
-                    {formPending ? "Menyimpan..." : mode === "edit" ? "Simpan perubahan" : "Tambah unsur"}
-                  </Button>
-                </div>
-              </form>
+              <UnsurForm
+                key={formResetKey}
+                formAction={formAction}
+                mode={mode}
+                pending={formPending}
+                selected={selected}
+                state={formState}
+                onCancel={closeDialog}
+              />
             )}
           </section>
         </div>

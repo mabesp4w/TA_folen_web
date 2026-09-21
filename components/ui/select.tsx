@@ -96,6 +96,10 @@ export function Select<T extends string = string>({
             placeholder={placeholder}
             isClearable
             isSearchable
+            menuPortalTarget={
+              typeof document !== "undefined" ? document.body : undefined
+            }
+            menuPosition="fixed"
             styles={{
               control: (base) => ({
                 ...base,
@@ -104,6 +108,10 @@ export function Select<T extends string = string>({
                 borderRadius: "0.5rem",
                 boxShadow: "none",
                 minHeight: "3.25rem",
+              }),
+              menuPortal: (base) => ({
+                ...base,
+                zIndex: 1100,
               }),
               menu: (base) => ({
                 ...base,

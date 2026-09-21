@@ -47,6 +47,11 @@ export { Prisma }
  */
 export type Rayon = Prisma.RayonModel
 /**
+ * Model Keluarga
+ * 
+ */
+export type Keluarga = Prisma.KeluargaModel
+/**
  * Model Unsur
  * 
  */

@@ -398,6 +398,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   Rayon: 'Rayon',
+  Keluarga: 'Keluarga',
   Unsur: 'Unsur',
   Jemaat: 'Jemaat',
   Ibadah: 'Ibadah',
@@ -428,7 +429,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "rayon" | "unsur" | "jemaat" | "ibadah" | "kehadiran" | "keuangan" | "pengumuman" | "renungan" | "galeriAlbum" | "galeriFoto" | "slide" | "user" | "pendeta" | "majelis" | "badanPengurus" | "logAktivitas"
+    modelProps: "rayon" | "keluarga" | "unsur" | "jemaat" | "ibadah" | "kehadiran" | "keuangan" | "pengumuman" | "renungan" | "galeriAlbum" | "galeriFoto" | "slide" | "user" | "pendeta" | "majelis" | "badanPengurus" | "logAktivitas"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -495,6 +496,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.RayonCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.RayonCountAggregateOutputType> | number
+        }
+      }
+    }
+    Keluarga: {
+      payload: Prisma.$KeluargaPayload<ExtArgs>
+      fields: Prisma.KeluargaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.KeluargaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KeluargaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.KeluargaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KeluargaPayload>
+        }
+        findFirst: {
+          args: Prisma.KeluargaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KeluargaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.KeluargaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KeluargaPayload>
+        }
+        findMany: {
+          args: Prisma.KeluargaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KeluargaPayload>[]
+        }
+        create: {
+          args: Prisma.KeluargaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KeluargaPayload>
+        }
+        createMany: {
+          args: Prisma.KeluargaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.KeluargaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KeluargaPayload>
+        }
+        update: {
+          args: Prisma.KeluargaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KeluargaPayload>
+        }
+        deleteMany: {
+          args: Prisma.KeluargaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.KeluargaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.KeluargaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KeluargaPayload>
+        }
+        aggregate: {
+          args: Prisma.KeluargaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateKeluarga>
+        }
+        groupBy: {
+          args: Prisma.KeluargaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KeluargaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.KeluargaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KeluargaCountAggregateOutputType> | number
         }
       }
     }
@@ -1535,6 +1602,18 @@ export const RayonScalarFieldEnum = {
 export type RayonScalarFieldEnum = (typeof RayonScalarFieldEnum)[keyof typeof RayonScalarFieldEnum]
 
 
+export const KeluargaScalarFieldEnum = {
+  id: 'id',
+  no_kk: 'no_kk',
+  alamat_blok: 'alamat_blok',
+  id_rayon: 'id_rayon',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type KeluargaScalarFieldEnum = (typeof KeluargaScalarFieldEnum)[keyof typeof KeluargaScalarFieldEnum]
+
+
 export const UnsurScalarFieldEnum = {
   id: 'id',
   nm_unsur: 'nm_unsur'
@@ -1545,12 +1624,11 @@ export type UnsurScalarFieldEnum = (typeof UnsurScalarFieldEnum)[keyof typeof Un
 
 export const JemaatScalarFieldEnum = {
   id: 'id',
-  id_rayon: 'id_rayon',
+  id_keluarga: 'id_keluarga',
   nm_lengkap: 'nm_lengkap',
   tgl_lahir: 'tgl_lahir',
   jenkel: 'jenkel',
   stat_keluarga: 'stat_keluarga',
-  alamat_blok: 'alamat_blok',
   status: 'status',
   created_at: 'created_at',
   updated_at: 'updated_at'
@@ -1767,14 +1845,6 @@ export const RayonOrderByRelevanceFieldEnum = {
 export type RayonOrderByRelevanceFieldEnum = (typeof RayonOrderByRelevanceFieldEnum)[keyof typeof RayonOrderByRelevanceFieldEnum]
 
 
-export const UnsurOrderByRelevanceFieldEnum = {
-  id: 'id',
-  nm_unsur: 'nm_unsur'
-} as const
-
-export type UnsurOrderByRelevanceFieldEnum = (typeof UnsurOrderByRelevanceFieldEnum)[keyof typeof UnsurOrderByRelevanceFieldEnum]
-
-
 export const NullsOrder = {
   first: 'first',
   last: 'last'
@@ -1783,13 +1853,30 @@ export const NullsOrder = {
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
+export const KeluargaOrderByRelevanceFieldEnum = {
+  id: 'id',
+  no_kk: 'no_kk',
+  alamat_blok: 'alamat_blok',
+  id_rayon: 'id_rayon'
+} as const
+
+export type KeluargaOrderByRelevanceFieldEnum = (typeof KeluargaOrderByRelevanceFieldEnum)[keyof typeof KeluargaOrderByRelevanceFieldEnum]
+
+
+export const UnsurOrderByRelevanceFieldEnum = {
+  id: 'id',
+  nm_unsur: 'nm_unsur'
+} as const
+
+export type UnsurOrderByRelevanceFieldEnum = (typeof UnsurOrderByRelevanceFieldEnum)[keyof typeof UnsurOrderByRelevanceFieldEnum]
+
+
 export const JemaatOrderByRelevanceFieldEnum = {
   id: 'id',
-  id_rayon: 'id_rayon',
+  id_keluarga: 'id_keluarga',
   nm_lengkap: 'nm_lengkap',
   jenkel: 'jenkel',
   stat_keluarga: 'stat_keluarga',
-  alamat_blok: 'alamat_blok',
   status: 'status'
 } as const
 
@@ -2134,6 +2221,7 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
 export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
   rayon?: Prisma.RayonOmit
+  keluarga?: Prisma.KeluargaOmit
   unsur?: Prisma.UnsurOmit
   jemaat?: Prisma.JemaatOmit
   ibadah?: Prisma.IbadahOmit

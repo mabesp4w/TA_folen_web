@@ -158,13 +158,13 @@ export type RayonWhereInput = {
   NOT?: Prisma.RayonWhereInput | Prisma.RayonWhereInput[]
   id?: Prisma.StringFilter<"Rayon"> | string
   nm_rayon?: Prisma.StringFilter<"Rayon"> | string
-  jemaat?: Prisma.JemaatListRelationFilter
+  keluarga?: Prisma.KeluargaListRelationFilter
 }
 
 export type RayonOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   nm_rayon?: Prisma.SortOrder
-  jemaat?: Prisma.JemaatOrderByRelationAggregateInput
+  keluarga?: Prisma.KeluargaOrderByRelationAggregateInput
   _relevance?: Prisma.RayonOrderByRelevanceInput
 }
 
@@ -174,7 +174,7 @@ export type RayonWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.RayonWhereInput | Prisma.RayonWhereInput[]
   OR?: Prisma.RayonWhereInput[]
   NOT?: Prisma.RayonWhereInput | Prisma.RayonWhereInput[]
-  jemaat?: Prisma.JemaatListRelationFilter
+  keluarga?: Prisma.KeluargaListRelationFilter
 }, "id" | "nm_rayon">
 
 export type RayonOrderByWithAggregationInput = {
@@ -196,25 +196,25 @@ export type RayonScalarWhereWithAggregatesInput = {
 export type RayonCreateInput = {
   id?: string
   nm_rayon: string
-  jemaat?: Prisma.JemaatCreateNestedManyWithoutRayonInput
+  keluarga?: Prisma.KeluargaCreateNestedManyWithoutRayonInput
 }
 
 export type RayonUncheckedCreateInput = {
   id?: string
   nm_rayon: string
-  jemaat?: Prisma.JemaatUncheckedCreateNestedManyWithoutRayonInput
+  keluarga?: Prisma.KeluargaUncheckedCreateNestedManyWithoutRayonInput
 }
 
 export type RayonUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nm_rayon?: Prisma.StringFieldUpdateOperationsInput | string
-  jemaat?: Prisma.JemaatUpdateManyWithoutRayonNestedInput
+  keluarga?: Prisma.KeluargaUpdateManyWithoutRayonNestedInput
 }
 
 export type RayonUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nm_rayon?: Prisma.StringFieldUpdateOperationsInput | string
-  jemaat?: Prisma.JemaatUncheckedUpdateManyWithoutRayonNestedInput
+  keluarga?: Prisma.KeluargaUncheckedUpdateManyWithoutRayonNestedInput
 }
 
 export type RayonCreateManyInput = {
@@ -262,54 +262,54 @@ export type StringFieldUpdateOperationsInput = {
   set?: string
 }
 
-export type RayonCreateNestedOneWithoutJemaatInput = {
-  create?: Prisma.XOR<Prisma.RayonCreateWithoutJemaatInput, Prisma.RayonUncheckedCreateWithoutJemaatInput>
-  connectOrCreate?: Prisma.RayonCreateOrConnectWithoutJemaatInput
+export type RayonCreateNestedOneWithoutKeluargaInput = {
+  create?: Prisma.XOR<Prisma.RayonCreateWithoutKeluargaInput, Prisma.RayonUncheckedCreateWithoutKeluargaInput>
+  connectOrCreate?: Prisma.RayonCreateOrConnectWithoutKeluargaInput
   connect?: Prisma.RayonWhereUniqueInput
 }
 
-export type RayonUpdateOneWithoutJemaatNestedInput = {
-  create?: Prisma.XOR<Prisma.RayonCreateWithoutJemaatInput, Prisma.RayonUncheckedCreateWithoutJemaatInput>
-  connectOrCreate?: Prisma.RayonCreateOrConnectWithoutJemaatInput
-  upsert?: Prisma.RayonUpsertWithoutJemaatInput
+export type RayonUpdateOneWithoutKeluargaNestedInput = {
+  create?: Prisma.XOR<Prisma.RayonCreateWithoutKeluargaInput, Prisma.RayonUncheckedCreateWithoutKeluargaInput>
+  connectOrCreate?: Prisma.RayonCreateOrConnectWithoutKeluargaInput
+  upsert?: Prisma.RayonUpsertWithoutKeluargaInput
   disconnect?: Prisma.RayonWhereInput | boolean
   delete?: Prisma.RayonWhereInput | boolean
   connect?: Prisma.RayonWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.RayonUpdateToOneWithWhereWithoutJemaatInput, Prisma.RayonUpdateWithoutJemaatInput>, Prisma.RayonUncheckedUpdateWithoutJemaatInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RayonUpdateToOneWithWhereWithoutKeluargaInput, Prisma.RayonUpdateWithoutKeluargaInput>, Prisma.RayonUncheckedUpdateWithoutKeluargaInput>
 }
 
-export type RayonCreateWithoutJemaatInput = {
+export type RayonCreateWithoutKeluargaInput = {
   id?: string
   nm_rayon: string
 }
 
-export type RayonUncheckedCreateWithoutJemaatInput = {
+export type RayonUncheckedCreateWithoutKeluargaInput = {
   id?: string
   nm_rayon: string
 }
 
-export type RayonCreateOrConnectWithoutJemaatInput = {
+export type RayonCreateOrConnectWithoutKeluargaInput = {
   where: Prisma.RayonWhereUniqueInput
-  create: Prisma.XOR<Prisma.RayonCreateWithoutJemaatInput, Prisma.RayonUncheckedCreateWithoutJemaatInput>
+  create: Prisma.XOR<Prisma.RayonCreateWithoutKeluargaInput, Prisma.RayonUncheckedCreateWithoutKeluargaInput>
 }
 
-export type RayonUpsertWithoutJemaatInput = {
-  update: Prisma.XOR<Prisma.RayonUpdateWithoutJemaatInput, Prisma.RayonUncheckedUpdateWithoutJemaatInput>
-  create: Prisma.XOR<Prisma.RayonCreateWithoutJemaatInput, Prisma.RayonUncheckedCreateWithoutJemaatInput>
+export type RayonUpsertWithoutKeluargaInput = {
+  update: Prisma.XOR<Prisma.RayonUpdateWithoutKeluargaInput, Prisma.RayonUncheckedUpdateWithoutKeluargaInput>
+  create: Prisma.XOR<Prisma.RayonCreateWithoutKeluargaInput, Prisma.RayonUncheckedCreateWithoutKeluargaInput>
   where?: Prisma.RayonWhereInput
 }
 
-export type RayonUpdateToOneWithWhereWithoutJemaatInput = {
+export type RayonUpdateToOneWithWhereWithoutKeluargaInput = {
   where?: Prisma.RayonWhereInput
-  data: Prisma.XOR<Prisma.RayonUpdateWithoutJemaatInput, Prisma.RayonUncheckedUpdateWithoutJemaatInput>
+  data: Prisma.XOR<Prisma.RayonUpdateWithoutKeluargaInput, Prisma.RayonUncheckedUpdateWithoutKeluargaInput>
 }
 
-export type RayonUpdateWithoutJemaatInput = {
+export type RayonUpdateWithoutKeluargaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nm_rayon?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type RayonUncheckedUpdateWithoutJemaatInput = {
+export type RayonUncheckedUpdateWithoutKeluargaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nm_rayon?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -320,11 +320,11 @@ export type RayonUncheckedUpdateWithoutJemaatInput = {
  */
 
 export type RayonCountOutputType = {
-  jemaat: number
+  keluarga: number
 }
 
 export type RayonCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  jemaat?: boolean | RayonCountOutputTypeCountJemaatArgs
+  keluarga?: boolean | RayonCountOutputTypeCountKeluargaArgs
 }
 
 /**
@@ -340,15 +340,15 @@ export type RayonCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extens
 /**
  * RayonCountOutputType without action
  */
-export type RayonCountOutputTypeCountJemaatArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.JemaatWhereInput
+export type RayonCountOutputTypeCountKeluargaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.KeluargaWhereInput
 }
 
 
 export type RayonSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   nm_rayon?: boolean
-  jemaat?: boolean | Prisma.Rayon$jemaatArgs<ExtArgs>
+  keluarga?: boolean | Prisma.Rayon$keluargaArgs<ExtArgs>
   _count?: boolean | Prisma.RayonCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["rayon"]>
 
@@ -361,14 +361,14 @@ export type RayonSelectScalar = {
 
 export type RayonOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nm_rayon", ExtArgs["result"]["rayon"]>
 export type RayonInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  jemaat?: boolean | Prisma.Rayon$jemaatArgs<ExtArgs>
+  keluarga?: boolean | Prisma.Rayon$keluargaArgs<ExtArgs>
   _count?: boolean | Prisma.RayonCountOutputTypeDefaultArgs<ExtArgs>
 }
 
 export type $RayonPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Rayon"
   objects: {
-    jemaat: Prisma.$JemaatPayload<ExtArgs>[]
+    keluarga: Prisma.$KeluargaPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -713,7 +713,7 @@ readonly fields: RayonFieldRefs;
  */
 export interface Prisma__RayonClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  jemaat<T extends Prisma.Rayon$jemaatArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Rayon$jemaatArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JemaatPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  keluarga<T extends Prisma.Rayon$keluargaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Rayon$keluargaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KeluargaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1093,27 +1093,27 @@ export type RayonDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
 }
 
 /**
- * Rayon.jemaat
+ * Rayon.keluarga
  */
-export type Rayon$jemaatArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Rayon$keluargaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Jemaat
+   * Select specific fields to fetch from the Keluarga
    */
-  select?: Prisma.JemaatSelect<ExtArgs> | null
+  select?: Prisma.KeluargaSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Jemaat
+   * Omit specific fields from the Keluarga
    */
-  omit?: Prisma.JemaatOmit<ExtArgs> | null
+  omit?: Prisma.KeluargaOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.JemaatInclude<ExtArgs> | null
-  where?: Prisma.JemaatWhereInput
-  orderBy?: Prisma.JemaatOrderByWithRelationInput | Prisma.JemaatOrderByWithRelationInput[]
-  cursor?: Prisma.JemaatWhereUniqueInput
+  include?: Prisma.KeluargaInclude<ExtArgs> | null
+  where?: Prisma.KeluargaWhereInput
+  orderBy?: Prisma.KeluargaOrderByWithRelationInput | Prisma.KeluargaOrderByWithRelationInput[]
+  cursor?: Prisma.KeluargaWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.JemaatScalarFieldEnum | Prisma.JemaatScalarFieldEnum[]
+  distinct?: Prisma.KeluargaScalarFieldEnum | Prisma.KeluargaScalarFieldEnum[]
 }
 
 /**

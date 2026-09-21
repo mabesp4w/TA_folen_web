@@ -26,12 +26,11 @@ export type AggregateJemaat = {
 
 export type JemaatMinAggregateOutputType = {
   id: string | null
-  id_rayon: string | null
+  id_keluarga: string | null
   nm_lengkap: string | null
   tgl_lahir: Date | null
   jenkel: string | null
   stat_keluarga: string | null
-  alamat_blok: string | null
   status: string | null
   created_at: Date | null
   updated_at: Date | null
@@ -39,12 +38,11 @@ export type JemaatMinAggregateOutputType = {
 
 export type JemaatMaxAggregateOutputType = {
   id: string | null
-  id_rayon: string | null
+  id_keluarga: string | null
   nm_lengkap: string | null
   tgl_lahir: Date | null
   jenkel: string | null
   stat_keluarga: string | null
-  alamat_blok: string | null
   status: string | null
   created_at: Date | null
   updated_at: Date | null
@@ -52,12 +50,11 @@ export type JemaatMaxAggregateOutputType = {
 
 export type JemaatCountAggregateOutputType = {
   id: number
-  id_rayon: number
+  id_keluarga: number
   nm_lengkap: number
   tgl_lahir: number
   jenkel: number
   stat_keluarga: number
-  alamat_blok: number
   status: number
   created_at: number
   updated_at: number
@@ -67,12 +64,11 @@ export type JemaatCountAggregateOutputType = {
 
 export type JemaatMinAggregateInputType = {
   id?: true
-  id_rayon?: true
+  id_keluarga?: true
   nm_lengkap?: true
   tgl_lahir?: true
   jenkel?: true
   stat_keluarga?: true
-  alamat_blok?: true
   status?: true
   created_at?: true
   updated_at?: true
@@ -80,12 +76,11 @@ export type JemaatMinAggregateInputType = {
 
 export type JemaatMaxAggregateInputType = {
   id?: true
-  id_rayon?: true
+  id_keluarga?: true
   nm_lengkap?: true
   tgl_lahir?: true
   jenkel?: true
   stat_keluarga?: true
-  alamat_blok?: true
   status?: true
   created_at?: true
   updated_at?: true
@@ -93,12 +88,11 @@ export type JemaatMaxAggregateInputType = {
 
 export type JemaatCountAggregateInputType = {
   id?: true
-  id_rayon?: true
+  id_keluarga?: true
   nm_lengkap?: true
   tgl_lahir?: true
   jenkel?: true
   stat_keluarga?: true
-  alamat_blok?: true
   status?: true
   created_at?: true
   updated_at?: true
@@ -179,12 +173,11 @@ export type JemaatGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 
 export type JemaatGroupByOutputType = {
   id: string
-  id_rayon: string | null
+  id_keluarga: string | null
   nm_lengkap: string
   tgl_lahir: Date
   jenkel: string
   stat_keluarga: string
-  alamat_blok: string
   status: string
   created_at: Date
   updated_at: Date
@@ -213,16 +206,15 @@ export type JemaatWhereInput = {
   OR?: Prisma.JemaatWhereInput[]
   NOT?: Prisma.JemaatWhereInput | Prisma.JemaatWhereInput[]
   id?: Prisma.StringFilter<"Jemaat"> | string
-  id_rayon?: Prisma.StringNullableFilter<"Jemaat"> | string | null
+  id_keluarga?: Prisma.StringNullableFilter<"Jemaat"> | string | null
   nm_lengkap?: Prisma.StringFilter<"Jemaat"> | string
   tgl_lahir?: Prisma.DateTimeFilter<"Jemaat"> | Date | string
   jenkel?: Prisma.StringFilter<"Jemaat"> | string
   stat_keluarga?: Prisma.StringFilter<"Jemaat"> | string
-  alamat_blok?: Prisma.StringFilter<"Jemaat"> | string
   status?: Prisma.StringFilter<"Jemaat"> | string
   created_at?: Prisma.DateTimeFilter<"Jemaat"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Jemaat"> | Date | string
-  rayon?: Prisma.XOR<Prisma.RayonNullableScalarRelationFilter, Prisma.RayonWhereInput> | null
+  keluarga?: Prisma.XOR<Prisma.KeluargaNullableScalarRelationFilter, Prisma.KeluargaWhereInput> | null
   pendeta?: Prisma.PendetaListRelationFilter
   majelis?: Prisma.MajelisListRelationFilter
   badan_pengurus?: Prisma.BadanPengurusListRelationFilter
@@ -232,16 +224,15 @@ export type JemaatWhereInput = {
 
 export type JemaatOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  id_rayon?: Prisma.SortOrderInput | Prisma.SortOrder
+  id_keluarga?: Prisma.SortOrderInput | Prisma.SortOrder
   nm_lengkap?: Prisma.SortOrder
   tgl_lahir?: Prisma.SortOrder
   jenkel?: Prisma.SortOrder
   stat_keluarga?: Prisma.SortOrder
-  alamat_blok?: Prisma.SortOrder
   status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
-  rayon?: Prisma.RayonOrderByWithRelationInput
+  keluarga?: Prisma.KeluargaOrderByWithRelationInput
   pendeta?: Prisma.PendetaOrderByRelationAggregateInput
   majelis?: Prisma.MajelisOrderByRelationAggregateInput
   badan_pengurus?: Prisma.BadanPengurusOrderByRelationAggregateInput
@@ -255,16 +246,15 @@ export type JemaatWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.JemaatWhereInput | Prisma.JemaatWhereInput[]
   OR?: Prisma.JemaatWhereInput[]
   NOT?: Prisma.JemaatWhereInput | Prisma.JemaatWhereInput[]
-  id_rayon?: Prisma.StringNullableFilter<"Jemaat"> | string | null
+  id_keluarga?: Prisma.StringNullableFilter<"Jemaat"> | string | null
   nm_lengkap?: Prisma.StringFilter<"Jemaat"> | string
   tgl_lahir?: Prisma.DateTimeFilter<"Jemaat"> | Date | string
   jenkel?: Prisma.StringFilter<"Jemaat"> | string
   stat_keluarga?: Prisma.StringFilter<"Jemaat"> | string
-  alamat_blok?: Prisma.StringFilter<"Jemaat"> | string
   status?: Prisma.StringFilter<"Jemaat"> | string
   created_at?: Prisma.DateTimeFilter<"Jemaat"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Jemaat"> | Date | string
-  rayon?: Prisma.XOR<Prisma.RayonNullableScalarRelationFilter, Prisma.RayonWhereInput> | null
+  keluarga?: Prisma.XOR<Prisma.KeluargaNullableScalarRelationFilter, Prisma.KeluargaWhereInput> | null
   pendeta?: Prisma.PendetaListRelationFilter
   majelis?: Prisma.MajelisListRelationFilter
   badan_pengurus?: Prisma.BadanPengurusListRelationFilter
@@ -274,12 +264,11 @@ export type JemaatWhereUniqueInput = Prisma.AtLeast<{
 
 export type JemaatOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  id_rayon?: Prisma.SortOrderInput | Prisma.SortOrder
+  id_keluarga?: Prisma.SortOrderInput | Prisma.SortOrder
   nm_lengkap?: Prisma.SortOrder
   tgl_lahir?: Prisma.SortOrder
   jenkel?: Prisma.SortOrder
   stat_keluarga?: Prisma.SortOrder
-  alamat_blok?: Prisma.SortOrder
   status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -293,12 +282,11 @@ export type JemaatScalarWhereWithAggregatesInput = {
   OR?: Prisma.JemaatScalarWhereWithAggregatesInput[]
   NOT?: Prisma.JemaatScalarWhereWithAggregatesInput | Prisma.JemaatScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Jemaat"> | string
-  id_rayon?: Prisma.StringNullableWithAggregatesFilter<"Jemaat"> | string | null
+  id_keluarga?: Prisma.StringNullableWithAggregatesFilter<"Jemaat"> | string | null
   nm_lengkap?: Prisma.StringWithAggregatesFilter<"Jemaat"> | string
   tgl_lahir?: Prisma.DateTimeWithAggregatesFilter<"Jemaat"> | Date | string
   jenkel?: Prisma.StringWithAggregatesFilter<"Jemaat"> | string
   stat_keluarga?: Prisma.StringWithAggregatesFilter<"Jemaat"> | string
-  alamat_blok?: Prisma.StringWithAggregatesFilter<"Jemaat"> | string
   status?: Prisma.StringWithAggregatesFilter<"Jemaat"> | string
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Jemaat"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"Jemaat"> | Date | string
@@ -310,11 +298,10 @@ export type JemaatCreateInput = {
   tgl_lahir: Date | string
   jenkel: string
   stat_keluarga: string
-  alamat_blok: string
   status?: string
   created_at?: Date | string
   updated_at?: Date | string
-  rayon?: Prisma.RayonCreateNestedOneWithoutJemaatInput
+  keluarga?: Prisma.KeluargaCreateNestedOneWithoutAnggotaInput
   pendeta?: Prisma.PendetaCreateNestedManyWithoutJemaatInput
   majelis?: Prisma.MajelisCreateNestedManyWithoutJemaatInput
   badan_pengurus?: Prisma.BadanPengurusCreateNestedManyWithoutJemaatInput
@@ -324,12 +311,11 @@ export type JemaatCreateInput = {
 
 export type JemaatUncheckedCreateInput = {
   id?: string
-  id_rayon?: string | null
+  id_keluarga?: string | null
   nm_lengkap: string
   tgl_lahir: Date | string
   jenkel: string
   stat_keluarga: string
-  alamat_blok: string
   status?: string
   created_at?: Date | string
   updated_at?: Date | string
@@ -346,11 +332,10 @@ export type JemaatUpdateInput = {
   tgl_lahir?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jenkel?: Prisma.StringFieldUpdateOperationsInput | string
   stat_keluarga?: Prisma.StringFieldUpdateOperationsInput | string
-  alamat_blok?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  rayon?: Prisma.RayonUpdateOneWithoutJemaatNestedInput
+  keluarga?: Prisma.KeluargaUpdateOneWithoutAnggotaNestedInput
   pendeta?: Prisma.PendetaUpdateManyWithoutJemaatNestedInput
   majelis?: Prisma.MajelisUpdateManyWithoutJemaatNestedInput
   badan_pengurus?: Prisma.BadanPengurusUpdateManyWithoutJemaatNestedInput
@@ -360,12 +345,11 @@ export type JemaatUpdateInput = {
 
 export type JemaatUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  id_rayon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  id_keluarga?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nm_lengkap?: Prisma.StringFieldUpdateOperationsInput | string
   tgl_lahir?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jenkel?: Prisma.StringFieldUpdateOperationsInput | string
   stat_keluarga?: Prisma.StringFieldUpdateOperationsInput | string
-  alamat_blok?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -378,12 +362,11 @@ export type JemaatUncheckedUpdateInput = {
 
 export type JemaatCreateManyInput = {
   id?: string
-  id_rayon?: string | null
+  id_keluarga?: string | null
   nm_lengkap: string
   tgl_lahir: Date | string
   jenkel: string
   stat_keluarga: string
-  alamat_blok: string
   status?: string
   created_at?: Date | string
   updated_at?: Date | string
@@ -395,7 +378,6 @@ export type JemaatUpdateManyMutationInput = {
   tgl_lahir?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jenkel?: Prisma.StringFieldUpdateOperationsInput | string
   stat_keluarga?: Prisma.StringFieldUpdateOperationsInput | string
-  alamat_blok?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -403,12 +385,11 @@ export type JemaatUpdateManyMutationInput = {
 
 export type JemaatUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  id_rayon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  id_keluarga?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nm_lengkap?: Prisma.StringFieldUpdateOperationsInput | string
   tgl_lahir?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jenkel?: Prisma.StringFieldUpdateOperationsInput | string
   stat_keluarga?: Prisma.StringFieldUpdateOperationsInput | string
-  alamat_blok?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -432,12 +413,11 @@ export type JemaatOrderByRelevanceInput = {
 
 export type JemaatCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  id_rayon?: Prisma.SortOrder
+  id_keluarga?: Prisma.SortOrder
   nm_lengkap?: Prisma.SortOrder
   tgl_lahir?: Prisma.SortOrder
   jenkel?: Prisma.SortOrder
   stat_keluarga?: Prisma.SortOrder
-  alamat_blok?: Prisma.SortOrder
   status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -445,12 +425,11 @@ export type JemaatCountOrderByAggregateInput = {
 
 export type JemaatMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  id_rayon?: Prisma.SortOrder
+  id_keluarga?: Prisma.SortOrder
   nm_lengkap?: Prisma.SortOrder
   tgl_lahir?: Prisma.SortOrder
   jenkel?: Prisma.SortOrder
   stat_keluarga?: Prisma.SortOrder
-  alamat_blok?: Prisma.SortOrder
   status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -458,12 +437,11 @@ export type JemaatMaxOrderByAggregateInput = {
 
 export type JemaatMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  id_rayon?: Prisma.SortOrder
+  id_keluarga?: Prisma.SortOrder
   nm_lengkap?: Prisma.SortOrder
   tgl_lahir?: Prisma.SortOrder
   jenkel?: Prisma.SortOrder
   stat_keluarga?: Prisma.SortOrder
-  alamat_blok?: Prisma.SortOrder
   status?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -479,54 +457,46 @@ export type JemaatScalarRelationFilter = {
   isNot?: Prisma.JemaatWhereInput
 }
 
-export type JemaatCreateNestedManyWithoutRayonInput = {
-  create?: Prisma.XOR<Prisma.JemaatCreateWithoutRayonInput, Prisma.JemaatUncheckedCreateWithoutRayonInput> | Prisma.JemaatCreateWithoutRayonInput[] | Prisma.JemaatUncheckedCreateWithoutRayonInput[]
-  connectOrCreate?: Prisma.JemaatCreateOrConnectWithoutRayonInput | Prisma.JemaatCreateOrConnectWithoutRayonInput[]
-  createMany?: Prisma.JemaatCreateManyRayonInputEnvelope
+export type JemaatCreateNestedManyWithoutKeluargaInput = {
+  create?: Prisma.XOR<Prisma.JemaatCreateWithoutKeluargaInput, Prisma.JemaatUncheckedCreateWithoutKeluargaInput> | Prisma.JemaatCreateWithoutKeluargaInput[] | Prisma.JemaatUncheckedCreateWithoutKeluargaInput[]
+  connectOrCreate?: Prisma.JemaatCreateOrConnectWithoutKeluargaInput | Prisma.JemaatCreateOrConnectWithoutKeluargaInput[]
+  createMany?: Prisma.JemaatCreateManyKeluargaInputEnvelope
   connect?: Prisma.JemaatWhereUniqueInput | Prisma.JemaatWhereUniqueInput[]
 }
 
-export type JemaatUncheckedCreateNestedManyWithoutRayonInput = {
-  create?: Prisma.XOR<Prisma.JemaatCreateWithoutRayonInput, Prisma.JemaatUncheckedCreateWithoutRayonInput> | Prisma.JemaatCreateWithoutRayonInput[] | Prisma.JemaatUncheckedCreateWithoutRayonInput[]
-  connectOrCreate?: Prisma.JemaatCreateOrConnectWithoutRayonInput | Prisma.JemaatCreateOrConnectWithoutRayonInput[]
-  createMany?: Prisma.JemaatCreateManyRayonInputEnvelope
+export type JemaatUncheckedCreateNestedManyWithoutKeluargaInput = {
+  create?: Prisma.XOR<Prisma.JemaatCreateWithoutKeluargaInput, Prisma.JemaatUncheckedCreateWithoutKeluargaInput> | Prisma.JemaatCreateWithoutKeluargaInput[] | Prisma.JemaatUncheckedCreateWithoutKeluargaInput[]
+  connectOrCreate?: Prisma.JemaatCreateOrConnectWithoutKeluargaInput | Prisma.JemaatCreateOrConnectWithoutKeluargaInput[]
+  createMany?: Prisma.JemaatCreateManyKeluargaInputEnvelope
   connect?: Prisma.JemaatWhereUniqueInput | Prisma.JemaatWhereUniqueInput[]
 }
 
-export type JemaatUpdateManyWithoutRayonNestedInput = {
-  create?: Prisma.XOR<Prisma.JemaatCreateWithoutRayonInput, Prisma.JemaatUncheckedCreateWithoutRayonInput> | Prisma.JemaatCreateWithoutRayonInput[] | Prisma.JemaatUncheckedCreateWithoutRayonInput[]
-  connectOrCreate?: Prisma.JemaatCreateOrConnectWithoutRayonInput | Prisma.JemaatCreateOrConnectWithoutRayonInput[]
-  upsert?: Prisma.JemaatUpsertWithWhereUniqueWithoutRayonInput | Prisma.JemaatUpsertWithWhereUniqueWithoutRayonInput[]
-  createMany?: Prisma.JemaatCreateManyRayonInputEnvelope
+export type JemaatUpdateManyWithoutKeluargaNestedInput = {
+  create?: Prisma.XOR<Prisma.JemaatCreateWithoutKeluargaInput, Prisma.JemaatUncheckedCreateWithoutKeluargaInput> | Prisma.JemaatCreateWithoutKeluargaInput[] | Prisma.JemaatUncheckedCreateWithoutKeluargaInput[]
+  connectOrCreate?: Prisma.JemaatCreateOrConnectWithoutKeluargaInput | Prisma.JemaatCreateOrConnectWithoutKeluargaInput[]
+  upsert?: Prisma.JemaatUpsertWithWhereUniqueWithoutKeluargaInput | Prisma.JemaatUpsertWithWhereUniqueWithoutKeluargaInput[]
+  createMany?: Prisma.JemaatCreateManyKeluargaInputEnvelope
   set?: Prisma.JemaatWhereUniqueInput | Prisma.JemaatWhereUniqueInput[]
   disconnect?: Prisma.JemaatWhereUniqueInput | Prisma.JemaatWhereUniqueInput[]
   delete?: Prisma.JemaatWhereUniqueInput | Prisma.JemaatWhereUniqueInput[]
   connect?: Prisma.JemaatWhereUniqueInput | Prisma.JemaatWhereUniqueInput[]
-  update?: Prisma.JemaatUpdateWithWhereUniqueWithoutRayonInput | Prisma.JemaatUpdateWithWhereUniqueWithoutRayonInput[]
-  updateMany?: Prisma.JemaatUpdateManyWithWhereWithoutRayonInput | Prisma.JemaatUpdateManyWithWhereWithoutRayonInput[]
+  update?: Prisma.JemaatUpdateWithWhereUniqueWithoutKeluargaInput | Prisma.JemaatUpdateWithWhereUniqueWithoutKeluargaInput[]
+  updateMany?: Prisma.JemaatUpdateManyWithWhereWithoutKeluargaInput | Prisma.JemaatUpdateManyWithWhereWithoutKeluargaInput[]
   deleteMany?: Prisma.JemaatScalarWhereInput | Prisma.JemaatScalarWhereInput[]
 }
 
-export type JemaatUncheckedUpdateManyWithoutRayonNestedInput = {
-  create?: Prisma.XOR<Prisma.JemaatCreateWithoutRayonInput, Prisma.JemaatUncheckedCreateWithoutRayonInput> | Prisma.JemaatCreateWithoutRayonInput[] | Prisma.JemaatUncheckedCreateWithoutRayonInput[]
-  connectOrCreate?: Prisma.JemaatCreateOrConnectWithoutRayonInput | Prisma.JemaatCreateOrConnectWithoutRayonInput[]
-  upsert?: Prisma.JemaatUpsertWithWhereUniqueWithoutRayonInput | Prisma.JemaatUpsertWithWhereUniqueWithoutRayonInput[]
-  createMany?: Prisma.JemaatCreateManyRayonInputEnvelope
+export type JemaatUncheckedUpdateManyWithoutKeluargaNestedInput = {
+  create?: Prisma.XOR<Prisma.JemaatCreateWithoutKeluargaInput, Prisma.JemaatUncheckedCreateWithoutKeluargaInput> | Prisma.JemaatCreateWithoutKeluargaInput[] | Prisma.JemaatUncheckedCreateWithoutKeluargaInput[]
+  connectOrCreate?: Prisma.JemaatCreateOrConnectWithoutKeluargaInput | Prisma.JemaatCreateOrConnectWithoutKeluargaInput[]
+  upsert?: Prisma.JemaatUpsertWithWhereUniqueWithoutKeluargaInput | Prisma.JemaatUpsertWithWhereUniqueWithoutKeluargaInput[]
+  createMany?: Prisma.JemaatCreateManyKeluargaInputEnvelope
   set?: Prisma.JemaatWhereUniqueInput | Prisma.JemaatWhereUniqueInput[]
   disconnect?: Prisma.JemaatWhereUniqueInput | Prisma.JemaatWhereUniqueInput[]
   delete?: Prisma.JemaatWhereUniqueInput | Prisma.JemaatWhereUniqueInput[]
   connect?: Prisma.JemaatWhereUniqueInput | Prisma.JemaatWhereUniqueInput[]
-  update?: Prisma.JemaatUpdateWithWhereUniqueWithoutRayonInput | Prisma.JemaatUpdateWithWhereUniqueWithoutRayonInput[]
-  updateMany?: Prisma.JemaatUpdateManyWithWhereWithoutRayonInput | Prisma.JemaatUpdateManyWithWhereWithoutRayonInput[]
+  update?: Prisma.JemaatUpdateWithWhereUniqueWithoutKeluargaInput | Prisma.JemaatUpdateWithWhereUniqueWithoutKeluargaInput[]
+  updateMany?: Prisma.JemaatUpdateManyWithWhereWithoutKeluargaInput | Prisma.JemaatUpdateManyWithWhereWithoutKeluargaInput[]
   deleteMany?: Prisma.JemaatScalarWhereInput | Prisma.JemaatScalarWhereInput[]
-}
-
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
-}
-
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
 }
 
 export type JemaatCreateNestedOneWithoutIbadahInput = {
@@ -603,13 +573,12 @@ export type JemaatUpdateOneRequiredWithoutBadan_pengurusNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.JemaatUpdateToOneWithWhereWithoutBadan_pengurusInput, Prisma.JemaatUpdateWithoutBadan_pengurusInput>, Prisma.JemaatUncheckedUpdateWithoutBadan_pengurusInput>
 }
 
-export type JemaatCreateWithoutRayonInput = {
+export type JemaatCreateWithoutKeluargaInput = {
   id?: string
   nm_lengkap: string
   tgl_lahir: Date | string
   jenkel: string
   stat_keluarga: string
-  alamat_blok: string
   status?: string
   created_at?: Date | string
   updated_at?: Date | string
@@ -620,13 +589,12 @@ export type JemaatCreateWithoutRayonInput = {
   ibadah_pelayan?: Prisma.IbadahCreateNestedManyWithoutPelayanInput
 }
 
-export type JemaatUncheckedCreateWithoutRayonInput = {
+export type JemaatUncheckedCreateWithoutKeluargaInput = {
   id?: string
   nm_lengkap: string
   tgl_lahir: Date | string
   jenkel: string
   stat_keluarga: string
-  alamat_blok: string
   status?: string
   created_at?: Date | string
   updated_at?: Date | string
@@ -637,30 +605,30 @@ export type JemaatUncheckedCreateWithoutRayonInput = {
   ibadah_pelayan?: Prisma.IbadahUncheckedCreateNestedManyWithoutPelayanInput
 }
 
-export type JemaatCreateOrConnectWithoutRayonInput = {
+export type JemaatCreateOrConnectWithoutKeluargaInput = {
   where: Prisma.JemaatWhereUniqueInput
-  create: Prisma.XOR<Prisma.JemaatCreateWithoutRayonInput, Prisma.JemaatUncheckedCreateWithoutRayonInput>
+  create: Prisma.XOR<Prisma.JemaatCreateWithoutKeluargaInput, Prisma.JemaatUncheckedCreateWithoutKeluargaInput>
 }
 
-export type JemaatCreateManyRayonInputEnvelope = {
-  data: Prisma.JemaatCreateManyRayonInput | Prisma.JemaatCreateManyRayonInput[]
+export type JemaatCreateManyKeluargaInputEnvelope = {
+  data: Prisma.JemaatCreateManyKeluargaInput | Prisma.JemaatCreateManyKeluargaInput[]
   skipDuplicates?: boolean
 }
 
-export type JemaatUpsertWithWhereUniqueWithoutRayonInput = {
+export type JemaatUpsertWithWhereUniqueWithoutKeluargaInput = {
   where: Prisma.JemaatWhereUniqueInput
-  update: Prisma.XOR<Prisma.JemaatUpdateWithoutRayonInput, Prisma.JemaatUncheckedUpdateWithoutRayonInput>
-  create: Prisma.XOR<Prisma.JemaatCreateWithoutRayonInput, Prisma.JemaatUncheckedCreateWithoutRayonInput>
+  update: Prisma.XOR<Prisma.JemaatUpdateWithoutKeluargaInput, Prisma.JemaatUncheckedUpdateWithoutKeluargaInput>
+  create: Prisma.XOR<Prisma.JemaatCreateWithoutKeluargaInput, Prisma.JemaatUncheckedCreateWithoutKeluargaInput>
 }
 
-export type JemaatUpdateWithWhereUniqueWithoutRayonInput = {
+export type JemaatUpdateWithWhereUniqueWithoutKeluargaInput = {
   where: Prisma.JemaatWhereUniqueInput
-  data: Prisma.XOR<Prisma.JemaatUpdateWithoutRayonInput, Prisma.JemaatUncheckedUpdateWithoutRayonInput>
+  data: Prisma.XOR<Prisma.JemaatUpdateWithoutKeluargaInput, Prisma.JemaatUncheckedUpdateWithoutKeluargaInput>
 }
 
-export type JemaatUpdateManyWithWhereWithoutRayonInput = {
+export type JemaatUpdateManyWithWhereWithoutKeluargaInput = {
   where: Prisma.JemaatScalarWhereInput
-  data: Prisma.XOR<Prisma.JemaatUpdateManyMutationInput, Prisma.JemaatUncheckedUpdateManyWithoutRayonInput>
+  data: Prisma.XOR<Prisma.JemaatUpdateManyMutationInput, Prisma.JemaatUncheckedUpdateManyWithoutKeluargaInput>
 }
 
 export type JemaatScalarWhereInput = {
@@ -668,12 +636,11 @@ export type JemaatScalarWhereInput = {
   OR?: Prisma.JemaatScalarWhereInput[]
   NOT?: Prisma.JemaatScalarWhereInput | Prisma.JemaatScalarWhereInput[]
   id?: Prisma.StringFilter<"Jemaat"> | string
-  id_rayon?: Prisma.StringNullableFilter<"Jemaat"> | string | null
+  id_keluarga?: Prisma.StringNullableFilter<"Jemaat"> | string | null
   nm_lengkap?: Prisma.StringFilter<"Jemaat"> | string
   tgl_lahir?: Prisma.DateTimeFilter<"Jemaat"> | Date | string
   jenkel?: Prisma.StringFilter<"Jemaat"> | string
   stat_keluarga?: Prisma.StringFilter<"Jemaat"> | string
-  alamat_blok?: Prisma.StringFilter<"Jemaat"> | string
   status?: Prisma.StringFilter<"Jemaat"> | string
   created_at?: Prisma.DateTimeFilter<"Jemaat"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Jemaat"> | Date | string
@@ -685,11 +652,10 @@ export type JemaatCreateWithoutIbadahInput = {
   tgl_lahir: Date | string
   jenkel: string
   stat_keluarga: string
-  alamat_blok: string
   status?: string
   created_at?: Date | string
   updated_at?: Date | string
-  rayon?: Prisma.RayonCreateNestedOneWithoutJemaatInput
+  keluarga?: Prisma.KeluargaCreateNestedOneWithoutAnggotaInput
   pendeta?: Prisma.PendetaCreateNestedManyWithoutJemaatInput
   majelis?: Prisma.MajelisCreateNestedManyWithoutJemaatInput
   badan_pengurus?: Prisma.BadanPengurusCreateNestedManyWithoutJemaatInput
@@ -698,12 +664,11 @@ export type JemaatCreateWithoutIbadahInput = {
 
 export type JemaatUncheckedCreateWithoutIbadahInput = {
   id?: string
-  id_rayon?: string | null
+  id_keluarga?: string | null
   nm_lengkap: string
   tgl_lahir: Date | string
   jenkel: string
   stat_keluarga: string
-  alamat_blok: string
   status?: string
   created_at?: Date | string
   updated_at?: Date | string
@@ -724,11 +689,10 @@ export type JemaatCreateWithoutIbadah_pelayanInput = {
   tgl_lahir: Date | string
   jenkel: string
   stat_keluarga: string
-  alamat_blok: string
   status?: string
   created_at?: Date | string
   updated_at?: Date | string
-  rayon?: Prisma.RayonCreateNestedOneWithoutJemaatInput
+  keluarga?: Prisma.KeluargaCreateNestedOneWithoutAnggotaInput
   pendeta?: Prisma.PendetaCreateNestedManyWithoutJemaatInput
   majelis?: Prisma.MajelisCreateNestedManyWithoutJemaatInput
   badan_pengurus?: Prisma.BadanPengurusCreateNestedManyWithoutJemaatInput
@@ -737,12 +701,11 @@ export type JemaatCreateWithoutIbadah_pelayanInput = {
 
 export type JemaatUncheckedCreateWithoutIbadah_pelayanInput = {
   id?: string
-  id_rayon?: string | null
+  id_keluarga?: string | null
   nm_lengkap: string
   tgl_lahir: Date | string
   jenkel: string
   stat_keluarga: string
-  alamat_blok: string
   status?: string
   created_at?: Date | string
   updated_at?: Date | string
@@ -774,11 +737,10 @@ export type JemaatUpdateWithoutIbadahInput = {
   tgl_lahir?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jenkel?: Prisma.StringFieldUpdateOperationsInput | string
   stat_keluarga?: Prisma.StringFieldUpdateOperationsInput | string
-  alamat_blok?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  rayon?: Prisma.RayonUpdateOneWithoutJemaatNestedInput
+  keluarga?: Prisma.KeluargaUpdateOneWithoutAnggotaNestedInput
   pendeta?: Prisma.PendetaUpdateManyWithoutJemaatNestedInput
   majelis?: Prisma.MajelisUpdateManyWithoutJemaatNestedInput
   badan_pengurus?: Prisma.BadanPengurusUpdateManyWithoutJemaatNestedInput
@@ -787,12 +749,11 @@ export type JemaatUpdateWithoutIbadahInput = {
 
 export type JemaatUncheckedUpdateWithoutIbadahInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  id_rayon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  id_keluarga?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nm_lengkap?: Prisma.StringFieldUpdateOperationsInput | string
   tgl_lahir?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jenkel?: Prisma.StringFieldUpdateOperationsInput | string
   stat_keluarga?: Prisma.StringFieldUpdateOperationsInput | string
-  alamat_blok?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -819,11 +780,10 @@ export type JemaatUpdateWithoutIbadah_pelayanInput = {
   tgl_lahir?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jenkel?: Prisma.StringFieldUpdateOperationsInput | string
   stat_keluarga?: Prisma.StringFieldUpdateOperationsInput | string
-  alamat_blok?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  rayon?: Prisma.RayonUpdateOneWithoutJemaatNestedInput
+  keluarga?: Prisma.KeluargaUpdateOneWithoutAnggotaNestedInput
   pendeta?: Prisma.PendetaUpdateManyWithoutJemaatNestedInput
   majelis?: Prisma.MajelisUpdateManyWithoutJemaatNestedInput
   badan_pengurus?: Prisma.BadanPengurusUpdateManyWithoutJemaatNestedInput
@@ -832,12 +792,11 @@ export type JemaatUpdateWithoutIbadah_pelayanInput = {
 
 export type JemaatUncheckedUpdateWithoutIbadah_pelayanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  id_rayon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  id_keluarga?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nm_lengkap?: Prisma.StringFieldUpdateOperationsInput | string
   tgl_lahir?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jenkel?: Prisma.StringFieldUpdateOperationsInput | string
   stat_keluarga?: Prisma.StringFieldUpdateOperationsInput | string
-  alamat_blok?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -853,11 +812,10 @@ export type JemaatCreateWithoutPendetaInput = {
   tgl_lahir: Date | string
   jenkel: string
   stat_keluarga: string
-  alamat_blok: string
   status?: string
   created_at?: Date | string
   updated_at?: Date | string
-  rayon?: Prisma.RayonCreateNestedOneWithoutJemaatInput
+  keluarga?: Prisma.KeluargaCreateNestedOneWithoutAnggotaInput
   majelis?: Prisma.MajelisCreateNestedManyWithoutJemaatInput
   badan_pengurus?: Prisma.BadanPengurusCreateNestedManyWithoutJemaatInput
   ibadah?: Prisma.IbadahCreateNestedManyWithoutJemaatInput
@@ -866,12 +824,11 @@ export type JemaatCreateWithoutPendetaInput = {
 
 export type JemaatUncheckedCreateWithoutPendetaInput = {
   id?: string
-  id_rayon?: string | null
+  id_keluarga?: string | null
   nm_lengkap: string
   tgl_lahir: Date | string
   jenkel: string
   stat_keluarga: string
-  alamat_blok: string
   status?: string
   created_at?: Date | string
   updated_at?: Date | string
@@ -903,11 +860,10 @@ export type JemaatUpdateWithoutPendetaInput = {
   tgl_lahir?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jenkel?: Prisma.StringFieldUpdateOperationsInput | string
   stat_keluarga?: Prisma.StringFieldUpdateOperationsInput | string
-  alamat_blok?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  rayon?: Prisma.RayonUpdateOneWithoutJemaatNestedInput
+  keluarga?: Prisma.KeluargaUpdateOneWithoutAnggotaNestedInput
   majelis?: Prisma.MajelisUpdateManyWithoutJemaatNestedInput
   badan_pengurus?: Prisma.BadanPengurusUpdateManyWithoutJemaatNestedInput
   ibadah?: Prisma.IbadahUpdateManyWithoutJemaatNestedInput
@@ -916,12 +872,11 @@ export type JemaatUpdateWithoutPendetaInput = {
 
 export type JemaatUncheckedUpdateWithoutPendetaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  id_rayon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  id_keluarga?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nm_lengkap?: Prisma.StringFieldUpdateOperationsInput | string
   tgl_lahir?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jenkel?: Prisma.StringFieldUpdateOperationsInput | string
   stat_keluarga?: Prisma.StringFieldUpdateOperationsInput | string
-  alamat_blok?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -937,11 +892,10 @@ export type JemaatCreateWithoutMajelisInput = {
   tgl_lahir: Date | string
   jenkel: string
   stat_keluarga: string
-  alamat_blok: string
   status?: string
   created_at?: Date | string
   updated_at?: Date | string
-  rayon?: Prisma.RayonCreateNestedOneWithoutJemaatInput
+  keluarga?: Prisma.KeluargaCreateNestedOneWithoutAnggotaInput
   pendeta?: Prisma.PendetaCreateNestedManyWithoutJemaatInput
   badan_pengurus?: Prisma.BadanPengurusCreateNestedManyWithoutJemaatInput
   ibadah?: Prisma.IbadahCreateNestedManyWithoutJemaatInput
@@ -950,12 +904,11 @@ export type JemaatCreateWithoutMajelisInput = {
 
 export type JemaatUncheckedCreateWithoutMajelisInput = {
   id?: string
-  id_rayon?: string | null
+  id_keluarga?: string | null
   nm_lengkap: string
   tgl_lahir: Date | string
   jenkel: string
   stat_keluarga: string
-  alamat_blok: string
   status?: string
   created_at?: Date | string
   updated_at?: Date | string
@@ -987,11 +940,10 @@ export type JemaatUpdateWithoutMajelisInput = {
   tgl_lahir?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jenkel?: Prisma.StringFieldUpdateOperationsInput | string
   stat_keluarga?: Prisma.StringFieldUpdateOperationsInput | string
-  alamat_blok?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  rayon?: Prisma.RayonUpdateOneWithoutJemaatNestedInput
+  keluarga?: Prisma.KeluargaUpdateOneWithoutAnggotaNestedInput
   pendeta?: Prisma.PendetaUpdateManyWithoutJemaatNestedInput
   badan_pengurus?: Prisma.BadanPengurusUpdateManyWithoutJemaatNestedInput
   ibadah?: Prisma.IbadahUpdateManyWithoutJemaatNestedInput
@@ -1000,12 +952,11 @@ export type JemaatUpdateWithoutMajelisInput = {
 
 export type JemaatUncheckedUpdateWithoutMajelisInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  id_rayon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  id_keluarga?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nm_lengkap?: Prisma.StringFieldUpdateOperationsInput | string
   tgl_lahir?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jenkel?: Prisma.StringFieldUpdateOperationsInput | string
   stat_keluarga?: Prisma.StringFieldUpdateOperationsInput | string
-  alamat_blok?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1021,11 +972,10 @@ export type JemaatCreateWithoutBadan_pengurusInput = {
   tgl_lahir: Date | string
   jenkel: string
   stat_keluarga: string
-  alamat_blok: string
   status?: string
   created_at?: Date | string
   updated_at?: Date | string
-  rayon?: Prisma.RayonCreateNestedOneWithoutJemaatInput
+  keluarga?: Prisma.KeluargaCreateNestedOneWithoutAnggotaInput
   pendeta?: Prisma.PendetaCreateNestedManyWithoutJemaatInput
   majelis?: Prisma.MajelisCreateNestedManyWithoutJemaatInput
   ibadah?: Prisma.IbadahCreateNestedManyWithoutJemaatInput
@@ -1034,12 +984,11 @@ export type JemaatCreateWithoutBadan_pengurusInput = {
 
 export type JemaatUncheckedCreateWithoutBadan_pengurusInput = {
   id?: string
-  id_rayon?: string | null
+  id_keluarga?: string | null
   nm_lengkap: string
   tgl_lahir: Date | string
   jenkel: string
   stat_keluarga: string
-  alamat_blok: string
   status?: string
   created_at?: Date | string
   updated_at?: Date | string
@@ -1071,11 +1020,10 @@ export type JemaatUpdateWithoutBadan_pengurusInput = {
   tgl_lahir?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jenkel?: Prisma.StringFieldUpdateOperationsInput | string
   stat_keluarga?: Prisma.StringFieldUpdateOperationsInput | string
-  alamat_blok?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  rayon?: Prisma.RayonUpdateOneWithoutJemaatNestedInput
+  keluarga?: Prisma.KeluargaUpdateOneWithoutAnggotaNestedInput
   pendeta?: Prisma.PendetaUpdateManyWithoutJemaatNestedInput
   majelis?: Prisma.MajelisUpdateManyWithoutJemaatNestedInput
   ibadah?: Prisma.IbadahUpdateManyWithoutJemaatNestedInput
@@ -1084,12 +1032,11 @@ export type JemaatUpdateWithoutBadan_pengurusInput = {
 
 export type JemaatUncheckedUpdateWithoutBadan_pengurusInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  id_rayon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  id_keluarga?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nm_lengkap?: Prisma.StringFieldUpdateOperationsInput | string
   tgl_lahir?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jenkel?: Prisma.StringFieldUpdateOperationsInput | string
   stat_keluarga?: Prisma.StringFieldUpdateOperationsInput | string
-  alamat_blok?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1099,25 +1046,23 @@ export type JemaatUncheckedUpdateWithoutBadan_pengurusInput = {
   ibadah_pelayan?: Prisma.IbadahUncheckedUpdateManyWithoutPelayanNestedInput
 }
 
-export type JemaatCreateManyRayonInput = {
+export type JemaatCreateManyKeluargaInput = {
   id?: string
   nm_lengkap: string
   tgl_lahir: Date | string
   jenkel: string
   stat_keluarga: string
-  alamat_blok: string
   status?: string
   created_at?: Date | string
   updated_at?: Date | string
 }
 
-export type JemaatUpdateWithoutRayonInput = {
+export type JemaatUpdateWithoutKeluargaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nm_lengkap?: Prisma.StringFieldUpdateOperationsInput | string
   tgl_lahir?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jenkel?: Prisma.StringFieldUpdateOperationsInput | string
   stat_keluarga?: Prisma.StringFieldUpdateOperationsInput | string
-  alamat_blok?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1128,13 +1073,12 @@ export type JemaatUpdateWithoutRayonInput = {
   ibadah_pelayan?: Prisma.IbadahUpdateManyWithoutPelayanNestedInput
 }
 
-export type JemaatUncheckedUpdateWithoutRayonInput = {
+export type JemaatUncheckedUpdateWithoutKeluargaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nm_lengkap?: Prisma.StringFieldUpdateOperationsInput | string
   tgl_lahir?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jenkel?: Prisma.StringFieldUpdateOperationsInput | string
   stat_keluarga?: Prisma.StringFieldUpdateOperationsInput | string
-  alamat_blok?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1145,13 +1089,12 @@ export type JemaatUncheckedUpdateWithoutRayonInput = {
   ibadah_pelayan?: Prisma.IbadahUncheckedUpdateManyWithoutPelayanNestedInput
 }
 
-export type JemaatUncheckedUpdateManyWithoutRayonInput = {
+export type JemaatUncheckedUpdateManyWithoutKeluargaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   nm_lengkap?: Prisma.StringFieldUpdateOperationsInput | string
   tgl_lahir?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   jenkel?: Prisma.StringFieldUpdateOperationsInput | string
   stat_keluarga?: Prisma.StringFieldUpdateOperationsInput | string
-  alamat_blok?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1226,16 +1169,15 @@ export type JemaatCountOutputTypeCountIbadah_pelayanArgs<ExtArgs extends runtime
 
 export type JemaatSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  id_rayon?: boolean
+  id_keluarga?: boolean
   nm_lengkap?: boolean
   tgl_lahir?: boolean
   jenkel?: boolean
   stat_keluarga?: boolean
-  alamat_blok?: boolean
   status?: boolean
   created_at?: boolean
   updated_at?: boolean
-  rayon?: boolean | Prisma.Jemaat$rayonArgs<ExtArgs>
+  keluarga?: boolean | Prisma.Jemaat$keluargaArgs<ExtArgs>
   pendeta?: boolean | Prisma.Jemaat$pendetaArgs<ExtArgs>
   majelis?: boolean | Prisma.Jemaat$majelisArgs<ExtArgs>
   badan_pengurus?: boolean | Prisma.Jemaat$badan_pengurusArgs<ExtArgs>
@@ -1248,20 +1190,19 @@ export type JemaatSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 
 export type JemaatSelectScalar = {
   id?: boolean
-  id_rayon?: boolean
+  id_keluarga?: boolean
   nm_lengkap?: boolean
   tgl_lahir?: boolean
   jenkel?: boolean
   stat_keluarga?: boolean
-  alamat_blok?: boolean
   status?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type JemaatOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "id_rayon" | "nm_lengkap" | "tgl_lahir" | "jenkel" | "stat_keluarga" | "alamat_blok" | "status" | "created_at" | "updated_at", ExtArgs["result"]["jemaat"]>
+export type JemaatOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "id_keluarga" | "nm_lengkap" | "tgl_lahir" | "jenkel" | "stat_keluarga" | "status" | "created_at" | "updated_at", ExtArgs["result"]["jemaat"]>
 export type JemaatInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  rayon?: boolean | Prisma.Jemaat$rayonArgs<ExtArgs>
+  keluarga?: boolean | Prisma.Jemaat$keluargaArgs<ExtArgs>
   pendeta?: boolean | Prisma.Jemaat$pendetaArgs<ExtArgs>
   majelis?: boolean | Prisma.Jemaat$majelisArgs<ExtArgs>
   badan_pengurus?: boolean | Prisma.Jemaat$badan_pengurusArgs<ExtArgs>
@@ -1273,7 +1214,7 @@ export type JemaatInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 export type $JemaatPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Jemaat"
   objects: {
-    rayon: Prisma.$RayonPayload<ExtArgs> | null
+    keluarga: Prisma.$KeluargaPayload<ExtArgs> | null
     pendeta: Prisma.$PendetaPayload<ExtArgs>[]
     majelis: Prisma.$MajelisPayload<ExtArgs>[]
     badan_pengurus: Prisma.$BadanPengurusPayload<ExtArgs>[]
@@ -1282,12 +1223,11 @@ export type $JemaatPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    id_rayon: string | null
+    id_keluarga: string | null
     nm_lengkap: string
     tgl_lahir: Date
     jenkel: string
     stat_keluarga: string
-    alamat_blok: string
     status: string
     created_at: Date
     updated_at: Date
@@ -1631,7 +1571,7 @@ readonly fields: JemaatFieldRefs;
  */
 export interface Prisma__JemaatClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  rayon<T extends Prisma.Jemaat$rayonArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Jemaat$rayonArgs<ExtArgs>>): Prisma.Prisma__RayonClient<runtime.Types.Result.GetResult<Prisma.$RayonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  keluarga<T extends Prisma.Jemaat$keluargaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Jemaat$keluargaArgs<ExtArgs>>): Prisma.Prisma__KeluargaClient<runtime.Types.Result.GetResult<Prisma.$KeluargaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   pendeta<T extends Prisma.Jemaat$pendetaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Jemaat$pendetaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PendetaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   majelis<T extends Prisma.Jemaat$majelisArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Jemaat$majelisArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MajelisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   badan_pengurus<T extends Prisma.Jemaat$badan_pengurusArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Jemaat$badan_pengurusArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BadanPengurusPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1667,12 +1607,11 @@ export interface Prisma__JemaatClient<T, Null = never, ExtArgs extends runtime.T
  */
 export interface JemaatFieldRefs {
   readonly id: Prisma.FieldRef<"Jemaat", 'String'>
-  readonly id_rayon: Prisma.FieldRef<"Jemaat", 'String'>
+  readonly id_keluarga: Prisma.FieldRef<"Jemaat", 'String'>
   readonly nm_lengkap: Prisma.FieldRef<"Jemaat", 'String'>
   readonly tgl_lahir: Prisma.FieldRef<"Jemaat", 'DateTime'>
   readonly jenkel: Prisma.FieldRef<"Jemaat", 'String'>
   readonly stat_keluarga: Prisma.FieldRef<"Jemaat", 'String'>
-  readonly alamat_blok: Prisma.FieldRef<"Jemaat", 'String'>
   readonly status: Prisma.FieldRef<"Jemaat", 'String'>
   readonly created_at: Prisma.FieldRef<"Jemaat", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"Jemaat", 'DateTime'>
@@ -2024,22 +1963,22 @@ export type JemaatDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 /**
- * Jemaat.rayon
+ * Jemaat.keluarga
  */
-export type Jemaat$rayonArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Jemaat$keluargaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Rayon
+   * Select specific fields to fetch from the Keluarga
    */
-  select?: Prisma.RayonSelect<ExtArgs> | null
+  select?: Prisma.KeluargaSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Rayon
+   * Omit specific fields from the Keluarga
    */
-  omit?: Prisma.RayonOmit<ExtArgs> | null
+  omit?: Prisma.KeluargaOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.RayonInclude<ExtArgs> | null
-  where?: Prisma.RayonWhereInput
+  include?: Prisma.KeluargaInclude<ExtArgs> | null
+  where?: Prisma.KeluargaWhereInput
 }
 
 /**

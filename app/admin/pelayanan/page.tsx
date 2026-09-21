@@ -37,7 +37,11 @@ export default async function PelayananPage({
       : prisma.pendeta.findMany({
           where: aktif === undefined ? undefined : { aktif },
           include: {
-            jemaat: { include: { rayon: { select: { nm_rayon: true } } } },
+            jemaat: {
+              include: {
+                keluarga: { select: { rayon: { select: { nm_rayon: true } } } },
+              },
+            },
           },
         }),
     type && type !== "MAJELIS"
@@ -45,7 +49,11 @@ export default async function PelayananPage({
       : prisma.majelis.findMany({
           where: aktif === undefined ? undefined : { aktif },
           include: {
-            jemaat: { include: { rayon: { select: { nm_rayon: true } } } },
+            jemaat: {
+              include: {
+                keluarga: { select: { rayon: { select: { nm_rayon: true } } } },
+              },
+            },
           },
         }),
     type && type !== "PENGURUS"
@@ -53,7 +61,11 @@ export default async function PelayananPage({
       : prisma.badanPengurus.findMany({
           where: aktif === undefined ? undefined : { aktif },
           include: {
-            jemaat: { include: { rayon: { select: { nm_rayon: true } } } },
+            jemaat: {
+              include: {
+                keluarga: { select: { rayon: { select: { nm_rayon: true } } } },
+              },
+            },
             unsur: { select: { nm_unsur: true } },
           },
         }),
@@ -73,7 +85,7 @@ export default async function PelayananPage({
       type: "PENDETA" as const,
       id_jemaat: row.id_jemaat,
       name: row.jemaat.nm_lengkap,
-      rayon: row.jemaat.rayon?.nm_rayon ?? null,
+      rayon: row.jemaat.keluarga?.rayon?.nm_rayon ?? null,
       gelar: row.gelar,
       jabatan: null,
       id_unsur: null,
@@ -88,7 +100,7 @@ export default async function PelayananPage({
       type: "MAJELIS" as const,
       id_jemaat: row.id_jemaat,
       name: row.jemaat.nm_lengkap,
-      rayon: row.jemaat.rayon?.nm_rayon ?? null,
+      rayon: row.jemaat.keluarga?.rayon?.nm_rayon ?? null,
       gelar: null,
       jabatan: row.jabatan,
       id_unsur: null,
@@ -103,7 +115,7 @@ export default async function PelayananPage({
       type: "PENGURUS" as const,
       id_jemaat: row.id_jemaat,
       name: row.jemaat.nm_lengkap,
-      rayon: row.jemaat.rayon?.nm_rayon ?? null,
+      rayon: row.jemaat.keluarga?.rayon?.nm_rayon ?? null,
       gelar: null,
       jabatan: row.jabatan,
       id_unsur: row.id_unsur,

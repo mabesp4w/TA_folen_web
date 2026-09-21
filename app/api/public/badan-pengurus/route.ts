@@ -28,7 +28,12 @@ export async function GET(request: Request) {
       },
       orderBy: [{ aktif: "desc" }, { tgl_mulai: "desc" }],
       include: {
-        jemaat: { select: { nm_lengkap: true, rayon: { select: { nm_rayon: true } } } },
+        jemaat: {
+          select: {
+            nm_lengkap: true,
+            keluarga: { select: { rayon: { select: { nm_rayon: true } } } },
+          },
+        },
         unsur: { select: { nm_unsur: true } },
       },
     });
@@ -36,7 +41,7 @@ export async function GET(request: Request) {
     const data = rows.map((b) => ({
       id: b.id,
       nama: b.jemaat.nm_lengkap,
-      rayon: b.jemaat.rayon?.nm_rayon ?? null,
+      rayon: b.jemaat.keluarga?.rayon?.nm_rayon ?? null,
       unsur: b.unsur.nm_unsur,
       sektor: b.sektor,
       jabatan: b.jabatan,

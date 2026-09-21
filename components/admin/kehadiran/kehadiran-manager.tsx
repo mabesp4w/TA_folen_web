@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation";
 import { ClipboardList, Pencil, Plus, Trash2, X } from "lucide-react";
 import { gooeyToast } from "goey-toast";
 import { Button } from "@/components/ui/button";
-import { InputText } from "@/components/ui/input-text";
-import { Select, type SelectOption } from "@/components/ui/select";
+import { type SelectOption } from "@/components/ui/select";
 import {
   createKehadiranAction,
   deleteKehadiranAction,
   updateKehadiranAction,
 } from "./actions";
+import { KehadiranForm } from "./kehadiran-form";
 import { initialKehadiranActionState } from "./schema";
 
 export type IbadahOption = {
@@ -40,7 +40,6 @@ export function KehadiranManager({ rows, ibadahOptions }: Props) {
   const router = useRouter();
   const [mode, setMode] = useState<DialogMode>(null);
   const [selected, setSelected] = useState<KehadiranRow | null>(null);
-  const [counts, setCounts] = useState({ laki_laki: 0, perempuan: 0, anak: 0 });
 
   const action =
     mode === "edit"
@@ -77,15 +76,8 @@ export function KehadiranManager({ rows, ibadahOptions }: Props) {
 
   function openDialog(nextMode: DialogMode, row: KehadiranRow | null = null) {
     setSelected(row);
-    setCounts({
-      laki_laki: row?.laki_laki ?? 0,
-      perempuan: row?.perempuan ?? 0,
-      anak: row?.anak ?? 0,
-    });
     setMode(nextMode);
   }
-
-  const total = counts.laki_laki + counts.perempuan + counts.anak;
 
   return (
     <>
@@ -193,94 +185,39 @@ export function KehadiranManager({ rows, ibadahOptions }: Props) {
               </Button>
             </div>
 
-            <form action={formAction} className="space-y-5">
-              {selected && <input name="id" type="hidden" value={selected.id} />}
-
-              {mode === "delete" ? (
-                <>
-                  <input name="ringkasan" type="hidden" value={`Total ${selected?.total} jemaat`} />
-                  <p>
-                    Hapus data kehadiran untuk <strong>{selected?.ibadah}</strong>? Tindakan ini tidak
-                    dapat dibatalkan.
-                  </p>
-                </>
-              ) : mode === "edit" ? (
-                <>
-                  <input name="id_ibadah" type="hidden" value={selected?.id_ibadah ?? ""} />
-                  <div className="rounded-xl border border-[var(--line)] bg-base-200/50 p-3 text-sm">
-                    <span className="text-[var(--muted)]">Ibadah:</span>{" "}
-                    <span className="font-semibold">{selected?.ibadah}</span>
-                  </div>
-                </>
-              ) : (
-                <Select
-                  error={state.errors?.id_ibadah?.[0]}
-                  label="Ibadah"
-                  name="id_ibadah"
-                  options={availableOptions}
-                  placeholder="Pilih ibadah"
-                  required
-                  variant="native"
-                />
-              )}
-
-              {mode !== "delete" && (
-                <>
-                  <div className="grid gap-4 sm:grid-cols-3">
-                    <InputText
-                      defaultValue={String(selected?.laki_laki ?? 0)}
-                      error={state.errors?.laki_laki?.[0]}
-                      label="Laki-laki"
-                      min="0"
-                      name="laki_laki"
-                      type="number"
-                      onChange={(e) =>
-                        setCounts((c) => ({ ...c, laki_laki: Number(e.currentTarget.value) || 0 }))
-                      }
-                    />
-                    <InputText
-                      defaultValue={String(selected?.perempuan ?? 0)}
-                      error={state.errors?.perempuan?.[0]}
-                      label="Perempuan"
-                      min="0"
-                      name="perempuan"
-                      type="number"
-                      onChange={(e) =>
-                        setCounts((c) => ({ ...c, perempuan: Number(e.currentTarget.value) || 0 }))
-                      }
-                    />
-                    <InputText
-                      defaultValue={String(selected?.anak ?? 0)}
-                      error={state.errors?.anak?.[0]}
-                      label="Anak"
-                      min="0"
-                      name="anak"
-                      type="number"
-                      onChange={(e) =>
-                        setCounts((c) => ({ ...c, anak: Number(e.currentTarget.value) || 0 }))
-                      }
-                    />
-                  </div>
-                  <div className="rounded-xl border border-[var(--line)] bg-base-200/50 p-3 text-sm">
-                    Total kehadiran: <strong className="text-lg">{total}</strong> jemaat
-                  </div>
-                </>
-              )}
-
-              <div className="flex justify-end gap-2">
-                <Button type="button" variant="ghost" onClick={closeDialog}>
-                  Batal
-                </Button>
-                <Button
-                  className={mode === "delete" ? "btn-error" : ""}
-                  disabled={pending}
-                  loading={pending}
-                  type="submit"
-                >
-                  {pending ? "Memproses..." : mode === "delete" ? "Hapus" : "Simpan"}
-                </Button>
-              </div>
-            </form>
+            {mode === "delete" ? (
+              <form action={formAction} className="space-y-5">
+                {selected && <input name="id" type="hidden" value={selected.id} />}
+                <input name="ringkasan" type="hidden" value={`Total ${selected?.total} jemaat`} />
+                <p>
+                  Hapus data kehadiran untuk <strong>{selected?.ibadah}</strong>? Tindakan ini tidak
+                  dapat dibatalkan.
+                </p>
+                <div className="flex justify-end gap-2">
+                  <Button type="button" variant="ghost" onClick={closeDialog}>
+                    Batal
+                  </Button>
+                  <Button
+                    className="btn-error"
+                    disabled={pending}
+                    loading={pending}
+                    type="submit"
+                  >
+                    {pending ? "Memproses..." : "Hapus"}
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              <KehadiranForm
+                formAction={formAction}
+                availableOptions={availableOptions}
+                mode={mode}
+                pending={pending}
+                selected={selected}
+                state={state}
+                onCancel={closeDialog}
+              />
+            )}
           </div>
           <button aria-label="Tutup dialog" className="modal-backdrop" type="button" onClick={closeDialog} />
         </div>

@@ -8,6 +8,7 @@ import {
   CircleDollarSign,
   ClipboardList,
   GalleryHorizontalEnd,
+  Home,
   Images,
   LayoutDashboard,
   MapPinned,
@@ -68,6 +69,7 @@ const adminItems: SidebarItem[] = [
     icon: Users,
     children: [
       { label: "Data Jemaat", href: "/admin/jemaat", icon: Users },
+      { label: "Keluarga", href: "/admin/keluarga", icon: Home },
       { label: "Rayon", href: "/admin/rayon", icon: MapPinned },
       { label: "Unsur", href: "/admin/unsur", icon: UsersRound },
       { label: "Pelayan & Pengurus", href: "/admin/pelayanan", icon: UserCog },

@@ -5,14 +5,14 @@ import { CircleDollarSign, Pencil, Plus, Search, Trash2, X } from "lucide-react"
 import { useRouter } from "next/navigation";
 import { gooeyToast } from "goey-toast";
 import { Button } from "@/components/ui/button";
-import { FormField } from "@/components/ui/form-field";
 import { InputText } from "@/components/ui/input-text";
-import { Select, type SelectOption } from "@/components/ui/select";
+import { Select } from "@/components/ui/select";
 import {
   createKeuanganAction,
   deleteKeuanganAction,
   updateKeuanganAction,
 } from "./actions";
+import { KeuanganForm } from "./keuangan-form";
 import {
   initialKeuanganActionState,
   KATEGORI_KEUANGAN,
@@ -104,10 +104,6 @@ export function KeuanganManager({
     return matchesCategory && (!normalizedQuery || haystack.includes(normalizedQuery));
   });
   const total = filteredRows.reduce((sum, row) => sum + row.jumlah, 0);
-  const ibadahOptions = ibadah.map((item) => ({ value: item.id, label: item.label }));
-  const selectedIbadah: SelectOption | null = selected?.id_ibadah
-    ? ibadahOptions.find((item) => item.value === selected.id_ibadah) ?? null
-    : null;
 
   return (
     <div className="space-y-6">
@@ -273,103 +269,47 @@ export function KeuanganManager({
               </Button>
             </div>
 
-            <form action={formAction} className="space-y-5">
-              {selected && <input name="id" type="hidden" value={selected.id} />}
-              {mode === "delete" ? (
-                <>
-                  <input
-                    name="ringkasan"
-                    type="hidden"
-                    value={`${selected?.kategori ?? "Penerimaan"} - ${selected?.nm_pemberi ?? "Tanpa nama"}`}
-                  />
-                  <p>
-                    Hapus penerimaan <strong>{selected ? rupiah.format(selected.jumlah) : ""}</strong>{" "}
-                    dari <strong>{selected?.nm_pemberi ?? "pemberi tidak disebutkan"}</strong>?
-                  </p>
-                </>
-              ) : (
-                <>
-                  <div className="grid gap-5 sm:grid-cols-2">
-                    <Select
-                      defaultValue={selectedIbadah}
-                      error={state.errors?.id_ibadah?.[0]}
-                      helpText="Opsional, pilih ibadah tempat persembahan diterima."
-                      label="Ibadah"
-                      name="id_ibadah"
-                      options={ibadahOptions}
-                      placeholder="Tidak terkait ibadah"
-                      variant="react-select"
-                    />
-                    <Select
-                      defaultValue={selected?.kategori ?? ""}
-                      error={state.errors?.kategori?.[0]}
-                      label="Kategori"
-                      name="kategori"
-                      options={KATEGORI_KEUANGAN.map((value) => ({
-                        value,
-                        label: LABEL_KATEGORI_KEUANGAN[value],
-                      }))}
-                      placeholder="Pilih kategori"
-                      required
-                    />
-                    <InputText
-                      defaultValue={selected?.nm_pemberi ?? ""}
-                      error={state.errors?.nm_pemberi?.[0]}
-                      label="Nama pemberi"
-                      name="nm_pemberi"
-                      placeholder="Contoh: Kel. Victor Pekpekay"
-                    />
-                    <InputText
-                      defaultValue={selected?.jumlah.toString() ?? ""}
-                      error={state.errors?.jumlah?.[0]}
-                      helpText="Masukkan Rupiah tanpa titik, koma, atau simbol mata uang."
-                      inputMode="numeric"
-                      label="Jumlah (Rp)"
-                      max="2147483647"
-                      min="1"
-                      name="jumlah"
-                      placeholder="Contoh: 250000"
-                      required
-                      step="1"
-                      type="number"
-                    />
-                  </div>
-                  <FormField
-                    error={state.errors?.keterangan?.[0]}
-                    id="keterangan"
-                    label="Keterangan"
+            {mode === "delete" ? (
+              <form action={formAction} className="space-y-5">
+                {selected && <input name="id" type="hidden" value={selected.id} />}
+                <input
+                  name="ringkasan"
+                  type="hidden"
+                  value={`${selected?.kategori ?? "Penerimaan"} - ${selected?.nm_pemberi ?? "Tanpa nama"}`}
+                />
+                <p>
+                  Hapus penerimaan <strong>{selected ? rupiah.format(selected.jumlah) : ""}</strong>{" "}
+                  dari <strong>{selected?.nm_pemberi ?? "pemberi tidak disebutkan"}</strong>?
+                </p>
+                <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                  <Button
+                    disabled={pending}
+                    type="button"
+                    variant="ghost"
+                    onClick={() => openDialog(null)}
                   >
-                    <textarea
-                      aria-invalid={Boolean(state.errors?.keterangan?.[0])}
-                      className={`textarea textarea-bordered min-h-28 w-full ${state.errors?.keterangan?.[0] ? "textarea-error" : ""}`}
-                      defaultValue={selected?.keterangan ?? ""}
-                      id="keterangan"
-                      maxLength={5000}
-                      name="keterangan"
-                      placeholder="Keterangan penerimaan atau ucapan syukur"
-                    />
-                  </FormField>
-                </>
-              )}
-              <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-                <Button
-                  disabled={pending}
-                  type="button"
-                  variant="ghost"
-                  onClick={() => openDialog(null)}
-                >
-                  Batal
-                </Button>
-                <Button
-                  className={mode === "delete" ? "btn-error" : ""}
-                  disabled={pending}
-                  loading={pending}
-                  type="submit"
-                >
-                  {pending ? "Memproses..." : mode === "delete" ? "Hapus" : "Simpan"}
-                </Button>
-              </div>
-            </form>
+                    Batal
+                  </Button>
+                  <Button
+                    className="btn-error"
+                    disabled={pending}
+                    loading={pending}
+                    type="submit"
+                  >
+                    {pending ? "Memproses..." : "Hapus"}
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              <KeuanganForm
+                formAction={formAction}
+                ibadah={ibadah}
+                pending={pending}
+                selected={selected}
+                state={state}
+                onCancel={() => openDialog(null)}
+              />
+            )}
           </div>
           <button
             aria-label="Tutup dialog"

@@ -2,10 +2,10 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ChevronLeft, ChevronRight, Search, ShieldCheck } from "lucide-react";
+import { ChevronLeft, ChevronRight, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { InputText } from "@/components/ui/input-text";
-import { Select, type SelectOption } from "@/components/ui/select";
+import { type SelectOption } from "@/components/ui/select";
+import { LogFilters } from "./log-filters";
 
 export type LogRow = {
   id: string;
@@ -100,63 +100,13 @@ export function LogManager({ rows, entitasOptions, filters, page, pageCount, tot
         </p>
       </header>
 
-      <form
-        aria-label="Filter log aktivitas"
-        className="mb-5 grid gap-3 rounded-xl border border-[var(--line)] bg-[var(--paper)] p-4 md:grid-cols-2 xl:grid-cols-5"
-        onSubmit={(e) => e.preventDefault()}
-      >
-        <InputText
-          defaultValue={filters.q}
-          icon={<Search size={17} aria-hidden="true" />}
-          label="Cari"
-          name="q"
-          placeholder="Username / ringkasan"
-          type="search"
-          onChange={(e) => debouncedSearch(e.currentTarget.value)}
-        />
-        <Select
-          label="Entitas"
-          name="entitas"
-          options={entitasSelect}
-          placeholder="Semua entitas"
-          value={filters.entitas}
-          variant="native"
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-            setParam({ entitas: e.currentTarget.value })
-          }
-        />
-        <Select
-          label="Aksi"
-          name="aksi"
-          options={aksiOptions}
-          placeholder="Semua aksi"
-          value={filters.aksi}
-          variant="native"
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-            setParam({ aksi: e.currentTarget.value })
-          }
-        />
-        <label className="form-control w-full">
-          <span className="label-text mb-2 font-medium">Dari tanggal</span>
-          <input
-            className="input input-bordered w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--pacific)]"
-            defaultValue={filters.from}
-            name="from"
-            type="date"
-            onChange={(e) => setParam({ from: e.currentTarget.value })}
-          />
-        </label>
-        <label className="form-control w-full">
-          <span className="label-text mb-2 font-medium">Sampai tanggal</span>
-          <input
-            className="input input-bordered w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--pacific)]"
-            defaultValue={filters.to}
-            name="to"
-            type="date"
-            onChange={(e) => setParam({ to: e.currentTarget.value })}
-          />
-        </label>
-      </form>
+      <LogFilters
+        aksiOptions={aksiOptions}
+        entitasOptions={entitasSelect}
+        filters={filters}
+        onParamChange={setParam}
+        onSearch={debouncedSearch}
+      />
 
       {rows.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-[var(--line)] bg-[var(--paper)] p-10 text-center">

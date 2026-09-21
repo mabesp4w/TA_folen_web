@@ -2,17 +2,15 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { KeyRound, Pencil, Plus, ShieldCheck, Trash2, X } from "lucide-react";
+import { Pencil, Plus, ShieldCheck, Trash2, X } from "lucide-react";
 import { gooeyToast } from "goey-toast";
 import { Button } from "@/components/ui/button";
-import { InputPassword } from "@/components/ui/input-password";
-import { InputText } from "@/components/ui/input-text";
-import { Select, type SelectOption } from "@/components/ui/select";
 import {
   createUserAction,
   deleteUserAction,
   updateUserAction,
 } from "./actions";
+import { UserForm } from "./user-form";
 import { initialUserActionState, USER_ROLES } from "./schema";
 
 export type PengurusOption = {
@@ -42,11 +40,6 @@ const roleLabels: Record<(typeof USER_ROLES)[number], string> = {
   KETUA_UNSUR: "Ketua Unsur",
 };
 
-const roleOptions: SelectOption[] = USER_ROLES.map((value) => ({
-  value,
-  label: roleLabels[value],
-}));
-
 export function UserManager({ rows, pengurusOptions, currentUserId }: Props) {
   const router = useRouter();
   const [mode, setMode] = useState<DialogMode>(null);
@@ -60,11 +53,6 @@ export function UserManager({ rows, pengurusOptions, currentUserId }: Props) {
         ? deleteUserAction
         : createUserAction;
   const [state, formAction, pending] = useActionState(action, initialUserActionState);
-
-  // Pengurus yang bisa dipilih: yang belum berakun + pengurus milik akun ini (saat edit).
-  const pengurusChoices: SelectOption[] = pengurusOptions
-    .filter((option) => option.id !== "__none__")
-    .map((option) => ({ value: option.id, label: option.label }));
 
   useEffect(() => {
     if (state.status === "success") {
@@ -189,80 +177,41 @@ export function UserManager({ rows, pengurusOptions, currentUserId }: Props) {
               </Button>
             </div>
 
-            <form action={formAction} className="space-y-5">
-              {selected && <input name="id" type="hidden" value={selected.id} />}
-
-              {mode === "delete" ? (
-                <>
-                  <input name="ringkasan" type="hidden" value={selected?.username ?? ""} />
-                  <div className="rounded-xl border border-error/30 bg-error/10 p-4 text-sm">
-                    Hapus akun <strong>{selected?.username}</strong>? Jejak log aktivitasnya tetap tersimpan,
-                    namun akun tidak dapat login lagi.
-                  </div>
-                </>
-              ) : (
-                <>
-                  <InputText
-                    autoComplete="username"
-                    defaultValue={selected?.username ?? ""}
-                    error={state.errors?.username?.[0]}
-                    label="Username"
-                    name="username"
-                    required
-                  />
-                  <Select
-                    error={state.errors?.role?.[0]}
-                    label="Peran"
-                    name="role"
-                    options={roleOptions}
-                    value={role}
-                    variant="native"
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                      setRole(e.currentTarget.value as (typeof USER_ROLES)[number])
-                    }
-                  />
-                  {role === "KETUA_UNSUR" && (
-                    <Select
-                      defaultValue={selected?.pengurusId ?? ""}
-                      error={state.errors?.badan_pengurus_id?.[0]}
-                      helpText="Tautkan akun ini ke satu kepengurusan unsur."
-                      label="Badan pengurus tertaut"
-                      name="badan_pengurus_id"
-                      options={pengurusChoices}
-                      placeholder="Pilih badan pengurus (opsional)"
-                      variant="native"
-                    />
-                  )}
-                  <InputPassword
-                    autoComplete="new-password"
-                    error={state.errors?.password?.[0]}
-                    helpText={
-                      mode === "edit"
-                        ? "Kosongkan bila tidak ingin mengubah kata sandi."
-                        : "Minimal 8 karakter."
-                    }
-                    icon={<KeyRound aria-hidden="true" size={18} />}
-                    label="Kata sandi"
-                    name="password"
-                    required={mode === "create"}
-                  />
-                </>
-              )}
-
-              <div className="flex justify-end gap-2">
-                <Button type="button" variant="ghost" onClick={closeDialog}>
-                  Batal
-                </Button>
-                <Button
-                  className={mode === "delete" ? "btn-error" : ""}
-                  disabled={pending}
-                  loading={pending}
-                  type="submit"
-                >
-                  {pending ? "Memproses..." : mode === "delete" ? "Hapus" : "Simpan"}
-                </Button>
-              </div>
-            </form>
+            {mode === "delete" ? (
+              <form action={formAction} className="space-y-5">
+                {selected && <input name="id" type="hidden" value={selected.id} />}
+                <input name="ringkasan" type="hidden" value={selected?.username ?? ""} />
+                <div className="rounded-xl border border-error/30 bg-error/10 p-4 text-sm">
+                  Hapus akun <strong>{selected?.username}</strong>? Jejak log aktivitasnya tetap tersimpan,
+                  namun akun tidak dapat login lagi.
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button type="button" variant="ghost" onClick={closeDialog}>
+                    Batal
+                  </Button>
+                  <Button
+                    className="btn-error"
+                    disabled={pending}
+                    loading={pending}
+                    type="submit"
+                  >
+                    {pending ? "Memproses..." : "Hapus"}
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              <UserForm
+                formAction={formAction}
+                mode={mode}
+                pending={pending}
+                pengurusOptions={pengurusOptions}
+                role={role}
+                selected={selected}
+                state={state}
+                onCancel={closeDialog}
+                onRoleChange={setRole}
+              />
+            )}
           </div>
           <button aria-label="Tutup dialog" className="modal-backdrop" type="button" onClick={closeDialog} />
         </div>

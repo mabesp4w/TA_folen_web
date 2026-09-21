@@ -45,7 +45,17 @@ export async function GET(request: Request) {
         take: limit,
         include: {
           unsur: { select: { nm_unsur: true } },
-          jemaat: { select: { nm_lengkap: true, alamat_blok: true, rayon: { select: { nm_rayon: true } } } },
+          jemaat: {
+            select: {
+              nm_lengkap: true,
+              keluarga: {
+                select: {
+                  alamat_blok: true,
+                  rayon: { select: { nm_rayon: true } },
+                },
+              },
+            },
+          },
           pelayan: { select: { nm_lengkap: true } },
         },
       }),
@@ -61,8 +71,8 @@ export async function GET(request: Request) {
       waktu: formatTime(i.waktu),
       // Lokasi: pakai override bila ada, jika tidak turunkan dari rumah tuan rumah.
       tempat: i.tempat ?? (i.jemaat ? `Kel. ${i.jemaat.nm_lengkap}` : null),
-      alamat_tempat: i.alamat_tempat ?? i.jemaat?.alamat_blok ?? null,
-      rayon: i.jemaat?.rayon?.nm_rayon ?? null,
+      alamat_tempat: i.alamat_tempat ?? i.jemaat?.keluarga?.alamat_blok ?? null,
+      rayon: i.jemaat?.keluarga?.rayon?.nm_rayon ?? null,
       tuan_rumah: i.jemaat?.nm_lengkap ?? null,
       // Pelayan firman: jemaat terkait, atau teks cadangan.
       pelayan_firman: i.pelayan?.nm_lengkap ?? i.pelayan_firman ?? null,

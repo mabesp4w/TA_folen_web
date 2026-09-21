@@ -29,21 +29,71 @@ const RAYON = [
 
 const UNSUR = ["PKB", "PW", "PAM", "Remaja", "Tunas Anak"];
 
-// Contoh jemaat agar dropdown "Tuan Rumah" & "Pelayan Firman" tidak kosong.
-const JEMAAT_CONTOH: Array<{
-  nm_lengkap: string;
-  tgl_lahir: string; // yyyy-mm-dd
-  jenkel: "L" | "P";
-  stat_keluarga: string;
+// Contoh keluarga + anggota. Alamat & rayon melekat pada keluarga; anggota
+// satu keluarga otomatis berbagi keduanya. Sebagian keluarga sengaja memiliki
+// lebih dari satu anggota untuk mendemonstrasikan tautan ke satu Kartu Keluarga.
+const KELUARGA_CONTOH: Array<{
+  no_kk?: string;
   alamat_blok: string;
   rayon: string;
+  anggota: Array<{
+    nm_lengkap: string;
+    tgl_lahir: string; // yyyy-mm-dd
+    jenkel: "L" | "P";
+    stat_keluarga: string; // "KK" | "Isteri" | "Anak" | "Lain_Lain"
+  }>;
 }> = [
-  { nm_lengkap: "Alex Siahaan", tgl_lahir: "1968-04-12", jenkel: "L", stat_keluarga: "KK", alamat_blok: "G. 16", rayon: "Hermon" },
-  { nm_lengkap: "Maria Tobing", tgl_lahir: "1975-09-03", jenkel: "P", stat_keluarga: "KK", alamat_blok: "H. 04", rayon: "Galilea" },
-  { nm_lengkap: "Yohanes Manalu", tgl_lahir: "1962-01-27", jenkel: "L", stat_keluarga: "KK", alamat_blok: "B. 58", rayon: "Bethel" },
-  { nm_lengkap: "Ruth Simanjuntak", tgl_lahir: "1980-11-15", jenkel: "P", stat_keluarga: "KK", alamat_blok: "C. 96", rayon: "Elim" },
-  { nm_lengkap: "Petrus Siahaan", tgl_lahir: "1971-06-08", jenkel: "L", stat_keluarga: "KK", alamat_blok: "B. 33", rayon: "Hermon" },
-  { nm_lengkap: "Debora Panjaitan", tgl_lahir: "1985-02-20", jenkel: "P", stat_keluarga: "KK", alamat_blok: "K. 12", rayon: "Kana" },
+  {
+    no_kk: "9271010001",
+    alamat_blok: "G. 16",
+    rayon: "Hermon",
+    anggota: [
+      { nm_lengkap: "Alex Siahaan", tgl_lahir: "1968-04-12", jenkel: "L", stat_keluarga: "KK" },
+      { nm_lengkap: "Yohana Siahaan", tgl_lahir: "1972-07-30", jenkel: "P", stat_keluarga: "Isteri" },
+      { nm_lengkap: "Kevin Siahaan", tgl_lahir: "2001-03-18", jenkel: "L", stat_keluarga: "Anak" },
+    ],
+  },
+  {
+    no_kk: "9271010002",
+    alamat_blok: "H. 04",
+    rayon: "Galilea",
+    anggota: [
+      { nm_lengkap: "Maria Tobing", tgl_lahir: "1975-09-03", jenkel: "P", stat_keluarga: "KK" },
+    ],
+  },
+  {
+    no_kk: "9271010003",
+    alamat_blok: "B. 58",
+    rayon: "Bethel",
+    anggota: [
+      { nm_lengkap: "Yohanes Manalu", tgl_lahir: "1962-01-27", jenkel: "L", stat_keluarga: "KK" },
+      { nm_lengkap: "Sarah Manalu", tgl_lahir: "1965-05-22", jenkel: "P", stat_keluarga: "Isteri" },
+    ],
+  },
+  {
+    no_kk: "9271010004",
+    alamat_blok: "C. 96",
+    rayon: "Elim",
+    anggota: [
+      { nm_lengkap: "Ruth Simanjuntak", tgl_lahir: "1980-11-15", jenkel: "P", stat_keluarga: "KK" },
+    ],
+  },
+  {
+    no_kk: "9271010005",
+    alamat_blok: "B. 33",
+    rayon: "Hermon",
+    anggota: [
+      { nm_lengkap: "Petrus Siahaan", tgl_lahir: "1971-06-08", jenkel: "L", stat_keluarga: "KK" },
+    ],
+  },
+  {
+    no_kk: "9271010006",
+    alamat_blok: "K. 12",
+    rayon: "Kana",
+    anggota: [
+      { nm_lengkap: "Debora Panjaitan", tgl_lahir: "1985-02-20", jenkel: "P", stat_keluarga: "KK" },
+    ],
+  },
 ];
 
 async function seedMasterData() {
@@ -64,25 +114,38 @@ async function seedMasterData() {
   }
   console.log(`✓ ${RAYON.length} rayon & ${UNSUR.length} unsur tersedia.`);
 
-  // Jemaat tidak punya kunci natural unik → isi contoh hanya bila tabel kosong.
+  // Keluarga & jemaat tidak punya kunci natural unik → isi contoh hanya bila
+  // tabel jemaat kosong. Keluarga dibuat lebih dulu, lalu anggotanya ditautkan.
   const jumlahJemaat = await prisma.jemaat.count();
   if (jumlahJemaat === 0) {
     const rayonMap = new Map(
       (await prisma.rayon.findMany()).map((r) => [r.nm_rayon, r.id]),
     );
-    for (const j of JEMAAT_CONTOH) {
-      await prisma.jemaat.create({
+    let totalAnggota = 0;
+    for (const k of KELUARGA_CONTOH) {
+      const keluarga = await prisma.keluarga.create({
         data: {
-          nm_lengkap: j.nm_lengkap,
-          tgl_lahir: new Date(`${j.tgl_lahir}T12:00:00`),
-          jenkel: j.jenkel,
-          stat_keluarga: j.stat_keluarga,
-          alamat_blok: j.alamat_blok,
-          id_rayon: rayonMap.get(j.rayon) ?? null,
+          no_kk: k.no_kk ?? null,
+          alamat_blok: k.alamat_blok,
+          id_rayon: rayonMap.get(k.rayon) ?? null,
         },
       });
+      for (const a of k.anggota) {
+        await prisma.jemaat.create({
+          data: {
+            nm_lengkap: a.nm_lengkap,
+            tgl_lahir: new Date(`${a.tgl_lahir}T12:00:00`),
+            jenkel: a.jenkel,
+            stat_keluarga: a.stat_keluarga,
+            id_keluarga: keluarga.id,
+          },
+        });
+        totalAnggota += 1;
+      }
     }
-    console.log(`✓ ${JEMAAT_CONTOH.length} contoh jemaat dibuat.`);
+    console.log(
+      `✓ ${KELUARGA_CONTOH.length} keluarga & ${totalAnggota} jemaat contoh dibuat.`,
+    );
   } else {
     console.log(`✓ Tabel jemaat sudah berisi ${jumlahJemaat} data — dilewati.`);
   }

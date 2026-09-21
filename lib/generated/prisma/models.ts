@@ -9,6 +9,7 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/Rayon'
+export type * from './models/Keluarga'
 export type * from './models/Unsur'
 export type * from './models/Jemaat'
 export type * from './models/Ibadah'

@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Rayon: 'Rayon',
+  Keluarga: 'Keluarga',
   Unsur: 'Unsur',
   Jemaat: 'Jemaat',
   Ibadah: 'Ibadah',
@@ -93,6 +94,18 @@ export const RayonScalarFieldEnum = {
 export type RayonScalarFieldEnum = (typeof RayonScalarFieldEnum)[keyof typeof RayonScalarFieldEnum]
 
 
+export const KeluargaScalarFieldEnum = {
+  id: 'id',
+  no_kk: 'no_kk',
+  alamat_blok: 'alamat_blok',
+  id_rayon: 'id_rayon',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type KeluargaScalarFieldEnum = (typeof KeluargaScalarFieldEnum)[keyof typeof KeluargaScalarFieldEnum]
+
+
 export const UnsurScalarFieldEnum = {
   id: 'id',
   nm_unsur: 'nm_unsur'
@@ -103,12 +116,11 @@ export type UnsurScalarFieldEnum = (typeof UnsurScalarFieldEnum)[keyof typeof Un
 
 export const JemaatScalarFieldEnum = {
   id: 'id',
-  id_rayon: 'id_rayon',
+  id_keluarga: 'id_keluarga',
   nm_lengkap: 'nm_lengkap',
   tgl_lahir: 'tgl_lahir',
   jenkel: 'jenkel',
   stat_keluarga: 'stat_keluarga',
-  alamat_blok: 'alamat_blok',
   status: 'status',
   created_at: 'created_at',
   updated_at: 'updated_at'
@@ -325,14 +337,6 @@ export const RayonOrderByRelevanceFieldEnum = {
 export type RayonOrderByRelevanceFieldEnum = (typeof RayonOrderByRelevanceFieldEnum)[keyof typeof RayonOrderByRelevanceFieldEnum]
 
 
-export const UnsurOrderByRelevanceFieldEnum = {
-  id: 'id',
-  nm_unsur: 'nm_unsur'
-} as const
-
-export type UnsurOrderByRelevanceFieldEnum = (typeof UnsurOrderByRelevanceFieldEnum)[keyof typeof UnsurOrderByRelevanceFieldEnum]
-
-
 export const NullsOrder = {
   first: 'first',
   last: 'last'
@@ -341,13 +345,30 @@ export const NullsOrder = {
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
+export const KeluargaOrderByRelevanceFieldEnum = {
+  id: 'id',
+  no_kk: 'no_kk',
+  alamat_blok: 'alamat_blok',
+  id_rayon: 'id_rayon'
+} as const
+
+export type KeluargaOrderByRelevanceFieldEnum = (typeof KeluargaOrderByRelevanceFieldEnum)[keyof typeof KeluargaOrderByRelevanceFieldEnum]
+
+
+export const UnsurOrderByRelevanceFieldEnum = {
+  id: 'id',
+  nm_unsur: 'nm_unsur'
+} as const
+
+export type UnsurOrderByRelevanceFieldEnum = (typeof UnsurOrderByRelevanceFieldEnum)[keyof typeof UnsurOrderByRelevanceFieldEnum]
+
+
 export const JemaatOrderByRelevanceFieldEnum = {
   id: 'id',
-  id_rayon: 'id_rayon',
+  id_keluarga: 'id_keluarga',
   nm_lengkap: 'nm_lengkap',
   jenkel: 'jenkel',
   stat_keluarga: 'stat_keluarga',
-  alamat_blok: 'alamat_blok',
   status: 'status'
 } as const
 

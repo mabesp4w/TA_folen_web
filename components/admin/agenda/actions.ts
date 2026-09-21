@@ -9,33 +9,37 @@ import { agendaSchema, type AgendaActionState, type AgendaInput } from "./schema
 const path = "/admin/agenda";
 
 function parseForm(formData: FormData) {
+  const jenis = formData.get("jenis_ibadah");
+  const isGabungan = jenis === "gabungan" || formData.get("gabungan") === "on";
+  const isUmum = jenis === "umum";
   return agendaSchema.safeParse({
-    id_jemaat: formData.get("id_jemaat"),
-    id_unsur: formData.get("id_unsur"),
+    id_jemaat: isUmum || isGabungan ? undefined : formData.get("id_jemaat"),
+    id_unsur: isUmum ? undefined : formData.get("id_unsur"),
     id_pelayan_firman: formData.get("id_pelayan_firman"),
     nm_ibadah: formData.get("nm_ibadah"),
-    gabungan: formData.get("gabungan") === "on",
+    gabungan: isGabungan,
     sektor: formData.get("sektor"),
     tgl: formData.get("tgl"),
     waktu: formData.get("waktu"),
-    tempat: formData.get("tempat"),
-    alamat_tempat: formData.get("alamat_tempat"),
+    tempat: isGabungan || isUmum ? "Gereja Syaloom" : formData.get("tempat"),
+    alamat_tempat: isGabungan || isUmum ? undefined : formData.get("alamat_tempat"),
     catatan: formData.get("catatan"),
     pelayan_firman: formData.get("pelayan_firman"),
     liturgos: formData.get("liturgos"),
     pembacaan_alkitab: formData.get("pembacaan_alkitab"),
     piket: formData.get("piket"),
-    p_organ: formData.get("p_organ"),
+    p_organ: isGabungan || isUmum ? undefined : formData.get("p_organ"),
   });
 }
 
 function mutationData(data: AgendaInput) {
+  const gabungan = data.gabungan;
   return {
     id_jemaat: data.id_jemaat ?? null,
     id_unsur: data.id_unsur ?? null,
     id_pelayan_firman: data.id_pelayan_firman ?? null,
     nm_ibadah: data.nm_ibadah ?? null,
-    gabungan: data.gabungan,
+    gabungan,
     sektor: data.sektor ?? null,
     tgl: new Date(`${data.tgl}T00:00:00.000Z`),
     waktu: new Date(`1970-01-01T${data.waktu}:00.000Z`),

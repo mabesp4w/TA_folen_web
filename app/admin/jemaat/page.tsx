@@ -25,26 +25,44 @@ export default async function JemaatPage({
     ? params.status!
     : "";
 
-  const [rows, rayons] = await Promise.all([
+  const [rows, rayons, keluargaList] = await Promise.all([
     prisma.jemaat.findMany({
       where: {
         ...(query
           ? {
               OR: [
                 { nm_lengkap: { contains: query } },
-                { alamat_blok: { contains: query } },
+                { keluarga: { alamat_blok: { contains: query } } },
+                { keluarga: { no_kk: { contains: query } } },
               ],
             }
           : {}),
-        ...(rayon ? { id_rayon: rayon } : {}),
+        ...(rayon ? { keluarga: { id_rayon: rayon } } : {}),
         ...(status ? { status } : {}),
       },
-      include: { rayon: { select: { nm_rayon: true } } },
+      include: {
+        keluarga: {
+          select: {
+            no_kk: true,
+            alamat_blok: true,
+            rayon: { select: { nm_rayon: true } },
+          },
+        },
+      },
       orderBy: { nm_lengkap: "asc" },
     }),
     prisma.rayon.findMany({
       select: { id: true, nm_rayon: true },
       orderBy: { nm_rayon: "asc" },
+    }),
+    prisma.keluarga.findMany({
+      select: {
+        id: true,
+        no_kk: true,
+        alamat_blok: true,
+        rayon: { select: { nm_rayon: true } },
+      },
+      orderBy: { alamat_blok: "asc" },
     }),
   ]);
 
@@ -54,16 +72,23 @@ export default async function JemaatPage({
     tgl_lahir: row.tgl_lahir.toISOString(),
     jenkel: row.jenkel,
     stat_keluarga: row.stat_keluarga,
-    alamat_blok: row.alamat_blok,
     status: row.status,
-    id_rayon: row.id_rayon,
-    rayon: row.rayon,
+    id_keluarga: row.id_keluarga,
+    keluarga: row.keluarga,
+  }));
+
+  const keluargaOptions = keluargaList.map((k) => ({
+    value: k.id,
+    label: [k.no_kk, k.alamat_blok, k.rayon?.nm_rayon]
+      .filter(Boolean)
+      .join(" · "),
   }));
 
   return (
     <main className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">
       <JemaatManager
         jemaat={jemaat}
+        keluargaOptions={keluargaOptions}
         query={query}
         rayon={rayon}
         rayons={rayons}

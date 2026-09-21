@@ -3,12 +3,12 @@
 import { useActionState, useState } from "react";
 import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { InputText } from "@/components/ui/input-text";
 import {
   createMasterDataAction,
   deleteMasterDataAction,
   updateMasterDataAction,
 } from "./actions";
+import { MasterDataForm } from "./master-data-form";
 import {
   initialMasterDataActionState,
   type MasterDataActionState,
@@ -161,40 +161,39 @@ export function MasterDataManager({
               </Button>
             </div>
 
-            <form action={formAction} className="space-y-5">
-              <input name="resource" type="hidden" value={resource} />
-              {selected && <input name="id" type="hidden" value={selected.id} />}
-              {mode === "delete" ? (
-                <>
-                  <input name="name" type="hidden" value={selected?.name ?? ""} />
-                  <p>
-                    Hapus <strong>{selected?.name}</strong>? Tindakan ini tidak dapat dibatalkan.
-                  </p>
-                </>
-              ) : (
-                <InputText
-                  autoFocus
-                  defaultValue={selected?.name ?? ""}
-                  error={state.errors?.name?.[0]}
-                  label={`Nama ${title.toLowerCase()}`}
-                  name="name"
-                  required
-                />
-              )}
-              <div className="flex justify-end gap-2">
-                <Button type="button" variant="ghost" onClick={() => openDialog(null)}>
-                  Batal
-                </Button>
-                <Button
-                  className={mode === "delete" ? "btn-error" : ""}
-                  disabled={pending}
-                  loading={pending}
-                  type="submit"
-                >
-                  {pending ? "Memproses..." : mode === "delete" ? "Hapus" : "Simpan"}
-                </Button>
-              </div>
-            </form>
+            {mode === "delete" ? (
+              <form action={formAction} className="space-y-5">
+                <input name="resource" type="hidden" value={resource} />
+                {selected && <input name="id" type="hidden" value={selected.id} />}
+                <input name="name" type="hidden" value={selected?.name ?? ""} />
+                <p>
+                  Hapus <strong>{selected?.name}</strong>? Tindakan ini tidak dapat dibatalkan.
+                </p>
+                <div className="flex justify-end gap-2">
+                  <Button type="button" variant="ghost" onClick={() => openDialog(null)}>
+                    Batal
+                  </Button>
+                  <Button
+                    className="btn-error"
+                    disabled={pending}
+                    loading={pending}
+                    type="submit"
+                  >
+                    {pending ? "Memproses..." : "Hapus"}
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              <MasterDataForm
+                formAction={formAction}
+                pending={pending}
+                resource={resource}
+                selected={selected}
+                state={state}
+                title={title}
+                onCancel={() => openDialog(null)}
+              />
+            )}
           </div>
           <button className="modal-backdrop" type="button" aria-label="Tutup dialog" onClick={() => openDialog(null)} />
         </div>

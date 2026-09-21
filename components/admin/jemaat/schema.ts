@@ -9,9 +9,10 @@ export const jemaatSchema = z.object({
   tgl_lahir: z.string().date("Tanggal lahir tidak valid."),
   jenkel: z.enum(JEMAAT_GENDERS, { message: "Pilih jenis kelamin." }),
   stat_keluarga: z.enum(FAMILY_STATUSES, { message: "Pilih status keluarga." }),
-  alamat_blok: z.string().trim().min(1, "Alamat blok wajib diisi.").max(100),
   status: z.enum(JEMAAT_STATUSES, { message: "Pilih status jemaat." }),
-  id_rayon: z.string().trim().optional(),
+  // Keluarga (Kartu Keluarga) tempat jemaat ini bernaung. Alamat & rayon
+  // diturunkan dari keluarga, sehingga anggota satu keluarga selalu seragam.
+  id_keluarga: z.string().trim().min(1, "Pilih keluarga."),
 });
 
 export type JemaatInput = z.infer<typeof jemaatSchema>;

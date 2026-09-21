@@ -17,13 +17,17 @@ export async function GET(request: Request) {
   try {
     const rows = await prisma.rayon.findMany({
       orderBy: { nm_rayon: "asc" },
-      include: { _count: { select: { jemaat: true } } },
+      include: {
+        _count: { select: { keluarga: true } },
+        keluarga: { select: { _count: { select: { anggota: true } } } },
+      },
     });
 
     const data = rows.map((r) => ({
       id: r.id,
       nm_rayon: r.nm_rayon,
-      jumlah_jemaat: r._count.jemaat,
+      jumlah_keluarga: r._count.keluarga,
+      jumlah_jemaat: r.keluarga.reduce((sum, k) => sum + k._count.anggota, 0),
     }));
 
     return jsonOk(data);

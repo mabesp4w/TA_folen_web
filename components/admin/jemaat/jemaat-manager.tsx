@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Pencil, Plus, Search, Trash2, X } from "lucide-react";
 import { gooeyToast } from "goey-toast";
 import { Button } from "@/components/ui/button";
-import { DatePicker } from "@/components/ui/date-picker";
 import { InputText } from "@/components/ui/input-text";
 import { Select } from "@/components/ui/select";
 import {
@@ -13,12 +12,8 @@ import {
   deleteJemaatAction,
   updateJemaatAction,
 } from "./actions";
-import {
-  FAMILY_STATUSES,
-  initialActionState,
-  JEMAAT_GENDERS,
-  JEMAAT_STATUSES,
-} from "./schema";
+import { JemaatForm } from "./jemaat-form";
+import { initialActionState, JEMAAT_STATUSES } from "./schema";
 
 export type JemaatRow = {
   id: string;
@@ -26,13 +21,19 @@ export type JemaatRow = {
   tgl_lahir: string;
   jenkel: string;
   stat_keluarga: string;
-  alamat_blok: string;
   status: string;
-  id_rayon: string | null;
-  rayon: { nm_rayon: string } | null;
+  id_keluarga: string | null;
+  keluarga:
+    | {
+        no_kk: string | null;
+        alamat_blok: string;
+        rayon: { nm_rayon: string } | null;
+      }
+    | null;
 };
 
-type RayonOption = { id: string; nm_rayon: string };
+export type RayonOption = { id: string; nm_rayon: string };
+export type KeluargaOption = { value: string; label: string };
 type DialogMode = "create" | "edit" | "delete" | null;
 
 function formatDate(value: string) {
@@ -65,12 +66,14 @@ function useDebounce(callback: (value: string) => void, delay: number) {
 export function JemaatManager({
   jemaat,
   rayons,
+  keluargaOptions,
   query,
   rayon,
   status,
 }: {
   jemaat: JemaatRow[];
   rayons: RayonOption[];
+  keluargaOptions: KeluargaOption[];
   query: string;
   rayon: string;
   status: string;
@@ -259,10 +262,10 @@ export function JemaatManager({
                     <td>
                       <strong>{row.nm_lengkap}</strong>
                       <div className="text-xs text-[var(--muted)]">
-                        {row.jenkel === "L" ? "Laki-laki" : "Perempuan"} · {row.alamat_blok}
+                        {row.jenkel === "L" ? "Laki-laki" : "Perempuan"} · {row.keluarga?.alamat_blok ?? "Tanpa alamat"}
                       </div>
                     </td>
-                    <td>{row.rayon?.nm_rayon ?? "Belum ditentukan"}</td>
+                    <td>{row.keluarga?.rayon?.nm_rayon ?? "Belum ditentukan"}</td>
                     <td>{formatDate(row.tgl_lahir)}</td>
                     <td>{row.stat_keluarga.replace("_", " ")}</td>
                     <td><span className="badge badge-outline">{row.status}</span></td>
@@ -307,7 +310,7 @@ export function JemaatManager({
                   <div className="min-w-0">
                     <h2 className="break-words font-bold text-[var(--ink)]">{row.nm_lengkap}</h2>
                     <p className="break-words text-sm text-[var(--muted)]">
-                      {row.rayon?.nm_rayon ?? "Tanpa rayon"} · {row.alamat_blok}
+                      {row.keluarga?.rayon?.nm_rayon ?? "Tanpa rayon"} · {row.keluarga?.alamat_blok ?? "Tanpa alamat"}
                     </p>
                   </div>
                   <span className="badge badge-outline shrink-0">{row.status}</span>
@@ -371,72 +374,16 @@ export function JemaatManager({
                 </div>
               </form>
             ) : (
-              <form action={formAction} className="grid gap-4 sm:grid-cols-2">
-                <input name="id" type="hidden" value={selected?.id ?? ""} />
-                <InputText className="w-full" defaultValue={selected?.nm_lengkap} error={formState.errors?.nm_lengkap?.[0]} label="Nama lengkap" name="nm_lengkap" required />
-                <DatePicker
-                  defaultValue={selected?.tgl_lahir.slice(0, 10)}
-                  error={formState.errors?.tgl_lahir?.[0]}
-                  label="Tanggal lahir"
-                  name="tgl_lahir"
-                  required
-                />
-                <fieldset aria-describedby={formState.errors?.jenkel ? "jenkel-error" : undefined}>
-                  <legend className="mb-2 text-sm font-medium">
-                    Jenis kelamin <span aria-hidden="true">*</span>
-                  </legend>
-                  <div className="flex min-h-12 items-center gap-6 rounded-lg border border-base-300 px-4">
-                    {JEMAAT_GENDERS.map((item) => (
-                      <label className="flex cursor-pointer items-center gap-2" key={item}>
-                        <input
-                          className="radio radio-sm"
-                          defaultChecked={selected?.jenkel === item}
-                          name="jenkel"
-                          required
-                          type="radio"
-                          value={item}
-                        />
-                        <span>{item === "L" ? "Laki-laki" : "Perempuan"}</span>
-                      </label>
-                    ))}
-                  </div>
-                  {formState.errors?.jenkel?.[0] && (
-                    <p className="mt-1 text-sm text-error" id="jenkel-error">
-                      {formState.errors.jenkel[0]}
-                    </p>
-                  )}
-                </fieldset>
-                <Select defaultValue={selected?.stat_keluarga ?? ""} error={formState.errors?.stat_keluarga?.[0]} label="Status keluarga" name="stat_keluarga" options={FAMILY_STATUSES.map((item) => ({ value: item, label: item.replace("_", " ") }))} placeholder="Pilih status keluarga" required />
-                <InputText className="w-full" defaultValue={selected?.alamat_blok} error={formState.errors?.alamat_blok?.[0]} label="Alamat blok" name="alamat_blok" required />
-                <Select
-                  defaultValue={
-                    selected?.id_rayon
-                      ? {
-                          value: selected.id_rayon,
-                          label:
-                            rayons.find((item) => item.id === selected.id_rayon)
-                              ?.nm_rayon ?? selected.rayon?.nm_rayon ?? "",
-                        }
-                      : null
-                  }
-                  error={formState.errors?.id_rayon?.[0]}
-                  label="Rayon"
-                  name="id_rayon"
-                  options={rayons.map((item) => ({
-                    value: item.id,
-                    label: item.nm_rayon,
-                  }))}
-                  placeholder="Belum ditentukan"
-                  variant="react-select"
-                />
-                <Select defaultValue={selected?.status ?? "AKTIF"} error={formState.errors?.status?.[0]} label="Status jemaat" name="status" options={JEMAAT_STATUSES.map((item) => ({ value: item, label: item }))} required />
-                <div className="flex items-end justify-end gap-2">
-                  <Button variant="ghost" type="button" onClick={closeDialog}>Batal</Button>
-                  <Button disabled={formPending} loading={formPending} type="submit">
-                    {formPending ? "Menyimpan..." : mode === "edit" ? "Simpan perubahan" : "Tambah jemaat"}
-                  </Button>
-                </div>
-              </form>
+              <JemaatForm
+                key={formResetKey}
+                formAction={formAction}
+                mode={mode}
+                pending={formPending}
+                keluargaOptions={keluargaOptions}
+                selected={selected}
+                state={formState}
+                onCancel={closeDialog}
+              />
             )}
           </section>
         </div>

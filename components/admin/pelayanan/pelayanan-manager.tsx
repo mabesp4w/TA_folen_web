@@ -5,8 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Pencil, Plus, Search, Trash2, X } from "lucide-react";
 import { gooeyToast } from "goey-toast";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { DatePicker } from "@/components/ui/date-picker";
 import { InputText } from "@/components/ui/input-text";
 import { Select } from "@/components/ui/select";
 import {
@@ -14,9 +12,9 @@ import {
   deletePelayananAction,
   updatePelayananAction,
 } from "./actions";
+import { PelayananForm } from "./pelayanan-form";
 import {
   initialPelayananActionState,
-  MAJELIS_POSITIONS,
   PELAYANAN_TYPES,
 } from "./schema";
 
@@ -221,85 +219,33 @@ export function PelayananManager({ rows, jemaat, unsur, query, type, status }: P
               </Button>
             </div>
 
-            <form action={formAction} className="space-y-5">
-              {selected && <input name="id" type="hidden" value={selected.id} />}
-              {mode === "delete" ? (
-                <>
-                  <input name="type" type="hidden" value={selected?.type ?? ""} />
-                  <input name="ringkasan" type="hidden" value={selected?.name ?? ""} />
-                  <p>Hapus data pelayanan <strong>{selected?.name}</strong>?</p>
-                </>
-              ) : (
-                <>
-                  <Select
-                    defaultValue={formType}
-                    disabled={mode === "edit"}
-                    error={state.errors?.type?.[0]}
-                    label="Jenis pelayanan"
-                    name={mode === "edit" ? "type-display" : "type"}
-                    options={PELAYANAN_TYPES.map((value) => ({ value, label: typeLabels[value] }))}
-                    required
-                    onChange={(event: ChangeEvent<HTMLSelectElement>) => setFormType(event.target.value as (typeof PELAYANAN_TYPES)[number])}
-                  />
-                  {mode === "edit" && <input name="type" type="hidden" value={formType} />}
-                  <Select
-                    defaultValue={selected
-                      ? { value: selected.id_jemaat, label: selected.name }
-                      : null}
-                    disabled={pending}
-                    error={state.errors?.id_jemaat?.[0]}
-                    label="Jemaat"
-                    name="id_jemaat"
-                    options={jemaat.map((item) => ({ value: item.id, label: item.name }))}
-                    placeholder="Pilih jemaat"
-                    required
-                    variant="react-select"
-                  />
-                  {formType === "PENDETA" && (
-                    <InputText defaultValue={selected?.gelar ?? ""} error={state.errors?.gelar?.[0]} label="Gelar pelayanan" name="gelar" placeholder="Contoh: Pdt. atau Vikaris" />
-                  )}
-                  {formType === "MAJELIS" && (
-                    <Select
-                      defaultValue={selected?.jabatan ?? ""}
-                      error={state.errors?.jabatan?.[0]}
-                      label="Jabatan majelis"
-                      name="jabatan"
-                      options={MAJELIS_POSITIONS.map((value) => ({ value, label: value === "PENATUA" ? "Penatua" : "Syamas" }))}
-                      placeholder="Pilih jabatan"
-                      required
-                    />
-                  )}
-                  {formType === "PENGURUS" && (
-                    <div className="grid gap-5 sm:grid-cols-2">
-                      <InputText defaultValue={selected?.jabatan ?? ""} error={state.errors?.jabatan?.[0]} label="Jabatan pengurus" name="jabatan" required />
-                      <InputText defaultValue={selected?.sektor?.toString() ?? ""} error={state.errors?.sektor?.[0]} label="Sektor" min="1" max="99" name="sektor" type="number" />
-                      <div className="sm:col-span-2">
-                        <Select
-                          defaultValue={selected?.id_unsur ?? ""}
-                          error={state.errors?.id_unsur?.[0]}
-                          label="Unsur kategorial"
-                          name="id_unsur"
-                          options={unsur.map((item) => ({ value: item.id, label: item.name }))}
-                          placeholder="Pilih unsur"
-                          required
-                        />
-                      </div>
-                    </div>
-                  )}
-                  <div className="grid gap-5 sm:grid-cols-2">
-                    <DatePicker defaultValue={selected?.tgl_mulai} error={state.errors?.tgl_mulai?.[0]} label="Tanggal mulai" name="tgl_mulai" required />
-                    <DatePicker defaultValue={selected?.tgl_selesai ?? undefined} error={state.errors?.tgl_selesai?.[0]} label="Tanggal selesai" name="tgl_selesai" />
-                  </div>
-                  <Checkbox defaultChecked={selected?.aktif ?? true} label="Pelayanan masih aktif" name="aktif" />
-                </>
-              )}
-              <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-                <Button type="button" variant="ghost" onClick={() => openDialog(null)}>Batal</Button>
-                <Button className={mode === "delete" ? "btn-error" : ""} disabled={pending} loading={pending} type="submit">
-                  {pending ? "Memproses..." : mode === "delete" ? "Hapus" : "Simpan"}
-                </Button>
-              </div>
-            </form>
+            {mode === "delete" ? (
+              <form action={formAction} className="space-y-5">
+                {selected && <input name="id" type="hidden" value={selected.id} />}
+                <input name="type" type="hidden" value={selected?.type ?? ""} />
+                <input name="ringkasan" type="hidden" value={selected?.name ?? ""} />
+                <p>Hapus data pelayanan <strong>{selected?.name}</strong>?</p>
+                <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                  <Button type="button" variant="ghost" onClick={() => openDialog(null)}>Batal</Button>
+                  <Button className="btn-error" disabled={pending} loading={pending} type="submit">
+                    {pending ? "Memproses..." : "Hapus"}
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              <PelayananForm
+                formAction={formAction}
+                formType={formType}
+                jemaat={jemaat}
+                mode={mode}
+                pending={pending}
+                selected={selected}
+                state={state}
+                unsur={unsur}
+                onCancel={() => openDialog(null)}
+                onTypeChange={setFormType}
+              />
+            )}
           </div>
           <button className="modal-backdrop" type="button" aria-label="Tutup dialog" onClick={() => openDialog(null)} />
         </div>

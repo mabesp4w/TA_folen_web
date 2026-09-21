@@ -28,14 +28,19 @@ export async function GET(request: Request) {
       },
       orderBy: [{ aktif: "desc" }, { jabatan: "asc" }, { tgl_mulai: "desc" }],
       include: {
-        jemaat: { select: { nm_lengkap: true, rayon: { select: { nm_rayon: true } } } },
+        jemaat: {
+          select: {
+            nm_lengkap: true,
+            keluarga: { select: { rayon: { select: { nm_rayon: true } } } },
+          },
+        },
       },
     });
 
     const data = rows.map((m) => ({
       id: m.id,
       nama: m.jemaat.nm_lengkap,
-      rayon: m.jemaat.rayon?.nm_rayon ?? null,
+      rayon: m.jemaat.keluarga?.rayon?.nm_rayon ?? null,
       jabatan: m.jabatan,
       tgl_mulai: formatDate(m.tgl_mulai),
       tgl_selesai: formatDate(m.tgl_selesai),

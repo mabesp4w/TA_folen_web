@@ -20,9 +20,8 @@ function parseForm(formData: FormData) {
     tgl_lahir: formData.get("tgl_lahir"),
     jenkel: formData.get("jenkel"),
     stat_keluarga: formData.get("stat_keluarga"),
-    alamat_blok: formData.get("alamat_blok"),
     status: formData.get("status"),
-    id_rayon: formData.get("id_rayon") || undefined,
+    id_keluarga: formData.get("id_keluarga"),
   });
 }
 
@@ -60,7 +59,6 @@ export async function createJemaatAction(
     const jemaat = await prisma.jemaat.create({
       data: {
         ...parsed.data,
-        id_rayon: parsed.data.id_rayon || null,
         tgl_lahir: new Date(`${parsed.data.tgl_lahir}T00:00:00.000Z`),
       },
     });
@@ -107,7 +105,6 @@ export async function updateJemaatAction(
       where: { id },
       data: {
         ...parsed.data,
-        id_rayon: parsed.data.id_rayon || null,
         tgl_lahir: new Date(`${parsed.data.tgl_lahir}T00:00:00.000Z`),
       },
     });

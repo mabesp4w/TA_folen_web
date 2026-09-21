@@ -22,14 +22,19 @@ export async function GET(request: Request) {
       where: semua ? {} : { aktif: true },
       orderBy: [{ aktif: "desc" }, { tgl_mulai: "desc" }],
       include: {
-        jemaat: { select: { nm_lengkap: true, rayon: { select: { nm_rayon: true } } } },
+        jemaat: {
+          select: {
+            nm_lengkap: true,
+            keluarga: { select: { rayon: { select: { nm_rayon: true } } } },
+          },
+        },
       },
     });
 
     const data = rows.map((p) => ({
       id: p.id,
       nama: p.jemaat.nm_lengkap,
-      rayon: p.jemaat.rayon?.nm_rayon ?? null,
+      rayon: p.jemaat.keluarga?.rayon?.nm_rayon ?? null,
       gelar: p.gelar,
       tgl_mulai: formatDate(p.tgl_mulai),
       tgl_selesai: formatDate(p.tgl_selesai),

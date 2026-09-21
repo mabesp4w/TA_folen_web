@@ -11,15 +11,13 @@ import {
   deleteRayonAction,
   updateRayonAction,
 } from "./actions";
-import {
-  initialRayonActionState,
-  type RayonActionState,
-} from "./schema";
+import { initialRayonActionState } from "./schema";
+import { RayonForm } from "./rayon-form";
 
 export type RayonRow = {
   id: string;
   nm_rayon: string;
-  _count: { jemaat: number };
+  _count: { keluarga: number; jemaat: number };
 };
 
 type DialogMode = "create" | "edit" | "delete" | null;
@@ -67,16 +65,6 @@ export function RayonManager({
     initialRayonActionState,
   );
   const handledStateRef = useRef<typeof initialRayonActionState | null>(null);
-
-  function applyFilter(key: string, value: string) {
-    const params = new URLSearchParams(searchParams.toString());
-    if (value) {
-      params.set(key, value);
-    } else {
-      params.delete(key);
-    }
-    router.push(`?${params.toString()}`, { scroll: false });
-  }
 
   const debouncedSearch = useDebounce(
     (value: string) => {
@@ -196,6 +184,7 @@ export function RayonManager({
               <thead>
                 <tr>
                   <th>Nama Rayon</th>
+                  <th>Jumlah Keluarga</th>
                   <th>Jumlah Jemaat</th>
                   <th className="text-right">Aksi</th>
                 </tr>
@@ -204,6 +193,7 @@ export function RayonManager({
                 {rayons.map((row) => (
                   <tr key={row.id}>
                     <td className="font-semibold">{row.nm_rayon}</td>
+                    <td>{row._count.keluarga} keluarga</td>
                     <td>{row._count.jemaat} jemaat</td>
                     <td>
                       <div className="flex justify-end gap-1">
@@ -246,7 +236,7 @@ export function RayonManager({
                   <div className="min-w-0">
                     <h2 className="break-words font-bold text-[var(--ink)]">{row.nm_rayon}</h2>
                     <p className="break-words text-sm text-[var(--muted)]">
-                      {row._count.jemaat} jemaat
+                      {row._count.keluarga} keluarga · {row._count.jemaat} jemaat
                     </p>
                   </div>
                 </div>
@@ -300,24 +290,15 @@ export function RayonManager({
                 </div>
               </form>
             ) : (
-              <form action={formAction} className="space-y-4" key={formResetKey}>
-                <input name="resource" type="hidden" value="rayon" />
-                {selected && <input name="id" type="hidden" value={selected.id} />}
-                <InputText
-                  autoFocus
-                  defaultValue={selected?.nm_rayon ?? ""}
-                  error={formState.errors?.name?.[0]}
-                  label="Nama rayon"
-                  name="name"
-                  required
-                />
-                <div className="flex justify-end gap-2">
-                  <Button variant="ghost" type="button" onClick={closeDialog}>Batal</Button>
-                  <Button disabled={formPending} loading={formPending} type="submit">
-                    {formPending ? "Menyimpan..." : mode === "edit" ? "Simpan perubahan" : "Tambah rayon"}
-                  </Button>
-                </div>
-              </form>
+              <RayonForm
+                key={formResetKey}
+                formAction={formAction}
+                mode={mode}
+                pending={formPending}
+                selected={selected}
+                state={formState}
+                onCancel={closeDialog}
+              />
             )}
           </section>
         </div>

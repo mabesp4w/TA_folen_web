@@ -13,11 +13,35 @@ datasource db {
 
 // Model Rayon berdasarkan pembagian wilayah di buletin
 model Rayon {
-  id       String   @id @default(cuid())
-  nm_rayon String   @unique // Nama rayon. Contoh: Galilea, Yerikho, Bethel, Elim, Kana, Hermon, Bukit Zaitun
-  jemaat   Jemaat[]
+  id       String     @id @default(cuid())
+  nm_rayon String     @unique // Nama rayon. Contoh: Galilea, Yerikho, Bethel, Elim, Kana, Hermon, Bukit Zaitun
+  // Keluarga yang berdomisili di rayon ini (rayon kini melekat pada keluarga, bukan tiap individu).
+  keluarga Keluarga[]
 
   @@map("rayon")
+}
+
+// Model Keluarga (Kartu Keluarga) — satu rumah tangga yang menaungi beberapa
+// jemaat. Alamat & rayon melekat pada keluarga, sehingga seluruh anggota satu
+// keluarga otomatis berbagi alamat dan rayon yang sama. Kepala Keluarga adalah
+// anggota dengan `stat_keluarga = "KK"`.
+model Keluarga {
+  id          String   @id @default(cuid())
+  // Nomor Kartu Keluarga (opsional & unik bila diisi).
+  no_kk       String?  @unique
+  alamat_blok String // Contoh: G. 16, H. 04, B. 58
+  // Relasi rayon (opsional)
+  id_rayon    String?
+  rayon       Rayon?   @relation(fields: [id_rayon], references: [id], onDelete: SetNull)
+
+  // Anggota keluarga (kepala keluarga, isteri, anak, dll.)
+  anggota Jemaat[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([id_rayon])
+  @@map("keluarga")
 }
 
 // Model Unsur Kategorial
@@ -33,16 +57,17 @@ model Unsur {
 
 // Model Jemaat berdasarkan daftar Ulang Tahun
 model Jemaat {
-  id            String   @id @default(cuid())
-  // Relasi
-  id_rayon      String?
-  rayon         Rayon?   @relation(fields: [id_rayon], references: [id])
+  id            String    @id @default(cuid())
+  // Relasi ke keluarga (Kartu Keluarga). Alamat & rayon diturunkan dari sini,
+  // sehingga anggota satu keluarga selalu berbagi alamat & rayon yang sama.
+  // onDelete: SetNull → menghapus keluarga tidak ikut menghapus anggotanya.
+  id_keluarga   String?
+  keluarga      Keluarga? @relation(fields: [id_keluarga], references: [id], onDelete: SetNull)
   nm_lengkap    String // Nama lengkap jemaat
-  tgl_lahir     DateTime @db.Date
+  tgl_lahir     DateTime  @db.Date
   jenkel        String // Nilai yang diizinkan: "L" (Laki-laki), "P" (Perempuan)
   stat_keluarga String // Nilai yang diizinkan: "KK" (Kepala Keluarga), "Isteri", "Anak", "Lain_Lain"
-  alamat_blok   String // Contoh: G. 16, H. 04, B. 58
-  status        String   @default("AKTIF") // Status keanggotaan. Contoh: "AKTIF", "PINDAH", "MENINGGAL", "LAINNYA"
+  status        String    @default("AKTIF") // Status keanggotaan. Contoh: "AKTIF", "PINDAH", "MENINGGAL", "LAINNYA"
 
   // Riwayat pelayanan sebagai Pendeta (lihat model Pendeta)
   pendeta        Pendeta[]
@@ -58,6 +83,7 @@ model Jemaat {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
+  @@index([id_keluarga])
   @@map("jemaat")
 }
 

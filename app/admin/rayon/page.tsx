@@ -20,14 +20,20 @@ export default async function RayonPage({
     where: {
       ...(query ? { nm_rayon: { contains: query } } : {}),
     },
-    include: { _count: { select: { jemaat: true } } },
+    include: {
+      _count: { select: { keluarga: true } },
+      keluarga: { select: { _count: { select: { anggota: true } } } },
+    },
     orderBy: { nm_rayon: "asc" },
   });
 
   const rayons: RayonRow[] = rows.map((row) => ({
     id: row.id,
     nm_rayon: row.nm_rayon,
-    _count: row._count,
+    _count: {
+      keluarga: row._count.keluarga,
+      jemaat: row.keluarga.reduce((sum, k) => sum + k._count.anggota, 0),
+    },
   }));
 
   return (
