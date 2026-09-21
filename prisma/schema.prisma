@@ -228,29 +228,6 @@ model GaleriFoto {
   @@map("galeri_foto")
 }
 
-// Model Slide — gambar untuk carousel/banner beranda. Overlay (judul/teks) dan
-// tombol tautan bersifat opsional; bila kosong, slide tampil sebagai gambar saja.
-model Slide {
-  id String @id @default(cuid())
-
-  // Urutan tampil di carousel, mulai dari 1 dan selalu rapat (tanpa lompatan).
-  // Sekaligus menentukan nama berkas gambarnya, karena itu wajib UNIK.
-  order Int    @unique
-  url   String // Path publik berkas gambar — selalu "/uploads/slide/<order>.webp"
-
-  judul     String? // Judul overlay (opsional)
-  teks      String? @db.Text // Teks singkat di bawah judul (opsional)
-  link_url  String? // Tujuan tombol (opsional). Contoh: "/jadwal" atau "https://..."
-  link_teks String? // Label tombol (opsional). Contoh: "Lihat Jadwal"
-
-  status Boolean @default(true) // true = tampil, false = disembunyikan
-
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  @@map("slide")
-}
-
 // Model Akun Akses (Sistem)
 model User {
   id       String @id @default(cuid())

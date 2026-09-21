@@ -22,7 +22,6 @@ const ENTITAS = [
   "Renungan",
   "GaleriAlbum",
   "GaleriFoto",
-  "Slide",
   "User",
 ];
 

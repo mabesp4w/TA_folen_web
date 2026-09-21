@@ -62,7 +62,6 @@ export const ModelName = {
   Renungan: 'Renungan',
   GaleriAlbum: 'GaleriAlbum',
   GaleriFoto: 'GaleriFoto',
-  Slide: 'Slide',
   User: 'User',
   Pendeta: 'Pendeta',
   Majelis: 'Majelis',
@@ -230,22 +229,6 @@ export const GaleriFotoScalarFieldEnum = {
 } as const
 
 export type GaleriFotoScalarFieldEnum = (typeof GaleriFotoScalarFieldEnum)[keyof typeof GaleriFotoScalarFieldEnum]
-
-
-export const SlideScalarFieldEnum = {
-  id: 'id',
-  order: 'order',
-  url: 'url',
-  judul: 'judul',
-  teks: 'teks',
-  link_url: 'link_url',
-  link_teks: 'link_teks',
-  status: 'status',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-} as const
-
-export type SlideScalarFieldEnum = (typeof SlideScalarFieldEnum)[keyof typeof SlideScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
@@ -452,18 +435,6 @@ export const GaleriFotoOrderByRelevanceFieldEnum = {
 } as const
 
 export type GaleriFotoOrderByRelevanceFieldEnum = (typeof GaleriFotoOrderByRelevanceFieldEnum)[keyof typeof GaleriFotoOrderByRelevanceFieldEnum]
-
-
-export const SlideOrderByRelevanceFieldEnum = {
-  id: 'id',
-  url: 'url',
-  judul: 'judul',
-  teks: 'teks',
-  link_url: 'link_url',
-  link_teks: 'link_teks'
-} as const
-
-export type SlideOrderByRelevanceFieldEnum = (typeof SlideOrderByRelevanceFieldEnum)[keyof typeof SlideOrderByRelevanceFieldEnum]
 
 
 export const UserOrderByRelevanceFieldEnum = {

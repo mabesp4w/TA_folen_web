@@ -408,7 +408,6 @@ export const ModelName = {
   Renungan: 'Renungan',
   GaleriAlbum: 'GaleriAlbum',
   GaleriFoto: 'GaleriFoto',
-  Slide: 'Slide',
   User: 'User',
   Pendeta: 'Pendeta',
   Majelis: 'Majelis',
@@ -429,7 +428,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "rayon" | "keluarga" | "unsur" | "jemaat" | "ibadah" | "kehadiran" | "keuangan" | "pengumuman" | "renungan" | "galeriAlbum" | "galeriFoto" | "slide" | "user" | "pendeta" | "majelis" | "badanPengurus" | "logAktivitas"
+    modelProps: "rayon" | "keluarga" | "unsur" | "jemaat" | "ibadah" | "kehadiran" | "keuangan" | "pengumuman" | "renungan" | "galeriAlbum" | "galeriFoto" | "user" | "pendeta" | "majelis" | "badanPengurus" | "logAktivitas"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1159,72 +1158,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    Slide: {
-      payload: Prisma.$SlidePayload<ExtArgs>
-      fields: Prisma.SlideFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.SlideFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SlidePayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.SlideFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SlidePayload>
-        }
-        findFirst: {
-          args: Prisma.SlideFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SlidePayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.SlideFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SlidePayload>
-        }
-        findMany: {
-          args: Prisma.SlideFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SlidePayload>[]
-        }
-        create: {
-          args: Prisma.SlideCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SlidePayload>
-        }
-        createMany: {
-          args: Prisma.SlideCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        delete: {
-          args: Prisma.SlideDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SlidePayload>
-        }
-        update: {
-          args: Prisma.SlideUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SlidePayload>
-        }
-        deleteMany: {
-          args: Prisma.SlideDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.SlideUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        upsert: {
-          args: Prisma.SlideUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SlidePayload>
-        }
-        aggregate: {
-          args: Prisma.SlideAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateSlide>
-        }
-        groupBy: {
-          args: Prisma.SlideGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.SlideGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.SlideCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.SlideCountAggregateOutputType> | number
-        }
-      }
-    }
     User: {
       payload: Prisma.$UserPayload<ExtArgs>
       fields: Prisma.UserFieldRefs
@@ -1740,22 +1673,6 @@ export const GaleriFotoScalarFieldEnum = {
 export type GaleriFotoScalarFieldEnum = (typeof GaleriFotoScalarFieldEnum)[keyof typeof GaleriFotoScalarFieldEnum]
 
 
-export const SlideScalarFieldEnum = {
-  id: 'id',
-  order: 'order',
-  url: 'url',
-  judul: 'judul',
-  teks: 'teks',
-  link_url: 'link_url',
-  link_teks: 'link_teks',
-  status: 'status',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-} as const
-
-export type SlideScalarFieldEnum = (typeof SlideScalarFieldEnum)[keyof typeof SlideScalarFieldEnum]
-
-
 export const UserScalarFieldEnum = {
   id: 'id',
   username: 'username',
@@ -1960,18 +1877,6 @@ export const GaleriFotoOrderByRelevanceFieldEnum = {
 } as const
 
 export type GaleriFotoOrderByRelevanceFieldEnum = (typeof GaleriFotoOrderByRelevanceFieldEnum)[keyof typeof GaleriFotoOrderByRelevanceFieldEnum]
-
-
-export const SlideOrderByRelevanceFieldEnum = {
-  id: 'id',
-  url: 'url',
-  judul: 'judul',
-  teks: 'teks',
-  link_url: 'link_url',
-  link_teks: 'link_teks'
-} as const
-
-export type SlideOrderByRelevanceFieldEnum = (typeof SlideOrderByRelevanceFieldEnum)[keyof typeof SlideOrderByRelevanceFieldEnum]
 
 
 export const UserOrderByRelevanceFieldEnum = {
@@ -2231,7 +2136,6 @@ export type GlobalOmitConfig = {
   renungan?: Prisma.RenunganOmit
   galeriAlbum?: Prisma.GaleriAlbumOmit
   galeriFoto?: Prisma.GaleriFotoOmit
-  slide?: Prisma.SlideOmit
   user?: Prisma.UserOmit
   pendeta?: Prisma.PendetaOmit
   majelis?: Prisma.MajelisOmit

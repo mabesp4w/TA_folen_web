@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CalendarDays, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -10,9 +11,12 @@ export function DashboardHeader() {
         <p className="mt-2 text-sm leading-6 text-[var(--muted)]">Pantau pelayanan, data jemaat, dan agenda gereja dari satu ruang kerja.</p>
       </div>
       <div className="flex flex-wrap gap-2">
-        <Button variant="outline" className="border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] shadow-none">
+        <Link
+          href="/admin/agenda"
+          className="btn btn-outline border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+        >
           <CalendarDays size={18} aria-hidden="true" /> Lihat kalender
-        </Button>
+        </Link>
         <Button>
           <Plus size={18} aria-hidden="true" /> Tambah data
         </Button>

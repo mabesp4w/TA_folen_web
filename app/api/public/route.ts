@@ -22,7 +22,6 @@ export async function GET() {
       jadwal: "/api/public/jadwal?dari=YYYY-MM-DD&sampai=YYYY-MM-DD&page=1&limit=20",
       galeri: "/api/public/galeri?page=1&limit=20",
       galeri_detail: "/api/public/galeri/{id}",
-      slide: "/api/public/slide",
       rayon: "/api/public/rayon",
       unsur: "/api/public/unsur",
       jemaat: "/api/public/jemaat?page=1&limit=20&rayon={id}&status=AKTIF&q={nama}",

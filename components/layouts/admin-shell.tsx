@@ -11,6 +11,14 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  function handleSearch(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const query = searchQuery.trim();
+    // Arahkan ke pencarian data jemaat (halaman /admin/jemaat membaca ?q=).
+    router.push(query ? `/admin/jemaat?q=${encodeURIComponent(query)}` : "/admin/jemaat");
+  }
 
   async function handleLogout() {
     setIsLoggingOut(true);
@@ -42,11 +50,24 @@ export function AdminShell({ children }: { children: ReactNode }) {
           >
             <Menu size={22} aria-hidden="true" />
           </Button>
-          <label className="input input-bordered hidden h-10 max-w-md flex-1 items-center gap-2 bg-transparent md:flex">
-            <Search size={17} className="text-[var(--muted)]" aria-hidden="true" />
-            <span className="sr-only">Cari data</span>
-            <input type="search" className="grow" placeholder="Cari jemaat, agenda, atau dokumen" />
-          </label>
+          <form
+            role="search"
+            onSubmit={handleSearch}
+            className="hidden h-10 max-w-md flex-1 md:block"
+          >
+            <label className="input input-bordered flex h-10 items-center gap-2 bg-transparent">
+              <Search size={17} className="text-[var(--muted)]" aria-hidden="true" />
+              <span className="sr-only">Cari jemaat</span>
+              <input
+                type="search"
+                name="q"
+                className="grow"
+                placeholder="Cari nama jemaat, alamat, atau no. KK"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.currentTarget.value)}
+              />
+            </label>
+          </form>
           <div className="ml-auto flex items-center gap-2">
             <Button variant="ghost" square aria-label="Lihat notifikasi">
               <Bell size={20} aria-hidden="true" />

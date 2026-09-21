@@ -7,7 +7,6 @@ import {
   Church,
   CircleDollarSign,
   ClipboardList,
-  GalleryHorizontalEnd,
   Home,
   Images,
   LayoutDashboard,
@@ -86,14 +85,7 @@ const adminItems: SidebarItem[] = [
     ],
   },
   { label: "Keuangan", href: "/admin/keuangan", icon: CircleDollarSign },
-  {
-    label: "Publikasi",
-    icon: Images,
-    children: [
-      { label: "Galeri", href: "/admin/galeri", icon: Images },
-      { label: "Slide Beranda", href: "/admin/slide", icon: GalleryHorizontalEnd },
-    ],
-  },
+  { label: "Galeri", href: "/admin/galeri", icon: Images },
   {
     label: "Pengaturan",
     icon: Settings2,

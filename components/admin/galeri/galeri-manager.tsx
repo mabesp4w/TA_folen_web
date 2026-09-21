@@ -46,7 +46,7 @@ export type PendingPhoto = { id: string; file: File; preview: string };
 const MAX_PHOTOS = 30;
 
 // Skala turun agar sisi terpanjang maksimal 1920px dengan mempertahankan rasio,
-// lalu konversi ke WebP di sisi klien (konsisten dengan pengelolaan slide).
+// lalu konversi ke WebP di sisi klien.
 function resizeToWebp(file: File): Promise<File> {
   return new Promise((resolve, reject) => {
     Resizer.imageFileResizer(

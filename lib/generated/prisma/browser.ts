@@ -73,11 +73,6 @@ export type GaleriAlbum = Prisma.GaleriAlbumModel
  */
 export type GaleriFoto = Prisma.GaleriFotoModel
 /**
- * Model Slide
- * 
- */
-export type Slide = Prisma.SlideModel
-/**
  * Model User
  * 
  */
