@@ -105,7 +105,7 @@ model Ibadah {
   // etnik; bila kosong, label diturunkan dari unsur/rayon/waktu.
   nm_ibadah String?
 
-  // Ibadah gabungan: bila true, ibadah unsur dilaksanakan bersama di Gereja Kanaan.
+  // Ibadah gabungan: bila true, ibadah unsur dilaksanakan bersama di Gereja Syaloom.
   gabungan Boolean @default(false)
   // Sektor unsur (mis. PKB/PW), umumnya 1-10. Opsional.
   sektor   Int?

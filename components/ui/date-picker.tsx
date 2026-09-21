@@ -80,6 +80,7 @@ export function DatePicker({
           onChange={(date: Date | null) => setSelectedDate(date)}
           placeholderText="Pilih tanggal lahir"
           popperPlacement="bottom-start"
+          autoComplete="off"
         renderCustomHeader={({
           changeMonth,
           changeYear,

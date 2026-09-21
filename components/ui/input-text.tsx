@@ -13,6 +13,7 @@ export type InputTextProps = Omit<InputHTMLAttributes<HTMLInputElement>, "type">
 export function InputText({
   "aria-describedby": ariaDescribedBy,
   "aria-invalid": ariaInvalid,
+  autoComplete = "on",
   className = "",
   error,
   helpText,
@@ -41,6 +42,7 @@ export function InputText({
           {...props}
           aria-describedby={describedBy}
           aria-invalid={ariaInvalid ?? Boolean(error)}
+          autoComplete={autoComplete}
           id={inputId}
           name={name}
           required={required}

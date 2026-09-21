@@ -59,6 +59,14 @@ export function KehadiranManager({ rows, ibadahOptions }: Props) {
     [ibadahOptions, usedIbadah],
   );
 
+  // Alasan tombol "Tambah kehadiran" dinonaktifkan, agar tidak terasa seperti bug.
+  const addDisabledReason =
+    availableOptions.length > 0
+      ? null
+      : ibadahOptions.length === 0
+        ? "Tambahkan ibadah terlebih dahulu di menu Agenda & Ibadah."
+        : "Semua ibadah sudah memiliki data kehadiran.";
+
   useEffect(() => {
     if (state.status === "success") {
       gooeyToast.success(state.message ?? "Data kehadiran berhasil disimpan.");
@@ -91,14 +99,20 @@ export function KehadiranManager({ rows, ibadahOptions }: Props) {
             Catat statistik kehadiran (laki-laki, perempuan, anak) untuk setiap ibadah.
           </p>
         </div>
-        <Button
-          type="button"
-          disabled={availableOptions.length === 0}
-          onClick={() => openDialog("create")}
-        >
-          <Plus size={18} aria-hidden="true" />
-          Tambah kehadiran
-        </Button>
+        <div className="flex flex-col items-start gap-1 sm:items-end">
+          <Button
+            type="button"
+            disabled={availableOptions.length === 0}
+            title={addDisabledReason ?? undefined}
+            onClick={() => openDialog("create")}
+          >
+            <Plus size={18} aria-hidden="true" />
+            Tambah kehadiran
+          </Button>
+          {addDisabledReason && (
+            <p className="max-w-xs text-xs text-[var(--muted)] sm:text-right">{addDisabledReason}</p>
+          )}
+        </div>
       </header>
 
       {rows.length === 0 ? (

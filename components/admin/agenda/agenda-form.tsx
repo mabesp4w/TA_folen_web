@@ -182,7 +182,7 @@ export function AgendaForm({
                 error={state.errors?.tempat?.[0]}
                 label="Tempat"
                 name="tempat"
-                placeholder="Contoh: Gereja Kanaan"
+                placeholder="Contoh: Gereja Syaloom"
               />
             </div>
             <div className="col-span-8 sm:col-span-4">

@@ -53,7 +53,7 @@ export function UserForm({
       <div className="grid grid-cols-8 gap-x-6 gap-y-4">
         <div className="col-span-8 sm:col-span-4">
           <InputText
-            autoComplete="username"
+            autoComplete="off"
             defaultValue={selected?.username ?? ""}
             error={state.errors?.username?.[0]}
             label="Username"

@@ -132,6 +132,21 @@ export async function updateKeuanganAction(
   }
 }
 
+/**
+ * Satu action stabil untuk useActionState. Operasi ditentukan lewat field
+ * tersembunyi `intent`, bukan dengan menukar fungsi action antar-render
+ * (yang membuat form hapus keliru divalidasi sebagai create/update).
+ */
+export async function keuanganAction(
+  state: KeuanganActionState,
+  formData: FormData,
+): Promise<KeuanganActionState> {
+  const intent = String(formData.get("intent") ?? "create");
+  if (intent === "delete") return deleteKeuanganAction(state, formData);
+  if (intent === "update") return updateKeuanganAction(state, formData);
+  return createKeuanganAction(state, formData);
+}
+
 export async function deleteKeuanganAction(
   _state: KeuanganActionState,
   formData: FormData,

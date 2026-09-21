@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
+import { InputRupiah } from "@/components/ui/input-rupiah";
 import { InputText } from "@/components/ui/input-text";
 import { Select, type SelectOption } from "@/components/ui/select";
 import type { IbadahOption, KeuanganRow } from "./keuangan-manager";
@@ -35,6 +36,7 @@ export function KeuanganForm({
 
   return (
     <form action={formAction} className="space-y-5">
+      <input name="intent" type="hidden" value={selected ? "update" : "create"} />
       {selected && <input name="id" type="hidden" value={selected.id} />}
       <div className="grid grid-cols-8 gap-x-6 gap-y-4">
         <div className="col-span-8 sm:col-span-4">
@@ -73,19 +75,14 @@ export function KeuanganForm({
           />
         </div>
         <div className="col-span-8 sm:col-span-4">
-          <InputText
-            defaultValue={selected?.jumlah.toString() ?? ""}
+          <InputRupiah
+            defaultValue={selected?.jumlah ?? ""}
             error={state.errors?.jumlah?.[0]}
-            helpText="Masukkan Rupiah tanpa titik, koma, atau simbol mata uang."
-            inputMode="numeric"
-            label="Jumlah (Rp)"
-            max="2147483647"
-            min="1"
+            helpText="Titik ribuan otomatis. Cukup ketik angkanya."
+            label="Jumlah"
             name="jumlah"
-            placeholder="Contoh: 250000"
+            placeholder="250.000"
             required
-            step="1"
-            type="number"
           />
         </div>
         <div className="col-span-8">

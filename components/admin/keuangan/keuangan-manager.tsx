@@ -7,11 +7,7 @@ import { gooeyToast } from "goey-toast";
 import { Button } from "@/components/ui/button";
 import { InputText } from "@/components/ui/input-text";
 import { Select } from "@/components/ui/select";
-import {
-  createKeuanganAction,
-  deleteKeuanganAction,
-  updateKeuanganAction,
-} from "./actions";
+import { keuanganAction } from "./actions";
 import { KeuanganForm } from "./keuangan-form";
 import {
   initialKeuanganActionState,
@@ -59,14 +55,8 @@ export function KeuanganManager({
   const [selected, setSelected] = useState<KeuanganRow | null>(null);
   const [query, setQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
-  const action =
-    mode === "create"
-      ? createKeuanganAction
-      : mode === "edit"
-        ? updateKeuanganAction
-        : deleteKeuanganAction;
   const [state, formAction, pending] = useActionState(
-    action,
+    keuanganAction,
     initialKeuanganActionState,
   );
 
@@ -271,6 +261,7 @@ export function KeuanganManager({
 
             {mode === "delete" ? (
               <form action={formAction} className="space-y-5">
+                <input name="intent" type="hidden" value="delete" />
                 {selected && <input name="id" type="hidden" value={selected.id} />}
                 <input
                   name="ringkasan"

@@ -94,9 +94,8 @@ export function LoginAccessForm() {
   }
 
   return (
-    <form className="login-form" noValidate onSubmit={handleSubmit}>
+    <form autoComplete="off" className="login-form" noValidate onSubmit={handleSubmit}>
       <InputText
-        autoComplete="username"
         disabled={isLoading}
         error={errors.identity}
         icon={<UserRound aria-hidden="true" size={19} />}
@@ -109,7 +108,7 @@ export function LoginAccessForm() {
       />
 
       <InputPassword
-        autoComplete="current-password"
+        autoComplete="new-password"
         disabled={isLoading}
         error={errors.password}
         icon={<LockKeyhole aria-hidden="true" size={19} />}

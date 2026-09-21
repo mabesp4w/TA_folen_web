@@ -201,7 +201,7 @@ const RENUNGAN: Array<{
     bacaan: "Efesus 3:14-21",
     kutipan: "Supaya kamu berakar serta berdasar di dalam kasih.",
     isi: "<p>Pohon yang berakar dalam tidak mudah roboh diterpa angin. Demikian pula iman yang berakar dalam kasih Kristus. Paulus berdoa agar jemaat dikuatkan oleh Roh di dalam batin.</p><p>Kasih Allah itu <strong>lebar, panjang, tinggi, dan dalam</strong> — melampaui segala pengetahuan. Semakin kita mengenalnya, semakin kokoh hidup kita.</p>",
-    sumber: "Renungan Jemaat GKI Kanaan",
+    sumber: "Renungan Jemaat GKI Syaloom",
     tgl_publish: "2026-08-17",
   },
   {
@@ -209,7 +209,7 @@ const RENUNGAN: Array<{
     bacaan: "Filipi 4:4-7",
     kutipan: "Damai sejahtera Allah akan memelihara hati dan pikiranmu.",
     isi: "<p>Kekuatiran adalah beban yang tidak dirancang untuk kita pikul sendiri. Firman mengajak kita menyerahkannya kepada Tuhan melalui doa dan ucapan syukur.</p><ul><li>Bersukacita senantiasa dalam Tuhan.</li><li>Nyatakan keinginan dalam doa dan permohonan.</li><li>Sertai dengan ucapan syukur.</li></ul><p>Maka damai sejahtera-Nya menjadi penjaga hati kita.</p>",
-    sumber: "Renungan Jemaat GKI Kanaan",
+    sumber: "Renungan Jemaat GKI Syaloom",
     tgl_publish: "2026-08-10",
   },
   {
@@ -274,12 +274,12 @@ const JADWAL: Array<{
   pelayanFirman?: string; // teks cadangan (pengkhotbah tamu)
   pembacaanAlkitab?: string;
 }> = [
-  // Ibadah Minggu (tanpa unsur/tuan rumah → di Gereja Kanaan)
+  // Ibadah Minggu (tanpa unsur/tuan rumah → di Gereja Syaloom)
   { tgl: "2026-08-30", waktu: "05.30", pelayanJemaat: "Yohanes Manalu", pembacaanAlkitab: "Mazmur 63:1-9" },
   { tgl: "2026-08-30", waktu: "09.00", pelayanFirman: "Pdt. Samuel Hutagalung", pembacaanAlkitab: "Yohanes 15:1-8" },
   // Ibadah unsur PKB di rumah jemaat
   { unsur: "PKB", tgl: "2026-08-28", waktu: "19.00", hostJemaat: "Petrus Siahaan", pelayanFirman: "Pnt. Alex Siahaan", pembacaanAlkitab: "Amsal 3:5-6" },
-  // Ibadah PW gabungan di Gereja Kanaan
+  // Ibadah PW gabungan di Gereja Syaloom
   { unsur: "PW", gabungan: true, tgl: "2026-09-03", waktu: "16.00", pelayanFirman: "Pdt. Diana Simatupang", pembacaanAlkitab: "Amsal 31:10-31" },
   // Ibadah Rayon (label diturunkan dari rayon tuan rumah: Hermon)
   { tgl: "2026-09-04", waktu: "19.00", hostJemaat: "Alex Siahaan", pelayanFirman: "Pnt. Debora Panjaitan", pembacaanAlkitab: "Roma 12:9-21" },

@@ -19,6 +19,7 @@ export type InputPasswordProps = Omit<InputHTMLAttributes<HTMLInputElement>, "ty
 export function InputPassword({
   "aria-describedby": ariaDescribedBy,
   "aria-invalid": ariaInvalid,
+  autoComplete = "new-password",
   className = "",
   error,
   helpText,
@@ -49,6 +50,7 @@ export function InputPassword({
           {...props}
           aria-describedby={describedBy}
           aria-invalid={ariaInvalid ?? Boolean(error)}
+          autoComplete={autoComplete}
           id={inputId}
           name={name}
           required={required}
