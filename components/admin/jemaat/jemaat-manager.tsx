@@ -14,6 +14,15 @@ import {
 } from "./actions";
 import { JemaatForm } from "./jemaat-form";
 import { initialActionState, JEMAAT_STATUSES } from "./schema";
+import type { ResourcePermission } from "@/lib/permissions";
+
+// Izin default penuh — dipakai bila prop tidak diberikan (mis. ADMIN).
+const FULL_PERMISSION: ResourcePermission = {
+  view: true,
+  create: true,
+  update: true,
+  delete: true,
+};
 
 export type JemaatRow = {
   id: string;
@@ -70,6 +79,7 @@ export function JemaatManager({
   query,
   rayon,
   status,
+  permission = FULL_PERMISSION,
 }: {
   jemaat: JemaatRow[];
   rayons: RayonOption[];
@@ -77,8 +87,10 @@ export function JemaatManager({
   query: string;
   rayon: string;
   status: string;
+  permission?: ResourcePermission;
 }) {
   const router = useRouter();
+  const canModify = permission.update || permission.delete;
   const searchParams = useSearchParams();
 
   const [mode, setMode] = useState<DialogMode>(null);
@@ -183,17 +195,19 @@ export function JemaatManager({
             Kelola identitas, rayon, dan status keanggotaan jemaat.
           </p>
         </div>
-        <Button
-          type="button"
-          onClick={() => {
-            handledStateRef.current = formState;
-            setSelected(null);
-            setMode("create");
-          }}
-        >
-          <Plus size={18} aria-hidden="true" />
-          Tambah jemaat
-        </Button>
+        {permission.create && (
+          <Button
+            type="button"
+            onClick={() => {
+              handledStateRef.current = formState;
+              setSelected(null);
+              setMode("create");
+            }}
+          >
+            <Plus size={18} aria-hidden="true" />
+            Tambah jemaat
+          </Button>
+        )}
       </header>
 
       <form
@@ -271,27 +285,34 @@ export function JemaatManager({
                     <td><span className="badge badge-outline">{row.status}</span></td>
                     <td>
                       <div className="flex justify-end gap-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          square
-                          type="button"
-                          aria-label={`Edit ${row.nm_lengkap}`}
-                          onClick={() => edit(row)}
-                        >
-                          <Pencil size={16} aria-hidden="true" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          square
-                          className="text-error"
-                          type="button"
-                          aria-label={`Hapus ${row.nm_lengkap}`}
-                          onClick={() => remove(row)}
-                        >
-                          <Trash2 size={16} aria-hidden="true" />
-                        </Button>
+                        {permission.update && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            square
+                            type="button"
+                            aria-label={`Edit ${row.nm_lengkap}`}
+                            onClick={() => edit(row)}
+                          >
+                            <Pencil size={16} aria-hidden="true" />
+                          </Button>
+                        )}
+                        {permission.delete && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            square
+                            className="text-error"
+                            type="button"
+                            aria-label={`Hapus ${row.nm_lengkap}`}
+                            onClick={() => remove(row)}
+                          >
+                            <Trash2 size={16} aria-hidden="true" />
+                          </Button>
+                        )}
+                        {!canModify && (
+                          <span className="text-xs text-[var(--muted)]">—</span>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -325,14 +346,20 @@ export function JemaatManager({
                     <dd>{row.stat_keluarga.replace("_", " ")}</dd>
                   </div>
                 </dl>
-                <div className="mt-4 flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1" type="button" onClick={() => edit(row)}>
-                    <Pencil size={15} aria-hidden="true" /> Edit
-                  </Button>
-                  <Button variant="outline" size="sm" className="btn-error flex-1" type="button" onClick={() => remove(row)}>
-                    <Trash2 size={15} aria-hidden="true" /> Hapus
-                  </Button>
-                </div>
+                {canModify && (
+                  <div className="mt-4 flex gap-2">
+                    {permission.update && (
+                      <Button variant="outline" size="sm" className="flex-1" type="button" onClick={() => edit(row)}>
+                        <Pencil size={15} aria-hidden="true" /> Edit
+                      </Button>
+                    )}
+                    {permission.delete && (
+                      <Button variant="outline" size="sm" className="btn-error flex-1" type="button" onClick={() => remove(row)}>
+                        <Trash2 size={15} aria-hidden="true" /> Hapus
+                      </Button>
+                    )}
+                  </div>
+                )}
               </article>
             ))}
           </div>

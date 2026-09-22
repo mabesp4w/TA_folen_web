@@ -5,7 +5,7 @@ import { mkdir, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { revalidatePath } from "next/cache";
 import { recordAdminAudit } from "@/lib/admin-audit";
-import { getAdminSession } from "@/lib/auth-server";
+import { authorizeAction } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 import {
   galeriAlbumSchema,
@@ -17,6 +17,9 @@ const adminPath = "/admin/galeri";
 const publicPrefix = "/uploads/galeri/";
 const uploadRoot = path.resolve(process.cwd(), "public/uploads/galeri");
 const maxFileSize = 10 * 1024 * 1024;
+
+// Resource Hak Akses untuk modul ini.
+const RESOURCE = "galeri";
 
 function unauthorized(): GaleriActionState {
   return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
@@ -115,7 +118,7 @@ export async function createAlbumAction(
   _state: GaleriActionState,
   formData: FormData,
 ): Promise<GaleriActionState> {
-  const session = await getAdminSession();
+  const session = await authorizeAction(RESOURCE, "create");
   if (!session) return unauthorized();
   const parsed = parseAlbum(formData);
   if (!parsed.success) {
@@ -150,7 +153,7 @@ export async function updateAlbumAction(
   _state: GaleriActionState,
   formData: FormData,
 ): Promise<GaleriActionState> {
-  const session = await getAdminSession();
+  const session = await authorizeAction(RESOURCE, "update");
   if (!session) return unauthorized();
   const id = String(formData.get("id") ?? "");
   const parsed = parseAlbum(formData);
@@ -185,7 +188,7 @@ export async function deleteAlbumAction(
   _state: GaleriActionState,
   formData: FormData,
 ): Promise<GaleriActionState> {
-  const session = await getAdminSession();
+  const session = await authorizeAction(RESOURCE, "delete");
   if (!session) return unauthorized();
   const id = String(formData.get("id") ?? "");
   if (!id) return { status: "error", message: "Album tidak ditemukan." };
@@ -206,7 +209,7 @@ export async function addPhotosAction(
   _state: GaleriActionState,
   formData: FormData,
 ): Promise<GaleriActionState> {
-  const session = await getAdminSession();
+  const session = await authorizeAction(RESOURCE, "create");
   if (!session) return unauthorized();
   const idAlbum = String(formData.get("id_album") ?? "");
   const files = formData.getAll("photos").filter((value): value is File => value instanceof File && value.size > 0);
@@ -237,7 +240,7 @@ export async function updatePhotoAction(
   _state: GaleriActionState,
   formData: FormData,
 ): Promise<GaleriActionState> {
-  const session = await getAdminSession();
+  const session = await authorizeAction(RESOURCE, "update");
   if (!session) return unauthorized();
   const id = String(formData.get("id") ?? "");
   const parsed = galeriFotoSchema.safeParse({ id_album: formData.get("id_album"), caption: formData.get("caption"), order: formData.get("order") });
@@ -258,7 +261,7 @@ export async function deletePhotoAction(
   _state: GaleriActionState,
   formData: FormData,
 ): Promise<GaleriActionState> {
-  const session = await getAdminSession();
+  const session = await authorizeAction(RESOURCE, "delete");
   if (!session) return unauthorized();
   const id = String(formData.get("id") ?? "");
   if (!id) return { status: "error", message: "Foto tidak ditemukan." };

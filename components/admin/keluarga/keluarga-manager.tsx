@@ -14,6 +14,15 @@ import {
 } from "./actions";
 import { KeluargaForm } from "./keluarga-form";
 import { initialKeluargaActionState } from "./schema";
+import type { ResourcePermission } from "@/lib/permissions";
+
+// Izin default penuh — dipakai bila prop tidak diberikan (mis. ADMIN).
+const FULL_PERMISSION: ResourcePermission = {
+  view: true,
+  create: true,
+  update: true,
+  delete: true,
+};
 
 export type KeluargaRow = {
   id: string;
@@ -52,13 +61,16 @@ export function KeluargaManager({
   rayons,
   query,
   rayon,
+  permission = FULL_PERMISSION,
 }: {
   keluarga: KeluargaRow[];
   rayons: RayonOption[];
   query: string;
   rayon: string;
+  permission?: ResourcePermission;
 }) {
   const router = useRouter();
+  const canModify = permission.update || permission.delete;
   const searchParams = useSearchParams();
 
   const [mode, setMode] = useState<DialogMode>(null);
@@ -164,17 +176,19 @@ export function KeluargaManager({
             berbagi alamat dan rayon yang sama.
           </p>
         </div>
-        <Button
-          type="button"
-          onClick={() => {
-            handledStateRef.current = formState;
-            setSelected(null);
-            setMode("create");
-          }}
-        >
-          <Plus size={18} aria-hidden="true" />
-          Tambah keluarga
-        </Button>
+        {permission.create && (
+          <Button
+            type="button"
+            onClick={() => {
+              handledStateRef.current = formState;
+              setSelected(null);
+              setMode("create");
+            }}
+          >
+            <Plus size={18} aria-hidden="true" />
+            Tambah keluarga
+          </Button>
+        )}
       </header>
 
       <form
@@ -237,27 +251,34 @@ export function KeluargaManager({
                     <td>{row._count.anggota} jemaat</td>
                     <td>
                       <div className="flex justify-end gap-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          square
-                          type="button"
-                          aria-label={`Edit keluarga ${row.no_kk ?? row.alamat_blok}`}
-                          onClick={() => edit(row)}
-                        >
-                          <Pencil size={16} aria-hidden="true" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          square
-                          className="text-error"
-                          type="button"
-                          aria-label={`Hapus keluarga ${row.no_kk ?? row.alamat_blok}`}
-                          onClick={() => remove(row)}
-                        >
-                          <Trash2 size={16} aria-hidden="true" />
-                        </Button>
+                        {permission.update && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            square
+                            type="button"
+                            aria-label={`Edit keluarga ${row.no_kk ?? row.alamat_blok}`}
+                            onClick={() => edit(row)}
+                          >
+                            <Pencil size={16} aria-hidden="true" />
+                          </Button>
+                        )}
+                        {permission.delete && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            square
+                            className="text-error"
+                            type="button"
+                            aria-label={`Hapus keluarga ${row.no_kk ?? row.alamat_blok}`}
+                            onClick={() => remove(row)}
+                          >
+                            <Trash2 size={16} aria-hidden="true" />
+                          </Button>
+                        )}
+                        {!canModify && (
+                          <span className="text-xs text-[var(--muted)]">—</span>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -285,14 +306,20 @@ export function KeluargaManager({
                     {row._count.anggota} jemaat
                   </span>
                 </div>
-                <div className="mt-4 flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1" type="button" onClick={() => edit(row)}>
-                    <Pencil size={15} aria-hidden="true" /> Edit
-                  </Button>
-                  <Button variant="outline" size="sm" className="btn-error flex-1" type="button" onClick={() => remove(row)}>
-                    <Trash2 size={15} aria-hidden="true" /> Hapus
-                  </Button>
-                </div>
+                {canModify && (
+                  <div className="mt-4 flex gap-2">
+                    {permission.update && (
+                      <Button variant="outline" size="sm" className="flex-1" type="button" onClick={() => edit(row)}>
+                        <Pencil size={15} aria-hidden="true" /> Edit
+                      </Button>
+                    )}
+                    {permission.delete && (
+                      <Button variant="outline" size="sm" className="btn-error flex-1" type="button" onClick={() => remove(row)}>
+                        <Trash2 size={15} aria-hidden="true" /> Hapus
+                      </Button>
+                    )}
+                  </div>
+                )}
               </article>
             ))}
           </div>

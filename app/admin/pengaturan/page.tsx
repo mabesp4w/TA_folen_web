@@ -4,6 +4,7 @@ import {
   type PengurusOption,
   type UserRow,
 } from "@/components/admin/pengaturan";
+import { redirect } from "next/navigation";
 import { getAdminSession } from "@/lib/auth-server";
 import { prisma } from "@/lib/prisma";
 import { USER_ROLES } from "@/components/admin/pengaturan/schema";
@@ -16,16 +17,24 @@ function pengurusLabel(p: {
   jemaat: { nm_lengkap: string };
   unsur: { nm_unsur: string };
   jabatan: string;
+  sektor: number | null;
 }) {
-  return `${p.jemaat.nm_lengkap} — ${p.jabatan} ${p.unsur.nm_unsur}`;
+  // Sertakan sektor bila ada (mis. "Budi — Ketua PW Sektor 2").
+  const sektor = p.sektor ? ` Sektor ${p.sektor}` : "";
+  return `${p.jemaat.nm_lengkap} — ${p.jabatan} ${p.unsur.nm_unsur}${sektor}`;
 }
 
 export default async function PengaturanPage() {
+  // Akun Akses eksklusif ADMIN — peran unsur dialihkan kembali ke dashboard.
   const session = await getAdminSession();
+  if (!session) redirect("/admin");
 
   // PENTING: kolom password tidak pernah di-select agar hash tak keluar ke klien.
   const [users, availablePengurus] = await Promise.all([
     prisma.user.findMany({
+      // Akun Administrator disembunyikan dari daftar — dikelola lewat seed/skrip,
+      // bukan melalui UI ini.
+      where: { role: { not: "ADMIN" } },
       select: {
         id: true,
         username: true,
@@ -35,6 +44,7 @@ export default async function PengaturanPage() {
           select: {
             id: true,
             jabatan: true,
+            sektor: true,
             jemaat: { select: { nm_lengkap: true } },
             unsur: { select: { nm_unsur: true } },
           },
@@ -47,6 +57,7 @@ export default async function PengaturanPage() {
       select: {
         id: true,
         jabatan: true,
+        sektor: true,
         jemaat: { select: { nm_lengkap: true } },
         unsur: { select: { nm_unsur: true } },
       },
@@ -73,6 +84,7 @@ export default async function PengaturanPage() {
   const pengurusOptions: PengurusOption[] = [...availablePengurus, ...linked].map((p) => ({
     id: p.id,
     label: pengurusLabel(p),
+    jabatan: p.jabatan,
   }));
 
   return (

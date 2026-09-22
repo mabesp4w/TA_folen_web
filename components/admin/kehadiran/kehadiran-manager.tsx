@@ -13,6 +13,14 @@ import {
 } from "./actions";
 import { KehadiranForm } from "./kehadiran-form";
 import { initialKehadiranActionState } from "./schema";
+import type { ResourcePermission } from "@/lib/permissions";
+
+const FULL_PERMISSION: ResourcePermission = {
+  view: true,
+  create: true,
+  update: true,
+  delete: true,
+};
 
 export type IbadahOption = {
   id: string;
@@ -34,10 +42,12 @@ type DialogMode = "create" | "edit" | "delete" | null;
 type Props = {
   rows: KehadiranRow[];
   ibadahOptions: IbadahOption[];
+  permission?: ResourcePermission;
 };
 
-export function KehadiranManager({ rows, ibadahOptions }: Props) {
+export function KehadiranManager({ rows, ibadahOptions, permission = FULL_PERMISSION }: Props) {
   const router = useRouter();
+  const canModify = permission.update || permission.delete;
   const [mode, setMode] = useState<DialogMode>(null);
   const [selected, setSelected] = useState<KehadiranRow | null>(null);
 
@@ -99,20 +109,22 @@ export function KehadiranManager({ rows, ibadahOptions }: Props) {
             Catat statistik kehadiran (laki-laki, perempuan, anak) untuk setiap ibadah.
           </p>
         </div>
-        <div className="flex flex-col items-start gap-1 sm:items-end">
-          <Button
-            type="button"
-            disabled={availableOptions.length === 0}
-            title={addDisabledReason ?? undefined}
-            onClick={() => openDialog("create")}
-          >
-            <Plus size={18} aria-hidden="true" />
-            Tambah kehadiran
-          </Button>
-          {addDisabledReason && (
-            <p className="max-w-xs text-xs text-[var(--muted)] sm:text-right">{addDisabledReason}</p>
-          )}
-        </div>
+        {permission.create && (
+          <div className="flex flex-col items-start gap-1 sm:items-end">
+            <Button
+              type="button"
+              disabled={availableOptions.length === 0}
+              title={addDisabledReason ?? undefined}
+              onClick={() => openDialog("create")}
+            >
+              <Plus size={18} aria-hidden="true" />
+              Tambah kehadiran
+            </Button>
+            {addDisabledReason && (
+              <p className="max-w-xs text-xs text-[var(--muted)] sm:text-right">{addDisabledReason}</p>
+            )}
+          </div>
+        )}
       </header>
 
       {rows.length === 0 ? (
@@ -148,27 +160,32 @@ export function KehadiranManager({ rows, ibadahOptions }: Props) {
                   <td className="text-right font-bold">{row.total}</td>
                   <td>
                     <div className="flex justify-end gap-1">
-                      <Button
-                        aria-label={`Edit kehadiran ${row.ibadah}`}
-                        size="sm"
-                        square
-                        type="button"
-                        variant="ghost"
-                        onClick={() => openDialog("edit", row)}
-                      >
-                        <Pencil size={16} aria-hidden="true" />
-                      </Button>
-                      <Button
-                        aria-label={`Hapus kehadiran ${row.ibadah}`}
-                        className="text-error"
-                        size="sm"
-                        square
-                        type="button"
-                        variant="ghost"
-                        onClick={() => openDialog("delete", row)}
-                      >
-                        <Trash2 size={16} aria-hidden="true" />
-                      </Button>
+                      {permission.update && (
+                        <Button
+                          aria-label={`Edit kehadiran ${row.ibadah}`}
+                          size="sm"
+                          square
+                          type="button"
+                          variant="ghost"
+                          onClick={() => openDialog("edit", row)}
+                        >
+                          <Pencil size={16} aria-hidden="true" />
+                        </Button>
+                      )}
+                      {permission.delete && (
+                        <Button
+                          aria-label={`Hapus kehadiran ${row.ibadah}`}
+                          className="text-error"
+                          size="sm"
+                          square
+                          type="button"
+                          variant="ghost"
+                          onClick={() => openDialog("delete", row)}
+                        >
+                          <Trash2 size={16} aria-hidden="true" />
+                        </Button>
+                      )}
+                      {!canModify && <span className="text-xs text-[var(--muted)]">—</span>}
                     </div>
                   </td>
                 </tr>

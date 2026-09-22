@@ -8,8 +8,10 @@ import { InputText } from "@/components/ui/input-text";
 import { Select } from "@/components/ui/select";
 import type { PelayananRow } from "./pelayanan-manager";
 import {
+  JABATAN_PENGURUS,
   MAJELIS_POSITIONS,
   PELAYANAN_TYPES,
+  SEKTOR_OPTIONS,
   type PelayananActionState,
 } from "./schema";
 
@@ -99,10 +101,34 @@ export function PelayananForm({
         {formType === "PENGURUS" && (
           <>
             <div className="col-span-8 sm:col-span-4">
-              <InputText defaultValue={selected?.jabatan ?? ""} error={state.errors?.jabatan?.[0]} label="Jabatan pengurus" name="jabatan" required />
+              <Select
+                defaultValue={selected?.jabatan ?? ""}
+                error={state.errors?.jabatan?.[0]}
+                label="Jabatan pengurus"
+                name="jabatan"
+                options={[
+                  // Sertakan nilai lama yang tak ada di daftar agar tetap terpilih saat edit.
+                  ...(selected?.jabatan && !(JABATAN_PENGURUS as readonly string[]).includes(selected.jabatan)
+                    ? [{ value: selected.jabatan, label: selected.jabatan }]
+                    : []),
+                  ...JABATAN_PENGURUS.map((value) => ({ value, label: value })),
+                ]}
+                placeholder="Pilih jabatan"
+                required
+              />
             </div>
             <div className="col-span-8 sm:col-span-4">
-              <InputText defaultValue={selected?.sektor?.toString() ?? ""} error={state.errors?.sektor?.[0]} label="Sektor" min="1" max="99" name="sektor" type="number" />
+              <Select
+                defaultValue={selected?.sektor?.toString() ?? ""}
+                error={state.errors?.sektor?.[0]}
+                helpText="Kosongkan bila kepengurusan tingkat unsur (bukan per-sektor)."
+                label="Sektor"
+                name="sektor"
+                options={[
+                  { value: "", label: "Tanpa sektor" },
+                  ...SEKTOR_OPTIONS.map((n) => ({ value: String(n), label: `Sektor ${n}` })),
+                ]}
+              />
             </div>
             <div className="col-span-8">
               <Select

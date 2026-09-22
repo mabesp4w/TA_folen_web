@@ -2,16 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { recordAdminAudit } from "@/lib/admin-audit";
-import { getAdminSession } from "@/lib/auth-server";
+import { authorizeAction } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 import { rayonSchema, type RayonActionState } from "./schema";
 
-async function authorize(): Promise<RayonActionState | null> {
-  const session = await getAdminSession();
+// Resource Hak Akses untuk modul ini.
+const RESOURCE = "rayon";
 
-  return session
-    ? null
-    : { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+function unauthorized(): RayonActionState {
+  return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
 }
 
 function parseForm(formData: FormData) {
@@ -32,8 +31,8 @@ export async function createRayonAction(
   _state: RayonActionState,
   formData: FormData,
 ): Promise<RayonActionState> {
-  const authorizationError = await authorize();
-  if (authorizationError) return authorizationError;
+  const session = await authorizeAction(RESOURCE, "create");
+  if (!session) return unauthorized();
 
   const parsed = parseForm(formData);
 
@@ -46,11 +45,6 @@ export async function createRayonAction(
   }
 
   try {
-    const session = await getAdminSession();
-    if (!session) {
-      return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
-    }
-
     const rayon = await prisma.rayon.create({
       data: { nm_rayon: parsed.data.name },
     });
@@ -73,8 +67,8 @@ export async function updateRayonAction(
   _state: RayonActionState,
   formData: FormData,
 ): Promise<RayonActionState> {
-  const authorizationError = await authorize();
-  if (authorizationError) return authorizationError;
+  const session = await authorizeAction(RESOURCE, "update");
+  if (!session) return unauthorized();
 
   const id = String(formData.get("id") ?? "");
   const parsed = parseForm(formData);
@@ -88,11 +82,6 @@ export async function updateRayonAction(
   }
 
   try {
-    const session = await getAdminSession();
-    if (!session) {
-      return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
-    }
-
     const rayon = await prisma.rayon.update({
       where: { id },
       data: { nm_rayon: parsed.data.name },
@@ -116,8 +105,8 @@ export async function deleteRayonAction(
   _state: RayonActionState,
   formData: FormData,
 ): Promise<RayonActionState> {
-  const authorizationError = await authorize();
-  if (authorizationError) return authorizationError;
+  const session = await authorizeAction(RESOURCE, "delete");
+  if (!session) return unauthorized();
 
   const id = String(formData.get("id") ?? "");
 
@@ -126,11 +115,6 @@ export async function deleteRayonAction(
   }
 
   try {
-    const session = await getAdminSession();
-    if (!session) {
-      return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
-    }
-
     const rayon = await prisma.rayon.delete({ where: { id } });
     await recordAdminAudit({
       aksi: "DELETE",

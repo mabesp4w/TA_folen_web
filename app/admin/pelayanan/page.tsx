@@ -4,6 +4,7 @@ import {
   type PelayananRow,
 } from "@/components/admin/pelayanan/pelayanan-manager";
 import { PELAYANAN_TYPES } from "@/components/admin/pelayanan/schema";
+import { requireResourceView } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = { title: "Pelayan & Pengurus" };
@@ -12,6 +13,7 @@ type SearchParams = Promise<{
   q?: string;
   status?: string;
   type?: string;
+  jabatan?: string;
 }>;
 
 export default async function PelayananPage({
@@ -19,6 +21,7 @@ export default async function PelayananPage({
 }: {
   searchParams: SearchParams;
 }) {
+  const { permission } = await requireResourceView("pelayanan");
   const params = await searchParams;
   const query = params.q?.trim().toLowerCase() ?? "";
   const type = PELAYANAN_TYPES.includes(
@@ -30,6 +33,8 @@ export default async function PelayananPage({
     ? params.status!
     : "";
   const aktif = status ? status === "aktif" : undefined;
+  // Filter jabatan hanya berlaku untuk selain pendeta (pendeta tidak berjabatan).
+  const jabatan = type !== "PENDETA" ? params.jabatan?.trim() ?? "" : "";
 
   const [pendeta, majelis, pengurus, jemaat, unsur] = await Promise.all([
     type && type !== "PENDETA"
@@ -127,6 +132,10 @@ export default async function PelayananPage({
     })),
   ]
     .filter((row) => {
+      // Filter jabatan (mis. Ketua, PENATUA) — cocokkan persis, abaikan pendeta.
+      if (jabatan && (row.jabatan ?? "").toLowerCase() !== jabatan.toLowerCase()) {
+        return false;
+      }
       if (!query) return true;
       return [row.name, row.rayon, row.gelar, row.jabatan, row.unsur]
         .filter(Boolean)
@@ -138,6 +147,8 @@ export default async function PelayananPage({
     <main className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">
       <PelayananManager
         jemaat={jemaat.map((item) => ({ id: item.id, name: item.nm_lengkap }))}
+        permission={permission}
+        jabatan={jabatan}
         query={params.q?.trim() ?? ""}
         rows={rows}
         status={status}

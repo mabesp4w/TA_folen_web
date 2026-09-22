@@ -6,17 +6,20 @@ import { InputPassword } from "@/components/ui/input-password";
 import { InputText } from "@/components/ui/input-text";
 import { Select, type SelectOption } from "@/components/ui/select";
 import type { PengurusOption, UserRow } from "./user-manager";
-import { USER_ROLES, type UserActionState } from "./schema";
+import { ASSIGNABLE_ROLES, USER_ROLES, type UserActionState } from "./schema";
 
 const roleLabels: Record<(typeof USER_ROLES)[number], string> = {
   ADMIN: "Administrator",
   KETUA_UNSUR: "Ketua Unsur",
+  KOORDINATOR_UNSUR: "Koordinator Unsur",
 };
 
-const roleOptions: SelectOption[] = USER_ROLES.map((value) => ({
-  value,
-  label: roleLabels[value],
-}));
+// Peran menentukan jabatan pengurus yang boleh ditautkan:
+// Ketua Unsur → pengurus berjabatan "Ketua"; Koordinator Unsur → "Koordinator".
+const ROLE_JABATAN: Partial<Record<(typeof USER_ROLES)[number], string>> = {
+  KETUA_UNSUR: "Ketua",
+  KOORDINATOR_UNSUR: "Koordinator",
+};
 
 type UserFormProps = {
   formAction: (payload: FormData) => void;
@@ -41,10 +44,27 @@ export function UserForm({
   onCancel,
   onRoleChange,
 }: UserFormProps) {
-  // Pengurus yang bisa dipilih: yang belum berakun + pengurus milik akun ini (saat edit).
+  // Pilihan pengurus mengikuti Peran: hanya jabatan yang sesuai (Ketua/Koordinator).
+  // Saat mengedit akun dengan peran yang belum diubah, pengurus yang sudah tertaut
+  // tetap disertakan meski jabatannya berbeda (data lama), agar tidak hilang.
+  const wantedJabatan = ROLE_JABATAN[role];
+  const keepCurrent = selected != null && role === selected.role;
   const pengurusChoices: SelectOption[] = pengurusOptions
     .filter((option) => option.id !== "__none__")
+    .filter(
+      (option) =>
+        !wantedJabatan ||
+        option.jabatan === wantedJabatan ||
+        (keepCurrent && option.id === selected?.pengurusId),
+    )
     .map((option) => ({ value: option.id, label: option.label }));
+
+  // Pilihan peran: hanya Ketua Unsur & Koordinator Unsur. "Administrator" tidak
+  // ditawarkan, kecuali saat mengedit akun yang memang sudah Administrator
+  // (agar perannya tidak terpaksa turun).
+  const roleOptions: SelectOption[] = (
+    selected?.role === "ADMIN" ? USER_ROLES : ASSIGNABLE_ROLES
+  ).map((value) => ({ value, label: roleLabels[value] }));
 
   return (
     <form action={formAction} className="space-y-5">
@@ -74,18 +94,27 @@ export function UserForm({
             }
           />
         </div>
-        {role === "KETUA_UNSUR" && (
-          <div className="col-span-8 sm:col-span-4">
+        {role !== "ADMIN" && (
+          <div className="col-span-8">
             <Select
+              // key=role → reset pilihan saat peran diganti (opsi ikut berubah).
+              key={role}
               defaultValue={
-                pengurusChoices.find((option) => option.value === selected?.pengurusId) ?? null
+                keepCurrent
+                  ? pengurusChoices.find((option) => option.value === selected?.pengurusId) ?? null
+                  : null
               }
               error={state.errors?.badan_pengurus_id?.[0]}
-              helpText="Tautkan akun ini ke satu kepengurusan unsur."
+              helpText={
+                wantedJabatan
+                  ? `Hanya pengurus berjabatan ${wantedJabatan} yang dapat ditautkan ke peran ini.`
+                  : "Tautkan akun ini ke satu kepengurusan unsur."
+              }
               label="Badan pengurus tertaut"
               name="badan_pengurus_id"
               options={pengurusChoices}
-              placeholder="Pilih badan pengurus (opsional)"
+              placeholder="Pilih badan pengurus"
+              required
               variant="react-select"
             />
           </div>

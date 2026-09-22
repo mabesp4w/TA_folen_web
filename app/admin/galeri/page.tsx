@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { GaleriManager, type GaleriAlbumRow } from "@/components/admin/galeri";
+import { requireResourceView } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = { title: "Galeri" };
 
 export default async function GaleriPage() {
+  const { permission } = await requireResourceView("galeri");
   const albums = await prisma.galeriAlbum.findMany({
     include: { foto: { orderBy: [{ order: "asc" }, { created_at: "asc" }] } },
     orderBy: [{ order: "asc" }, { created_at: "desc" }],
@@ -28,7 +30,7 @@ export default async function GaleriPage() {
 
   return (
     <main className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">
-      <GaleriManager rows={rows} />
+      <GaleriManager permission={permission} rows={rows} />
     </main>
   );
 }

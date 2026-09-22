@@ -20,6 +20,14 @@ import {
 } from "./actions";
 import { AgendaForm } from "./agenda-form";
 import { initialAgendaActionState } from "./schema";
+import type { ResourcePermission } from "@/lib/permissions";
+
+const FULL_PERMISSION: ResourcePermission = {
+  view: true,
+  create: true,
+  update: true,
+  delete: true,
+};
 
 export type AgendaRow = {
   id: string;
@@ -51,6 +59,7 @@ type Props = {
   rows: AgendaRow[];
   jemaat: Option[];
   unsur: Option[];
+  permission?: ResourcePermission;
 };
 
 function formatDate(value: string) {
@@ -66,8 +75,9 @@ function title(row: AgendaRow) {
   return row.nm_ibadah ?? row.unsur ?? "Ibadah jemaat";
 }
 
-export function AgendaManager({ rows, jemaat, unsur }: Props) {
+export function AgendaManager({ rows, jemaat, unsur, permission = FULL_PERMISSION }: Props) {
   const router = useRouter();
+  const canModify = permission.update || permission.delete;
   const [mode, setMode] = useState<DialogMode>(null);
   const [selected, setSelected] = useState<AgendaRow | null>(null);
   const action =
@@ -111,9 +121,11 @@ export function AgendaManager({ rows, jemaat, unsur }: Props) {
             Kelola jadwal, lokasi, tuan rumah, dan petugas pelayanan ibadah.
           </p>
         </div>
-        <Button onClick={() => openDialog("create")}>
-          <Plus aria-hidden="true" size={18} /> Tambah agenda
-        </Button>
+        {permission.create && (
+          <Button onClick={() => openDialog("create")}>
+            <Plus aria-hidden="true" size={18} /> Tambah agenda
+          </Button>
+        )}
       </header>
 
       {rows.length === 0 ? (
@@ -147,24 +159,30 @@ export function AgendaManager({ rows, jemaat, unsur }: Props) {
                       : (row.unsur ?? "Ibadah umum")}
                   </p>
                 </div>
-                <div className="flex shrink-0 gap-1">
-                  <Button
-                    aria-label={`Edit ${title(row)}`}
-                    square
-                    variant="ghost"
-                    onClick={() => openDialog("edit", row)}
-                  >
-                    <Pencil aria-hidden="true" size={17} />
-                  </Button>
-                  <Button
-                    aria-label={`Hapus ${title(row)}`}
-                    square
-                    variant="ghost"
-                    onClick={() => openDialog("delete", row)}
-                  >
-                    <Trash2 aria-hidden="true" size={17} />
-                  </Button>
-                </div>
+                {canModify && (
+                  <div className="flex shrink-0 gap-1">
+                    {permission.update && (
+                      <Button
+                        aria-label={`Edit ${title(row)}`}
+                        square
+                        variant="ghost"
+                        onClick={() => openDialog("edit", row)}
+                      >
+                        <Pencil aria-hidden="true" size={17} />
+                      </Button>
+                    )}
+                    {permission.delete && (
+                      <Button
+                        aria-label={`Hapus ${title(row)}`}
+                        square
+                        variant="ghost"
+                        onClick={() => openDialog("delete", row)}
+                      >
+                        <Trash2 aria-hidden="true" size={17} />
+                      </Button>
+                    )}
+                  </div>
+                )}
               </div>
               <dl className="mt-5 space-y-3 border-t border-base-200 pt-4 text-sm">
                 <div className="flex items-start gap-3">

@@ -4,6 +4,7 @@ import {
   type IbadahOption,
   type KehadiranRow,
 } from "@/components/admin/kehadiran";
+import { requireResourceView } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = { title: "Kehadiran Jemaat" };
@@ -34,6 +35,7 @@ function ibadahLabel(ibadah: {
 }
 
 export default async function KehadiranPage() {
+  const { permission } = await requireResourceView("kehadiran");
   const [kehadiran, ibadah] = await Promise.all([
     prisma.kehadiran.findMany({
       include: {
@@ -66,7 +68,11 @@ export default async function KehadiranPage() {
 
   return (
     <main className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">
-      <KehadiranManager ibadahOptions={ibadahOptions} rows={rows} />
+      <KehadiranManager
+        ibadahOptions={ibadahOptions}
+        rows={rows}
+        permission={permission}
+      />
     </main>
   );
 }

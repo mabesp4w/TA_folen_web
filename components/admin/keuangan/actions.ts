@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { recordAdminAudit } from "@/lib/admin-audit";
-import { getAdminSession } from "@/lib/auth-server";
+import { authorizeAction } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 import {
   keuanganSchema,
@@ -11,6 +11,16 @@ import {
 } from "./schema";
 
 const path = "/admin/keuangan";
+
+// Resource Hak Akses untuk modul ini.
+const RESOURCE = "keuangan";
+
+function unauthorized(): KeuanganActionState {
+  return {
+    status: "error",
+    message: "Anda tidak memiliki akses untuk mengubah data.",
+  };
+}
 
 function parseForm(formData: FormData) {
   return keuanganSchema.safeParse({
@@ -48,13 +58,8 @@ export async function createKeuanganAction(
   _state: KeuanganActionState,
   formData: FormData,
 ): Promise<KeuanganActionState> {
-  const session = await getAdminSession();
-  if (!session) {
-    return {
-      status: "error",
-      message: "Anda tidak memiliki akses untuk mengubah data.",
-    };
-  }
+  const session = await authorizeAction(RESOURCE, "create");
+  if (!session) return unauthorized();
 
   const parsed = parseForm(formData);
   if (!parsed.success) {
@@ -91,13 +96,8 @@ export async function updateKeuanganAction(
   _state: KeuanganActionState,
   formData: FormData,
 ): Promise<KeuanganActionState> {
-  const session = await getAdminSession();
-  if (!session) {
-    return {
-      status: "error",
-      message: "Anda tidak memiliki akses untuk mengubah data.",
-    };
-  }
+  const session = await authorizeAction(RESOURCE, "update");
+  if (!session) return unauthorized();
 
   const id = String(formData.get("id") ?? "");
   const parsed = parseForm(formData);
@@ -151,13 +151,8 @@ export async function deleteKeuanganAction(
   _state: KeuanganActionState,
   formData: FormData,
 ): Promise<KeuanganActionState> {
-  const session = await getAdminSession();
-  if (!session) {
-    return {
-      status: "error",
-      message: "Anda tidak memiliki akses untuk mengubah data.",
-    };
-  }
+  const session = await authorizeAction(RESOURCE, "delete");
+  if (!session) return unauthorized();
 
   const id = String(formData.get("id") ?? "");
   const summary = String(formData.get("ringkasan") ?? "");

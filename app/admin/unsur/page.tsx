@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { UnsurManager, type UnsurRow } from "@/components/admin/unsur";
+import { requireResourceView } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = { title: "Data Unsur" };
@@ -13,6 +14,7 @@ export default async function UnsurPage({
 }: {
   searchParams: SearchParams;
 }) {
+  const { permission } = await requireResourceView("unsur");
   const params = await searchParams;
   const query = params.q?.trim() ?? "";
 
@@ -35,6 +37,7 @@ export default async function UnsurPage({
       <UnsurManager
         unsurs={unsurs}
         query={query}
+        permission={permission}
       />
     </main>
   );

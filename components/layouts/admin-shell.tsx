@@ -6,8 +6,33 @@ import { useRouter } from "next/navigation";
 import { Bell, LogOut, Menu, Search } from "lucide-react";
 import { AppSidebar } from "@/components/layouts/app-sidebar";
 import { Button } from "@/components/ui/button";
+import { ROLE_LABELS, isManagedRole } from "@/lib/permissions";
 
-export function AdminShell({ children }: { children: ReactNode }) {
+type AdminShellProps = {
+  children: ReactNode;
+  role: string;
+  username: string;
+  // null = ADMIN (semua menu). Selain itu daftar kunci resource yang boleh dilihat.
+  allowedResources: string[] | null;
+};
+
+function roleLabel(role: string): string {
+  return isManagedRole(role) ? ROLE_LABELS[role] : "Administrator";
+}
+
+function roleSubtitle(role: string): string {
+  return role === "ADMIN" ? "Sekretariat Gereja" : "Pengurus Unsur";
+}
+
+function initials(name: string): string {
+  const cleaned = name.trim();
+  if (!cleaned) return "AD";
+  const parts = cleaned.split(/[\s._-]+/).filter(Boolean);
+  const chars = parts.length >= 2 ? parts[0][0] + parts[1][0] : cleaned.slice(0, 2);
+  return chars.toUpperCase();
+}
+
+export function AdminShell({ children, role, username, allowedResources }: AdminShellProps) {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -36,7 +61,12 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-[var(--cream)] lg:grid lg:grid-cols-[272px_minmax(0,1fr)]">
-      <AppSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <AppSidebar
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        role={role}
+        allowedResources={allowedResources}
+      />
       <div className="min-w-0">
         <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-[var(--line)] bg-[var(--paper)] px-4 sm:px-6 lg:px-8">
           <Button
@@ -73,11 +103,14 @@ export function AdminShell({ children }: { children: ReactNode }) {
               <Bell size={20} aria-hidden="true" />
             </Button>
             <div className="hidden text-right sm:block">
-              <p className="text-sm font-semibold text-[var(--ink)]">Administrator</p>
-              <p className="text-xs text-[var(--muted)]">Sekretariat Gereja</p>
+              <p className="text-sm font-semibold text-[var(--ink)]">{roleLabel(role)}</p>
+              <p className="text-xs text-[var(--muted)]">{roleSubtitle(role)}</p>
             </div>
-            <span className="grid size-10 place-items-center rounded-full bg-[var(--forest)] text-sm font-bold text-[var(--paper)]" aria-hidden="true">
-              AD
+            <span
+              className="grid size-10 place-items-center rounded-full bg-[var(--forest)] text-sm font-bold text-[var(--paper)]"
+              aria-hidden="true"
+            >
+              {initials(username)}
             </span>
             <Button
               type="button"

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { recordAdminAudit } from "@/lib/admin-audit";
-import { getAdminSession } from "@/lib/auth-server";
+import { authorizeAction } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 import {
   pelayananSchema,
@@ -11,6 +11,13 @@ import {
 } from "./schema";
 
 const path = "/admin/pelayanan";
+
+// Resource Hak Akses untuk modul ini.
+const RESOURCE = "pelayanan";
+
+function unauthorized(): PelayananActionState {
+  return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+}
 
 function parseForm(formData: FormData) {
   return pelayananSchema.safeParse({
@@ -55,8 +62,8 @@ export async function createPelayananAction(
   _state: PelayananActionState,
   formData: FormData,
 ): Promise<PelayananActionState> {
-  const session = await getAdminSession();
-  if (!session) return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+  const session = await authorizeAction(RESOURCE, "create");
+  if (!session) return unauthorized();
 
   const parsed = parseForm(formData);
   if (!parsed.success) {
@@ -105,8 +112,8 @@ export async function updatePelayananAction(
   _state: PelayananActionState,
   formData: FormData,
 ): Promise<PelayananActionState> {
-  const session = await getAdminSession();
-  if (!session) return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+  const session = await authorizeAction(RESOURCE, "update");
+  if (!session) return unauthorized();
 
   const id = String(formData.get("id") ?? "");
   const parsed = parseForm(formData);
@@ -157,8 +164,8 @@ export async function deletePelayananAction(
   _state: PelayananActionState,
   formData: FormData,
 ): Promise<PelayananActionState> {
-  const session = await getAdminSession();
-  if (!session) return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+  const session = await authorizeAction(RESOURCE, "delete");
+  if (!session) return unauthorized();
 
   const id = String(formData.get("id") ?? "");
   const type = String(formData.get("type") ?? "") as PelayananInput["type"];

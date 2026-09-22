@@ -26,7 +26,8 @@ function failure(error: unknown): UserActionState {
 }
 
 // Tautkan akun ke satu Badan Pengurus (relasi 1-1). Lepas tautan lama milik akun
-// ini terlebih dahulu, lalu pasang tautan baru bila dipilih. Hanya untuk KETUA_UNSUR.
+// ini terlebih dahulu, lalu pasang tautan baru bila dipilih. Berlaku untuk peran
+// non-admin (Ketua Unsur & Koordinator Unsur); akun Administrator tidak ditautkan.
 async function syncPengurusLink(
   tx: Parameters<Parameters<typeof prisma.$transaction>[0]>[0],
   userId: string,
@@ -38,7 +39,7 @@ async function syncPengurusLink(
     data: { user_id: null },
   });
 
-  if (role === "KETUA_UNSUR" && pengurusId) {
+  if (role !== "ADMIN" && pengurusId) {
     await tx.badanPengurus.update({
       where: { id: pengurusId },
       data: { user_id: userId },

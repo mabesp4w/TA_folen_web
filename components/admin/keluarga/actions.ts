@@ -2,16 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { recordAdminAudit } from "@/lib/admin-audit";
-import { getAdminSession } from "@/lib/auth-server";
+import { authorizeAction } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 import { keluargaSchema, type KeluargaActionState } from "./schema";
 
-async function authorize(): Promise<KeluargaActionState | null> {
-  const session = await getAdminSession();
+// Resource Hak Akses untuk modul ini.
+const RESOURCE = "keluarga";
 
-  return session
-    ? null
-    : { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+function unauthorized(): KeluargaActionState {
+  return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
 }
 
 function parseForm(formData: FormData) {
@@ -34,8 +33,8 @@ export async function createKeluargaAction(
   _state: KeluargaActionState,
   formData: FormData,
 ): Promise<KeluargaActionState> {
-  const authorizationError = await authorize();
-  if (authorizationError) return authorizationError;
+  const session = await authorizeAction(RESOURCE, "create");
+  if (!session) return unauthorized();
 
   const parsed = parseForm(formData);
 
@@ -48,11 +47,6 @@ export async function createKeluargaAction(
   }
 
   try {
-    const session = await getAdminSession();
-    if (!session) {
-      return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
-    }
-
     const keluarga = await prisma.keluarga.create({
       data: {
         no_kk: parsed.data.no_kk || null,
@@ -79,8 +73,8 @@ export async function updateKeluargaAction(
   _state: KeluargaActionState,
   formData: FormData,
 ): Promise<KeluargaActionState> {
-  const authorizationError = await authorize();
-  if (authorizationError) return authorizationError;
+  const session = await authorizeAction(RESOURCE, "update");
+  if (!session) return unauthorized();
 
   const id = String(formData.get("id") ?? "");
   const parsed = parseForm(formData);
@@ -94,11 +88,6 @@ export async function updateKeluargaAction(
   }
 
   try {
-    const session = await getAdminSession();
-    if (!session) {
-      return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
-    }
-
     const keluarga = await prisma.keluarga.update({
       where: { id },
       data: {
@@ -126,8 +115,8 @@ export async function deleteKeluargaAction(
   _state: KeluargaActionState,
   formData: FormData,
 ): Promise<KeluargaActionState> {
-  const authorizationError = await authorize();
-  if (authorizationError) return authorizationError;
+  const session = await authorizeAction(RESOURCE, "delete");
+  if (!session) return unauthorized();
 
   const id = String(formData.get("id") ?? "");
 
@@ -136,11 +125,6 @@ export async function deleteKeluargaAction(
   }
 
   try {
-    const session = await getAdminSession();
-    if (!session) {
-      return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
-    }
-
     // Cegah penghapusan bila keluarga masih memiliki anggota, agar anggota
     // tidak menjadi yatim tanpa alamat/rayon secara tidak sengaja.
     const anggota = await prisma.jemaat.count({ where: { id_keluarga: id } });

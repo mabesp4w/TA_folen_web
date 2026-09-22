@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { RenunganManager, type RenunganRow } from "@/components/admin/renungan";
+import { requireResourceView } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = { title: "Renungan" };
 
 export default async function RenunganPage() {
+  const { permission } = await requireResourceView("renungan");
   const renungan = await prisma.renungan.findMany({
     orderBy: { tgl_publish: "desc" },
   });
@@ -23,7 +25,11 @@ export default async function RenunganPage() {
 
   return (
     <main className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">
-      <RenunganManager rows={rows} tinyApiKey={process.env.API_TINY ?? ""} />
+      <RenunganManager
+        rows={rows}
+        tinyApiKey={process.env.API_TINY ?? ""}
+        permission={permission}
+      />
     </main>
   );
 }

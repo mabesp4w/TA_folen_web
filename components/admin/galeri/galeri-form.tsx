@@ -9,6 +9,15 @@ import type {
   PendingPhoto,
 } from "./galeri-manager";
 import type { GaleriActionState } from "./schema";
+import type { ResourcePermission } from "@/lib/permissions";
+
+// Izin default penuh — dipakai bila prop tidak diberikan (mis. ADMIN).
+const FULL_PERMISSION: ResourcePermission = {
+  view: true,
+  create: true,
+  update: true,
+  delete: true,
+};
 
 type GaleriFormProps = {
   converting: boolean;
@@ -18,6 +27,7 @@ type GaleriFormProps = {
   formAction: (payload: FormData) => void;
   maxPhotos: number;
   pending: boolean;
+  permission?: ResourcePermission;
   photos: PendingPhoto[];
   rows: GaleriAlbumRow[];
   selected: GaleriAlbumRow | null;
@@ -36,6 +46,7 @@ export function GaleriForm({
   formAction,
   maxPhotos,
   pending,
+  permission = FULL_PERMISSION,
   photos,
   rows,
   selected,
@@ -64,16 +75,18 @@ export function GaleriForm({
                   loading="lazy"
                   src={foto.url}
                 />
-                <form action={deletePhotoFormAction} className="absolute right-1 top-1">
-                  <input name="id" type="hidden" value={foto.id} />
-                  <button
-                    aria-label={`Hapus foto ${index + 1}`}
-                    className="btn btn-circle btn-xs btn-error focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-                    type="submit"
-                  >
-                    <X aria-hidden="true" size={14} />
-                  </button>
-                </form>
+                {permission.delete && (
+                  <form action={deletePhotoFormAction} className="absolute right-1 top-1">
+                    <input name="id" type="hidden" value={foto.id} />
+                    <button
+                      aria-label={`Hapus foto ${index + 1}`}
+                      className="btn btn-circle btn-xs btn-error focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                      type="submit"
+                    >
+                      <X aria-hidden="true" size={14} />
+                    </button>
+                  </form>
+                )}
               </div>
             ))}
           </div>
@@ -158,63 +171,65 @@ export function GaleriForm({
               </span>
             </label>
 
-            <div className="col-span-8">
-              <span className="label-text mb-2 block font-medium">
-                {dialog === "create" ? "Foto album" : "Tambah foto"}
-              </span>
-              <label className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed border-base-300 p-5 text-center focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--pacific)]">
-                <Upload aria-hidden="true" className="text-[var(--pacific)]" size={26} />
-                <span className="text-sm text-base-content/70">
-                  {converting
-                    ? "Memproses gambar..."
-                    : "Klik untuk memilih foto (bisa banyak, otomatis dikonversi ke WebP)"}
+            {permission.create && (
+              <div className="col-span-8">
+                <span className="label-text mb-2 block font-medium">
+                  {dialog === "create" ? "Foto album" : "Tambah foto"}
                 </span>
-                <span className="text-xs text-base-content/50">Maksimal {maxPhotos} foto per unggahan.</span>
-                <input
-                  accept="image/*"
-                  className="hidden"
-                  disabled={converting}
-                  multiple
-                  onChange={onPhotosChange}
-                  type="file"
-                />
-              </label>
-              {/* Berkas terkonversi disisipkan ke input ini saat submit. */}
-              <input aria-hidden="true" className="hidden" name="photos" tabIndex={-1} type="file" multiple />
+                <label className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed border-base-300 p-5 text-center focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--pacific)]">
+                  <Upload aria-hidden="true" className="text-[var(--pacific)]" size={26} />
+                  <span className="text-sm text-base-content/70">
+                    {converting
+                      ? "Memproses gambar..."
+                      : "Klik untuk memilih foto (bisa banyak, otomatis dikonversi ke WebP)"}
+                  </span>
+                  <span className="text-xs text-base-content/50">Maksimal {maxPhotos} foto per unggahan.</span>
+                  <input
+                    accept="image/*"
+                    className="hidden"
+                    disabled={converting}
+                    multiple
+                    onChange={onPhotosChange}
+                    type="file"
+                  />
+                </label>
+                {/* Berkas terkonversi disisipkan ke input ini saat submit. */}
+                <input aria-hidden="true" className="hidden" name="photos" tabIndex={-1} type="file" multiple />
 
-              {photos.length > 0 ? (
-                <div className="mt-3">
-                  <p className="mb-2 text-sm text-base-content/70">
-                    {photos.length} foto siap diunggah
-                  </p>
-                  <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-                    {photos.map((photo, index) => (
-                      <div className="group relative aspect-square overflow-hidden rounded-xl bg-base-200" key={photo.id}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          alt={`Pratinjau foto ${index + 1}`}
-                          className="h-full w-full object-cover"
-                          src={photo.preview}
-                        />
-                        <button
-                          aria-label={`Hapus pilihan foto ${index + 1}`}
-                          className="btn btn-circle btn-xs btn-error absolute right-1 top-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-                          type="button"
-                          onClick={() => onRemovePhoto(photo.id)}
-                        >
-                          <X aria-hidden="true" size={14} />
-                        </button>
-                      </div>
-                    ))}
+                {photos.length > 0 ? (
+                  <div className="mt-3">
+                    <p className="mb-2 text-sm text-base-content/70">
+                      {photos.length} foto siap diunggah
+                    </p>
+                    <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+                      {photos.map((photo, index) => (
+                        <div className="group relative aspect-square overflow-hidden rounded-xl bg-base-200" key={photo.id}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            alt={`Pratinjau foto ${index + 1}`}
+                            className="h-full w-full object-cover"
+                            src={photo.preview}
+                          />
+                          <button
+                            aria-label={`Hapus pilihan foto ${index + 1}`}
+                            className="btn btn-circle btn-xs btn-error absolute right-1 top-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                            type="button"
+                            onClick={() => onRemovePhoto(photo.id)}
+                          >
+                            <X aria-hidden="true" size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <p className="mt-3 flex items-center gap-2 text-xs text-base-content/50">
-                  <ImagePlus aria-hidden="true" size={15} />
-                  Belum ada foto dipilih.
-                </p>
-              )}
-            </div>
+                ) : (
+                  <p className="mt-3 flex items-center gap-2 text-xs text-base-content/50">
+                    <ImagePlus aria-hidden="true" size={15} />
+                    Belum ada foto dipilih.
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         )}
 

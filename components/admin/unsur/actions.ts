@@ -2,16 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 import { recordAdminAudit } from "@/lib/admin-audit";
-import { getAdminSession } from "@/lib/auth-server";
+import { authorizeAction } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 import { unsurSchema, type UnsurActionState } from "./schema";
 
-async function authorize(): Promise<UnsurActionState | null> {
-  const session = await getAdminSession();
+const RESOURCE = "unsur";
 
-  return session
-    ? null
-    : { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+function unauthorized(): UnsurActionState {
+  return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
 }
 
 function parseForm(formData: FormData) {
@@ -32,8 +30,8 @@ export async function createUnsurAction(
   _state: UnsurActionState,
   formData: FormData,
 ): Promise<UnsurActionState> {
-  const authorizationError = await authorize();
-  if (authorizationError) return authorizationError;
+  const session = await authorizeAction(RESOURCE, "create");
+  if (!session) return unauthorized();
 
   const parsed = parseForm(formData);
 
@@ -46,11 +44,6 @@ export async function createUnsurAction(
   }
 
   try {
-    const session = await getAdminSession();
-    if (!session) {
-      return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
-    }
-
     const unsur = await prisma.unsur.create({
       data: { nm_unsur: parsed.data.name },
     });
@@ -73,8 +66,8 @@ export async function updateUnsurAction(
   _state: UnsurActionState,
   formData: FormData,
 ): Promise<UnsurActionState> {
-  const authorizationError = await authorize();
-  if (authorizationError) return authorizationError;
+  const session = await authorizeAction(RESOURCE, "update");
+  if (!session) return unauthorized();
 
   const id = String(formData.get("id") ?? "");
   const parsed = parseForm(formData);
@@ -88,11 +81,6 @@ export async function updateUnsurAction(
   }
 
   try {
-    const session = await getAdminSession();
-    if (!session) {
-      return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
-    }
-
     const unsur = await prisma.unsur.update({
       where: { id },
       data: { nm_unsur: parsed.data.name },
@@ -116,8 +104,8 @@ export async function deleteUnsurAction(
   _state: UnsurActionState,
   formData: FormData,
 ): Promise<UnsurActionState> {
-  const authorizationError = await authorize();
-  if (authorizationError) return authorizationError;
+  const session = await authorizeAction(RESOURCE, "delete");
+  if (!session) return unauthorized();
 
   const id = String(formData.get("id") ?? "");
 
@@ -126,11 +114,6 @@ export async function deleteUnsurAction(
   }
 
   try {
-    const session = await getAdminSession();
-    if (!session) {
-      return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
-    }
-
     const unsur = await prisma.unsur.delete({ where: { id } });
     await recordAdminAudit({
       aksi: "DELETE",

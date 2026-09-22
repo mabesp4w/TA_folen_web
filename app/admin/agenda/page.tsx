@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { AgendaManager, type AgendaRow } from "@/components/admin/agenda/agenda-manager";
+import { requireResourceView } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = { title: "Agenda & Ibadah" };
 
 export default async function AgendaPage() {
+  const { permission } = await requireResourceView("agenda");
   const [ibadah, jemaat, unsur] = await Promise.all([
     prisma.ibadah.findMany({
       include: { jemaat: true, pelayan: true, unsur: true },
@@ -49,6 +51,7 @@ export default async function AgendaPage() {
         jemaat={jemaat.map((item) => ({ id: item.id, name: item.nm_lengkap }))}
         rows={rows}
         unsur={unsur.map((item) => ({ id: item.id, name: item.nm_unsur }))}
+        permission={permission}
       />
     </main>
   );

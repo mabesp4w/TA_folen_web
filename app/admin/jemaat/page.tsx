@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JemaatManager, type JemaatRow } from "@/components/admin/jemaat";
 import { JEMAAT_STATUSES } from "@/components/admin/jemaat/schema";
+import { requireResourceView } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = { title: "Data Jemaat" };
@@ -16,6 +17,7 @@ export default async function JemaatPage({
 }: {
   searchParams: SearchParams;
 }) {
+  const { permission } = await requireResourceView("jemaat");
   const params = await searchParams;
   const query = params.q?.trim() ?? "";
   const rayon = params.rayon ?? "";
@@ -89,6 +91,7 @@ export default async function JemaatPage({
       <JemaatManager
         jemaat={jemaat}
         keluargaOptions={keluargaOptions}
+        permission={permission}
         query={query}
         rayon={rayon}
         rayons={rayons}

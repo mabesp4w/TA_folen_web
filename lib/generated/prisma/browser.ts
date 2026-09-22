@@ -78,6 +78,11 @@ export type GaleriFoto = Prisma.GaleriFotoModel
  */
 export type User = Prisma.UserModel
 /**
+ * Model RolePermission
+ * 
+ */
+export type RolePermission = Prisma.RolePermissionModel
+/**
  * Model Pendeta
  * 
  */

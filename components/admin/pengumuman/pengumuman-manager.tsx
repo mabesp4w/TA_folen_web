@@ -12,6 +12,7 @@ import {
 } from "./actions";
 import { PengumumanForm } from "./pengumuman-form";
 import { initialPengumumanActionState } from "./schema";
+import type { ResourcePermission } from "@/lib/permissions";
 
 export type PengumumanRow = {
   id: string;
@@ -21,15 +22,24 @@ export type PengumumanRow = {
   updatedAt: string;
 };
 
+const FULL_PERMISSION: ResourcePermission = {
+  view: true,
+  create: true,
+  update: true,
+  delete: true,
+};
+
 type DialogMode = "create" | "edit" | "delete" | null;
 
 type Props = {
   rows: PengumumanRow[];
   tinyApiKey: string;
+  permission?: ResourcePermission;
 };
 
-export function PengumumanManager({ rows, tinyApiKey }: Props) {
+export function PengumumanManager({ rows, tinyApiKey, permission = FULL_PERMISSION }: Props) {
   const router = useRouter();
+  const canModify = permission.update || permission.delete;
   const [mode, setMode] = useState<DialogMode>(null);
   const [selected, setSelected] = useState<PengumumanRow | null>(null);
   const [content, setContent] = useState("");
@@ -69,9 +79,11 @@ export function PengumumanManager({ rows, tinyApiKey }: Props) {
             Kelola informasi yang akan disampaikan kepada jemaat.
           </p>
         </div>
-        <Button onClick={() => openDialog("create")}>
-          <Plus aria-hidden="true" size={18} /> Tambah pengumuman
-        </Button>
+        {permission.create && (
+          <Button onClick={() => openDialog("create")}>
+            <Plus aria-hidden="true" size={18} /> Tambah pengumuman
+          </Button>
+        )}
       </div>
 
       {rows.length === 0 ? (
@@ -109,26 +121,32 @@ export function PengumumanManager({ rows, tinyApiKey }: Props) {
                     Diperbarui {row.updatedAt}
                   </p>
                 </div>
-                <div className="flex shrink-0 gap-1">
-                  <Button
-                    aria-label={`Edit ${row.judul}`}
-                    size="sm"
-                    square
-                    variant="ghost"
-                    onClick={() => openDialog("edit", row)}
-                  >
-                    <Pencil aria-hidden="true" size={17} />
-                  </Button>
-                  <Button
-                    aria-label={`Hapus ${row.judul}`}
-                    size="sm"
-                    square
-                    variant="ghost"
-                    onClick={() => openDialog("delete", row)}
-                  >
-                    <Trash2 aria-hidden="true" size={17} />
-                  </Button>
-                </div>
+                {canModify && (
+                  <div className="flex shrink-0 gap-1">
+                    {permission.update && (
+                      <Button
+                        aria-label={`Edit ${row.judul}`}
+                        size="sm"
+                        square
+                        variant="ghost"
+                        onClick={() => openDialog("edit", row)}
+                      >
+                        <Pencil aria-hidden="true" size={17} />
+                      </Button>
+                    )}
+                    {permission.delete && (
+                      <Button
+                        aria-label={`Hapus ${row.judul}`}
+                        size="sm"
+                        square
+                        variant="ghost"
+                        onClick={() => openDialog("delete", row)}
+                      >
+                        <Trash2 aria-hidden="true" size={17} />
+                      </Button>
+                    )}
+                  </div>
+                )}
               </div>
               <div
                 className="prose prose-sm mt-4 line-clamp-5 max-w-none text-[var(--muted)]"

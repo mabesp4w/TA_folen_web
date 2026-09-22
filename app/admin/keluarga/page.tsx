@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { KeluargaManager, type KeluargaRow } from "@/components/admin/keluarga";
+import { requireResourceView } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = { title: "Data Keluarga" };
@@ -14,6 +15,7 @@ export default async function KeluargaPage({
 }: {
   searchParams: SearchParams;
 }) {
+  const { permission } = await requireResourceView("keluarga");
   const params = await searchParams;
   const query = params.q?.trim() ?? "";
   const rayon = params.rayon ?? "";
@@ -56,6 +58,7 @@ export default async function KeluargaPage({
     <main className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">
       <KeluargaManager
         keluarga={keluarga}
+        permission={permission}
         query={query}
         rayon={rayon}
         rayons={rayons}

@@ -2,11 +2,16 @@
 
 import { revalidatePath } from "next/cache";
 import { recordAdminAudit } from "@/lib/admin-audit";
-import { getAdminSession } from "@/lib/auth-server";
+import { authorizeAction } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 import { agendaSchema, type AgendaActionState, type AgendaInput } from "./schema";
 
 const path = "/admin/agenda";
+const RESOURCE = "agenda";
+
+function unauthorized(): AgendaActionState {
+  return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+}
 
 function parseForm(formData: FormData) {
   const jenis = formData.get("jenis_ibadah");
@@ -70,10 +75,8 @@ export async function createAgendaAction(
   _state: AgendaActionState,
   formData: FormData,
 ): Promise<AgendaActionState> {
-  const session = await getAdminSession();
-  if (!session) {
-    return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
-  }
+  const session = await authorizeAction(RESOURCE, "create");
+  if (!session) return unauthorized();
 
   const parsed = parseForm(formData);
   if (!parsed.success) {
@@ -105,10 +108,8 @@ export async function updateAgendaAction(
   _state: AgendaActionState,
   formData: FormData,
 ): Promise<AgendaActionState> {
-  const session = await getAdminSession();
-  if (!session) {
-    return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
-  }
+  const session = await authorizeAction(RESOURCE, "update");
+  if (!session) return unauthorized();
 
   const id = String(formData.get("id") ?? "");
   const parsed = parseForm(formData);
@@ -144,10 +145,8 @@ export async function deleteAgendaAction(
   _state: AgendaActionState,
   formData: FormData,
 ): Promise<AgendaActionState> {
-  const session = await getAdminSession();
-  if (!session) {
-    return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
-  }
+  const session = await authorizeAction(RESOURCE, "delete");
+  if (!session) return unauthorized();
 
   const id = String(formData.get("id") ?? "");
   const ringkasan = String(formData.get("ringkasan") ?? "");

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { RayonManager, type RayonRow } from "@/components/admin/rayon";
+import { requireResourceView } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = { title: "Data Rayon" };
@@ -13,6 +14,7 @@ export default async function RayonPage({
 }: {
   searchParams: SearchParams;
 }) {
+  const { permission } = await requireResourceView("rayon");
   const params = await searchParams;
   const query = params.q?.trim() ?? "";
 
@@ -41,6 +43,7 @@ export default async function RayonPage({
       <RayonManager
         rayons={rayons}
         query={query}
+        permission={permission}
       />
     </main>
   );

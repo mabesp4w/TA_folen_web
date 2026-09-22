@@ -233,7 +233,7 @@ model User {
   id       String @id @default(cuid())
   username String @unique
   password String
-  role     String // Nilai yang diizinkan: "ADMIN", "KETUA_UNSUR"
+  role     String // Nilai yang diizinkan: "ADMIN", "KETUA_UNSUR", "KOORDINATOR_UNSUR"
 
   badan_pengurus BadanPengurus?
 
@@ -243,6 +243,32 @@ model User {
   log_aktivitas LogAktivitas[]
 
   @@map("user")
+}
+
+// Model Hak Akses (Authorization) — mengatur, per-role, apa yang boleh dilihat,
+// ditambah, diubah, atau dihapus pada tiap modul/resource admin.
+//
+// Hanya role non-admin yang diatur di sini (KETUA_UNSUR & KOORDINATOR_UNSUR);
+// role ADMIN selalu berakses penuh dan tidak disimpan sebagai baris izin.
+// `resource` memakai kunci modul yang stabil (mis. "jemaat", "agenda", "keuangan")
+// sesuai daftar di lib/permissions.ts, bukan label tampilan, agar tahan rename.
+model RolePermission {
+  id       String @id @default(cuid())
+  role     String // "KETUA_UNSUR" | "KOORDINATOR_UNSUR"
+  resource String // Kunci modul, mis. "jemaat", "agenda". Lihat lib/permissions.ts
+
+  can_view   Boolean @default(false) // Boleh melihat/membuka modul
+  can_create Boolean @default(false) // Boleh menambah data
+  can_update Boolean @default(false) // Boleh mengubah data
+  can_delete Boolean @default(false) // Boleh menghapus data
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // Satu baris izin unik per kombinasi role + resource.
+  @@unique([role, resource])
+  @@index([role])
+  @@map("role_permission")
 }
 
 // Model Pendeta — data pribadi (nama, keluarga, alamat) diambil dari data jemaat
@@ -326,7 +352,7 @@ model LogAktivitas {
   id_user  String?
   user     User?   @relation(fields: [id_user], references: [id], onDelete: SetNull)
   username String // Snapshot username pelaku saat aksi terjadi
-  role     String? // Snapshot role pelaku (ADMIN / KETUA_UNSUR)
+  role     String? // Snapshot role pelaku (ADMIN / KETUA_UNSUR / KOORDINATOR_UNSUR)
 
   aksi       String // "CREATE" | "UPDATE" | "DELETE"
   entitas    String // Model/tabel terkait, mis. "Ibadah", "Pengumuman", "Renungan"

@@ -16,6 +16,8 @@ import { initialUserActionState, USER_ROLES } from "./schema";
 export type PengurusOption = {
   id: string;
   label: string;
+  // Jabatan pengurus (mis. "Ketua", "Koordinator") — dipakai menyaring opsi per peran.
+  jabatan: string;
 };
 
 export type UserRow = {
@@ -38,13 +40,15 @@ type Props = {
 const roleLabels: Record<(typeof USER_ROLES)[number], string> = {
   ADMIN: "Administrator",
   KETUA_UNSUR: "Ketua Unsur",
+  KOORDINATOR_UNSUR: "Koordinator Unsur",
 };
 
 export function UserManager({ rows, pengurusOptions, currentUserId }: Props) {
   const router = useRouter();
   const [mode, setMode] = useState<DialogMode>(null);
   const [selected, setSelected] = useState<UserRow | null>(null);
-  const [role, setRole] = useState<(typeof USER_ROLES)[number]>("ADMIN");
+  // Default peran untuk akun baru: Ketua Unsur (Administrator tidak dibuat lewat UI).
+  const [role, setRole] = useState<(typeof USER_ROLES)[number]>("KETUA_UNSUR");
 
   const action =
     mode === "edit"
@@ -71,7 +75,7 @@ export function UserManager({ rows, pengurusOptions, currentUserId }: Props) {
 
   function openDialog(nextMode: DialogMode, row: UserRow | null = null) {
     setSelected(row);
-    setRole(row?.role ?? "ADMIN");
+    setRole(row?.role ?? "KETUA_UNSUR");
     setMode(nextMode);
   }
 

@@ -2,12 +2,17 @@
 
 import { revalidatePath } from "next/cache";
 import { recordAdminAudit } from "@/lib/admin-audit";
-import { getAdminSession } from "@/lib/auth-server";
+import { authorizeAction } from "@/lib/permissions-server";
 import { sanitizeRichText } from "@/lib/html";
 import { prisma } from "@/lib/prisma";
 import { renunganSchema, type RenunganActionState } from "./schema";
 
 const path = "/admin/renungan";
+const RESOURCE = "renungan";
+
+function unauthorized(): RenunganActionState {
+  return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+}
 
 function parseForm(formData: FormData) {
   return renunganSchema.safeParse({
@@ -47,8 +52,8 @@ export async function createRenunganAction(
   _state: RenunganActionState,
   formData: FormData,
 ): Promise<RenunganActionState> {
-  const session = await getAdminSession();
-  if (!session) return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+  const session = await authorizeAction(RESOURCE, "create");
+  if (!session) return unauthorized();
   const parsed = parseForm(formData);
   if (!parsed.success) return { status: "error", message: "Periksa kembali data renungan.", errors: parsed.error.flatten().fieldErrors };
 
@@ -66,8 +71,8 @@ export async function updateRenunganAction(
   _state: RenunganActionState,
   formData: FormData,
 ): Promise<RenunganActionState> {
-  const session = await getAdminSession();
-  if (!session) return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+  const session = await authorizeAction(RESOURCE, "update");
+  if (!session) return unauthorized();
   const id = String(formData.get("id") ?? "");
   const parsed = parseForm(formData);
   if (!id || !parsed.success) return { status: "error", message: "Periksa kembali data renungan.", errors: parsed.success ? undefined : parsed.error.flatten().fieldErrors };
@@ -86,8 +91,8 @@ export async function deleteRenunganAction(
   _state: RenunganActionState,
   formData: FormData,
 ): Promise<RenunganActionState> {
-  const session = await getAdminSession();
-  if (!session) return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+  const session = await authorizeAction(RESOURCE, "delete");
+  if (!session) return unauthorized();
   const id = String(formData.get("id") ?? "");
   const ringkasan = String(formData.get("ringkasan") ?? "");
   if (!id) return { status: "error", message: "Renungan tidak ditemukan." };

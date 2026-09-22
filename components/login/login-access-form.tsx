@@ -71,20 +71,10 @@ export function LoginAccessForm() {
       // Login berhasil
       setIsSuccess(true);
 
-      // Redirect berdasarkan role setelah 1 detik
+      // Semua peran (ADMIN, Ketua Unsur, Koordinator Unsur) masuk ke /admin.
+      // Tampilan & aksi di dalamnya dibatasi sesuai Hak Akses masing-masing peran.
       setTimeout(() => {
-        if (data.user?.role === "ADMIN") {
-          router.replace("/admin");
-          return;
-        }
-
-        if (!data.user?.badan_pengurus) {
-          setErrors({ general: "Akun belum terhubung dengan badan pengurus." });
-          setIsLoading(false);
-          return;
-        }
-
-        router.replace(`/${data.user.badan_pengurus}`);
+        router.replace("/admin");
       }, 1000);
     } catch (error) {
       console.error("Login error:", error);

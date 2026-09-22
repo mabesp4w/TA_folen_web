@@ -16,6 +16,15 @@ import {
 } from "./actions";
 import { GaleriForm } from "./galeri-form";
 import { initialGaleriActionState } from "./schema";
+import type { ResourcePermission } from "@/lib/permissions";
+
+// Izin default penuh — dipakai bila prop tidak diberikan (mis. ADMIN).
+const FULL_PERMISSION: ResourcePermission = {
+  view: true,
+  create: true,
+  update: true,
+  delete: true,
+};
 
 export type GaleriFotoRow = {
   id: string;
@@ -37,6 +46,7 @@ export type GaleriAlbumRow = {
 
 type GaleriManagerProps = {
   rows: GaleriAlbumRow[];
+  permission?: ResourcePermission;
 };
 
 type DialogMode = "create" | "edit" | "delete" | null;
@@ -66,8 +76,12 @@ function resizeToWebp(file: File): Promise<File> {
   });
 }
 
-export function GaleriManager({ rows }: GaleriManagerProps) {
+export function GaleriManager({
+  rows,
+  permission = FULL_PERMISSION,
+}: GaleriManagerProps) {
   const router = useRouter();
+  const canModify = permission.update || permission.delete;
   const [dialog, setDialog] = useState<DialogMode>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<{ album: GaleriAlbumRow; index: number } | null>(null);
@@ -198,10 +212,12 @@ export function GaleriManager({ rows }: GaleriManagerProps) {
             Kelola album dan dokumentasi kegiatan gereja.
           </p>
         </div>
-        <Button type="button" onClick={() => openDialog("create")}>
-          <Plus aria-hidden="true" size={18} />
-          Tambah album
-        </Button>
+        {permission.create && (
+          <Button type="button" onClick={() => openDialog("create")}>
+            <Plus aria-hidden="true" size={18} />
+            Tambah album
+          </Button>
+        )}
       </header>
 
       {rows.length === 0 ? (
@@ -263,16 +279,22 @@ export function GaleriManager({ rows }: GaleriManagerProps) {
                   ))}
                 </div>
               ) : null}
-              <div className="mt-5 flex flex-wrap justify-end gap-2 border-t border-base-200 pt-4">
-                <Button type="button" variant="ghost" onClick={() => openDialog("edit", album)}>
-                  <Pencil aria-hidden="true" size={17} />
-                  Edit
-                </Button>
-                <Button type="button" variant="ghost" onClick={() => openDialog("delete", album)}>
-                  <Trash2 aria-hidden="true" size={17} />
-                  Hapus
-                </Button>
-              </div>
+              {canModify && (
+                <div className="mt-5 flex flex-wrap justify-end gap-2 border-t border-base-200 pt-4">
+                  {permission.update && (
+                    <Button type="button" variant="ghost" onClick={() => openDialog("edit", album)}>
+                      <Pencil aria-hidden="true" size={17} />
+                      Edit
+                    </Button>
+                  )}
+                  {permission.delete && (
+                    <Button type="button" variant="ghost" onClick={() => openDialog("delete", album)}>
+                      <Trash2 aria-hidden="true" size={17} />
+                      Hapus
+                    </Button>
+                  )}
+                </div>
+              )}
             </article>
           ))}
         </div>
@@ -305,6 +327,7 @@ export function GaleriManager({ rows }: GaleriManagerProps) {
               formAction={formAction}
               maxPhotos={MAX_PHOTOS}
               pending={pending}
+              permission={permission}
               photos={photos}
               rows={rows}
               selected={selected}

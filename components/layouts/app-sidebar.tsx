@@ -7,8 +7,10 @@ import {
   Church,
   CircleDollarSign,
   ClipboardList,
+  FileBarChart,
   Home,
   Images,
+  KeyRound,
   LayoutDashboard,
   MapPinned,
   Megaphone,
@@ -25,6 +27,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { AUTHORIZABLE_RESOURCES } from "@/lib/permissions";
 
 export type SidebarLink = {
   label: string;
@@ -86,15 +89,60 @@ const adminItems: SidebarItem[] = [
   },
   { label: "Keuangan", href: "/admin/keuangan", icon: CircleDollarSign },
   { label: "Galeri", href: "/admin/galeri", icon: Images },
+  { label: "Laporan", href: "/admin/laporan", icon: FileBarChart },
   {
     label: "Pengaturan",
     icon: Settings2,
     children: [
       { label: "Akun Akses", href: "/admin/pengaturan", icon: SlidersHorizontal },
+      { label: "Hak Akses", href: "/admin/otorisasi", icon: KeyRound },
       { label: "Log Aktivitas", href: "/admin/log-aktivitas", icon: ShieldCheck },
     ],
   },
 ];
+
+// Peta href modul -> kunci resource Hak Akses, untuk menyaring menu per peran.
+const HREF_TO_RESOURCE = new Map(
+  AUTHORIZABLE_RESOURCES.map((resource) => [resource.href, resource.key]),
+);
+
+// Menu yang eksklusif ADMIN (tidak pernah tampil untuk peran unsur).
+const ADMIN_ONLY_HREFS = new Set([
+  "/admin/pengaturan",
+  "/admin/otorisasi",
+  "/admin/log-aktivitas",
+]);
+
+// Dashboard selalu tampil untuk semua peran yang boleh masuk area admin.
+const ALWAYS_VISIBLE_HREFS = new Set(["/admin"]);
+
+// Boleh-kah sebuah link tampil untuk peran ini?
+// allowedResources === null berarti ADMIN (semua tampil).
+function canSeeLink(href: string, allowedResources: string[] | null): boolean {
+  if (allowedResources === null) return true; // ADMIN
+  if (ADMIN_ONLY_HREFS.has(href)) return false;
+  if (ALWAYS_VISIBLE_HREFS.has(href)) return true;
+  const resource = HREF_TO_RESOURCE.get(href);
+  return resource ? allowedResources.includes(resource) : false;
+}
+
+// Saring daftar menu: buang link tak berizin, lalu buang grup yang jadi kosong.
+function filterItems(items: SidebarItem[], allowedResources: string[] | null): SidebarItem[] {
+  if (allowedResources === null) return items; // ADMIN: tampilkan semua
+
+  const result: SidebarItem[] = [];
+  for (const item of items) {
+    if (!isSidebarGroup(item)) {
+      if (canSeeLink(item.href, allowedResources)) result.push(item);
+      continue;
+    }
+    const children = item.children.filter((child) =>
+      canSeeLink(child.href, allowedResources),
+    );
+    if (children.length > 0) result.push({ ...item, children });
+  }
+  return result;
+}
 
 const navLinkClassName = (active: boolean, nested = false) =>
   `flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 whitespace-normal transition-colors ${
@@ -109,13 +157,18 @@ type AppSidebarProps = {
   items?: SidebarItem[];
   open?: boolean;
   onClose?: () => void;
+  role?: string;
+  // null = ADMIN (semua menu). Selain itu daftar kunci resource yang boleh dilihat.
+  allowedResources?: string[] | null;
 };
 
 export function AppSidebar({
-  items = adminItems,
+  items: itemsProp = adminItems,
   open = false,
   onClose,
+  allowedResources = null,
 }: AppSidebarProps) {
+  const items = filterItems(itemsProp, allowedResources);
   const pathname = usePathname();
   const [openGroups, setOpenGroups] = useState(() => getOpenGroups(pathname, items));
   const [seenPathname, setSeenPathname] = useState(pathname);

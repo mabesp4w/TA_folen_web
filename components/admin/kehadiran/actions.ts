@@ -2,11 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { recordAdminAudit } from "@/lib/admin-audit";
-import { getAdminSession } from "@/lib/auth-server";
+import { authorizeAction } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 import { kehadiranSchema, type KehadiranActionState } from "./schema";
 
 const adminPath = "/admin/kehadiran";
+const RESOURCE = "kehadiran";
 
 function unauthorized(): KehadiranActionState {
   return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
@@ -39,7 +40,7 @@ export async function createKehadiranAction(
   _state: KehadiranActionState,
   formData: FormData,
 ): Promise<KehadiranActionState> {
-  const session = await getAdminSession();
+  const session = await authorizeAction(RESOURCE, "create");
   if (!session) return unauthorized();
 
   const parsed = parseForm(formData);
@@ -77,7 +78,7 @@ export async function updateKehadiranAction(
   _state: KehadiranActionState,
   formData: FormData,
 ): Promise<KehadiranActionState> {
-  const session = await getAdminSession();
+  const session = await authorizeAction(RESOURCE, "update");
   if (!session) return unauthorized();
 
   const id = String(formData.get("id") ?? "");
@@ -114,7 +115,7 @@ export async function deleteKehadiranAction(
   _state: KehadiranActionState,
   formData: FormData,
 ): Promise<KehadiranActionState> {
-  const session = await getAdminSession();
+  const session = await authorizeAction(RESOURCE, "delete");
   if (!session) return unauthorized();
 
   const id = String(formData.get("id") ?? "");

@@ -13,11 +13,20 @@ import {
 } from "./actions";
 import { initialRayonActionState } from "./schema";
 import { RayonForm } from "./rayon-form";
+import type { ResourcePermission } from "@/lib/permissions";
 
 export type RayonRow = {
   id: string;
   nm_rayon: string;
   _count: { keluarga: number; jemaat: number };
+};
+
+// Izin default penuh — dipakai bila prop tidak diberikan (mis. ADMIN).
+const FULL_PERMISSION: ResourcePermission = {
+  view: true,
+  create: true,
+  update: true,
+  delete: true,
 };
 
 type DialogMode = "create" | "edit" | "delete" | null;
@@ -45,11 +54,14 @@ function useDebounce(callback: (value: string) => void, delay: number) {
 export function RayonManager({
   rayons,
   query,
+  permission = FULL_PERMISSION,
 }: {
   rayons: RayonRow[];
   query: string;
+  permission?: ResourcePermission;
 }) {
   const router = useRouter();
+  const canModify = permission.update || permission.delete;
   const searchParams = useSearchParams();
 
   const [mode, setMode] = useState<DialogMode>(null);
@@ -144,17 +156,19 @@ export function RayonManager({
             Kelola nama rayon dan lihat jumlah jemaat di setiap rayon.
           </p>
         </div>
-        <Button
-          type="button"
-          onClick={() => {
-            handledStateRef.current = formState;
-            setSelected(null);
-            setMode("create");
-          }}
-        >
-          <Plus size={18} aria-hidden="true" />
-          Tambah rayon
-        </Button>
+        {permission.create && (
+          <Button
+            type="button"
+            onClick={() => {
+              handledStateRef.current = formState;
+              setSelected(null);
+              setMode("create");
+            }}
+          >
+            <Plus size={18} aria-hidden="true" />
+            Tambah rayon
+          </Button>
+        )}
       </header>
 
       <form
@@ -197,27 +211,34 @@ export function RayonManager({
                     <td>{row._count.jemaat} jemaat</td>
                     <td>
                       <div className="flex justify-end gap-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          square
-                          type="button"
-                          aria-label={`Edit ${row.nm_rayon}`}
-                          onClick={() => edit(row)}
-                        >
-                          <Pencil size={16} aria-hidden="true" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          square
-                          className="text-error"
-                          type="button"
-                          aria-label={`Hapus ${row.nm_rayon}`}
-                          onClick={() => remove(row)}
-                        >
-                          <Trash2 size={16} aria-hidden="true" />
-                        </Button>
+                        {permission.update && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            square
+                            type="button"
+                            aria-label={`Edit ${row.nm_rayon}`}
+                            onClick={() => edit(row)}
+                          >
+                            <Pencil size={16} aria-hidden="true" />
+                          </Button>
+                        )}
+                        {permission.delete && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            square
+                            className="text-error"
+                            type="button"
+                            aria-label={`Hapus ${row.nm_rayon}`}
+                            onClick={() => remove(row)}
+                          >
+                            <Trash2 size={16} aria-hidden="true" />
+                          </Button>
+                        )}
+                        {!canModify && (
+                          <span className="text-xs text-[var(--muted)]">—</span>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -240,14 +261,20 @@ export function RayonManager({
                     </p>
                   </div>
                 </div>
-                <div className="mt-4 flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1" type="button" onClick={() => edit(row)}>
-                    <Pencil size={15} aria-hidden="true" /> Edit
-                  </Button>
-                  <Button variant="outline" size="sm" className="btn-error flex-1" type="button" onClick={() => remove(row)}>
-                    <Trash2 size={15} aria-hidden="true" /> Hapus
-                  </Button>
-                </div>
+                {canModify && (
+                  <div className="mt-4 flex gap-2">
+                    {permission.update && (
+                      <Button variant="outline" size="sm" className="flex-1" type="button" onClick={() => edit(row)}>
+                        <Pencil size={15} aria-hidden="true" /> Edit
+                      </Button>
+                    )}
+                    {permission.delete && (
+                      <Button variant="outline" size="sm" className="btn-error flex-1" type="button" onClick={() => remove(row)}>
+                        <Trash2 size={15} aria-hidden="true" /> Hapus
+                      </Button>
+                    )}
+                  </div>
+                )}
               </article>
             ))}
           </div>

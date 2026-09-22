@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { PengumumanManager, type PengumumanRow } from "@/components/admin/pengumuman";
+import { requireResourceView } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = { title: "Pengumuman" };
 
 export default async function PengumumanPage() {
+  const { permission } = await requireResourceView("pengumuman");
   const pengumuman = await prisma.pengumuman.findMany({
     orderBy: [{ order: "asc" }, { tgl_publish: "desc" }],
   });
@@ -20,7 +22,11 @@ export default async function PengumumanPage() {
 
   return (
     <main className="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">
-      <PengumumanManager rows={rows} tinyApiKey={process.env.API_TINY ?? ""} />
+      <PengumumanManager
+        rows={rows}
+        tinyApiKey={process.env.API_TINY ?? ""}
+        permission={permission}
+      />
     </main>
   );
 }

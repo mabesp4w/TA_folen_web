@@ -13,11 +13,19 @@ import {
 } from "./actions";
 import { initialUnsurActionState } from "./schema";
 import { UnsurForm } from "./unsur-form";
+import type { ResourcePermission } from "@/lib/permissions";
 
 export type UnsurRow = {
   id: string;
   nm_unsur: string;
   _count: { ibadah: number; badan_pengurus: number };
+};
+
+const FULL_PERMISSION: ResourcePermission = {
+  view: true,
+  create: true,
+  update: true,
+  delete: true,
 };
 
 type DialogMode = "create" | "edit" | "delete" | null;
@@ -45,12 +53,15 @@ function useDebounce(callback: (value: string) => void, delay: number) {
 export function UnsurManager({
   unsurs,
   query,
+  permission = FULL_PERMISSION,
 }: {
   unsurs: UnsurRow[];
   query: string;
+  permission?: ResourcePermission;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const canModify = permission.update || permission.delete;
 
   const [mode, setMode] = useState<DialogMode>(null);
   const [selected, setSelected] = useState<UnsurRow | null>(null);
@@ -144,17 +155,19 @@ export function UnsurManager({
             Kelola unsur kategorial yang digunakan pada ibadah dan kepengurusan.
           </p>
         </div>
-        <Button
-          type="button"
-          onClick={() => {
-            handledStateRef.current = formState;
-            setSelected(null);
-            setMode("create");
-          }}
-        >
-          <Plus size={18} aria-hidden="true" />
-          Tambah unsur
-        </Button>
+        {permission.create && (
+          <Button
+            type="button"
+            onClick={() => {
+              handledStateRef.current = formState;
+              setSelected(null);
+              setMode("create");
+            }}
+          >
+            <Plus size={18} aria-hidden="true" />
+            Tambah unsur
+          </Button>
+        )}
       </header>
 
       <form
@@ -195,27 +208,32 @@ export function UnsurManager({
                     <td>{row._count.ibadah + row._count.badan_pengurus}</td>
                     <td>
                       <div className="flex justify-end gap-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          square
-                          type="button"
-                          aria-label={`Edit ${row.nm_unsur}`}
-                          onClick={() => edit(row)}
-                        >
-                          <Pencil size={16} aria-hidden="true" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          square
-                          className="text-error"
-                          type="button"
-                          aria-label={`Hapus ${row.nm_unsur}`}
-                          onClick={() => remove(row)}
-                        >
-                          <Trash2 size={16} aria-hidden="true" />
-                        </Button>
+                        {permission.update && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            square
+                            type="button"
+                            aria-label={`Edit ${row.nm_unsur}`}
+                            onClick={() => edit(row)}
+                          >
+                            <Pencil size={16} aria-hidden="true" />
+                          </Button>
+                        )}
+                        {permission.delete && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            square
+                            className="text-error"
+                            type="button"
+                            aria-label={`Hapus ${row.nm_unsur}`}
+                            onClick={() => remove(row)}
+                          >
+                            <Trash2 size={16} aria-hidden="true" />
+                          </Button>
+                        )}
+                        {!canModify && <span className="text-xs text-[var(--muted)]">—</span>}
                       </div>
                     </td>
                   </tr>
@@ -238,14 +256,20 @@ export function UnsurManager({
                     </p>
                   </div>
                 </div>
-                <div className="mt-4 flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1" type="button" onClick={() => edit(row)}>
-                    <Pencil size={15} aria-hidden="true" /> Edit
-                  </Button>
-                  <Button variant="outline" size="sm" className="btn-error flex-1" type="button" onClick={() => remove(row)}>
-                    <Trash2 size={15} aria-hidden="true" /> Hapus
-                  </Button>
-                </div>
+                {canModify && (
+                  <div className="mt-4 flex gap-2">
+                    {permission.update && (
+                      <Button variant="outline" size="sm" className="flex-1" type="button" onClick={() => edit(row)}>
+                        <Pencil size={15} aria-hidden="true" /> Edit
+                      </Button>
+                    )}
+                    {permission.delete && (
+                      <Button variant="outline" size="sm" className="btn-error flex-1" type="button" onClick={() => remove(row)}>
+                        <Trash2 size={15} aria-hidden="true" /> Hapus
+                      </Button>
+                    )}
+                  </div>
+                )}
               </article>
             ))}
           </div>

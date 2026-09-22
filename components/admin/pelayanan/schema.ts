@@ -3,6 +3,21 @@ import { z } from "zod";
 export const PELAYANAN_TYPES = ["PENDETA", "MAJELIS", "PENGURUS"] as const;
 export const MAJELIS_POSITIONS = ["PENATUA", "SYAMAS"] as const;
 
+// Pilihan jabatan untuk pengurus badan/unsur.
+export const JABATAN_PENGURUS = [
+  "Ketua",
+  "Wakil Ketua",
+  "Koordinator",
+  "Sekretaris",
+  "Wakil Sekretaris",
+  "Bendahara",
+  "Wakil Bendahara",
+  "Anggota",
+] as const;
+
+// Sektor unsur yang tersedia (1-5).
+export const SEKTOR_OPTIONS = [1, 2, 3, 4, 5] as const;
+
 const optionalText = z.preprocess(
   (value) => (value == null || (typeof value === "string" && value.trim() === "") ? undefined : value),
   z.string().trim().max(100).optional(),
@@ -15,7 +30,7 @@ const optionalDate = z.preprocess(
 
 const optionalSector = z.preprocess(
   (value) => (value == null || (typeof value === "string" && value.trim() === "") ? undefined : value),
-  z.coerce.number().int().min(1, "Sektor minimal 1.").max(99, "Sektor maksimal 99.").optional(),
+  z.coerce.number().int().min(1, "Sektor minimal 1.").max(5, "Sektor maksimal 5.").optional(),
 );
 
 export const pelayananSchema = z

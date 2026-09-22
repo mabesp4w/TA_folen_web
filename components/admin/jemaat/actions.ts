@@ -2,16 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { recordAdminAudit } from "@/lib/admin-audit";
-import { getAdminSession } from "@/lib/auth-server";
+import { authorizeAction } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 import { jemaatSchema, type ActionState } from "./schema";
 
-async function authorize(): Promise<ActionState | null> {
-  const session = await getAdminSession();
+// Resource Hak Akses untuk modul ini.
+const RESOURCE = "jemaat";
 
-  return session
-    ? null
-    : { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+function unauthorized(): ActionState {
+  return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
 }
 
 function parseForm(formData: FormData) {
@@ -37,8 +36,8 @@ export async function createJemaatAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const authorizationError = await authorize();
-  if (authorizationError) return authorizationError;
+  const session = await authorizeAction(RESOURCE, "create");
+  if (!session) return unauthorized();
 
   const parsed = parseForm(formData);
 
@@ -51,11 +50,6 @@ export async function createJemaatAction(
   }
 
   try {
-    const session = await getAdminSession();
-    if (!session) {
-      return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
-    }
-
     const jemaat = await prisma.jemaat.create({
       data: {
         ...parsed.data,
@@ -81,8 +75,8 @@ export async function updateJemaatAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const authorizationError = await authorize();
-  if (authorizationError) return authorizationError;
+  const session = await authorizeAction(RESOURCE, "update");
+  if (!session) return unauthorized();
 
   const id = String(formData.get("id") ?? "");
   const parsed = parseForm(formData);
@@ -96,11 +90,6 @@ export async function updateJemaatAction(
   }
 
   try {
-    const session = await getAdminSession();
-    if (!session) {
-      return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
-    }
-
     const jemaat = await prisma.jemaat.update({
       where: { id },
       data: {
@@ -127,8 +116,8 @@ export async function deleteJemaatAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const authorizationError = await authorize();
-  if (authorizationError) return authorizationError;
+  const session = await authorizeAction(RESOURCE, "delete");
+  if (!session) return unauthorized();
 
   const id = String(formData.get("id") ?? "");
 
@@ -137,11 +126,6 @@ export async function deleteJemaatAction(
   }
 
   try {
-    const session = await getAdminSession();
-    if (!session) {
-      return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
-    }
-
     const jemaat = await prisma.jemaat.delete({ where: { id } });
     await recordAdminAudit({
       aksi: "DELETE",

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import type { Prisma } from "@/lib/generated/prisma/client";
 import { LogManager, type LogRow } from "@/components/admin/log-aktivitas";
+import { getAdminSession } from "@/lib/auth-server";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = { title: "Log Aktivitas" };
@@ -50,6 +52,9 @@ export default async function LogAktivitasPage({
 }: {
   searchParams: SearchParams;
 }) {
+  // Log Aktivitas eksklusif ADMIN.
+  if (!(await getAdminSession())) redirect("/admin");
+
   const params = await searchParams;
   const q = params.q?.trim() ?? "";
   const entitas = params.entitas?.trim() ?? "";

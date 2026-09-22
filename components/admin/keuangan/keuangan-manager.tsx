@@ -14,6 +14,15 @@ import {
   KATEGORI_KEUANGAN,
   LABEL_KATEGORI_KEUANGAN,
 } from "./schema";
+import type { ResourcePermission } from "@/lib/permissions";
+
+// Izin default penuh — dipakai bila prop tidak diberikan (mis. ADMIN).
+const FULL_PERMISSION: ResourcePermission = {
+  view: true,
+  create: true,
+  update: true,
+  delete: true,
+};
 
 export type KeuanganRow = {
   id: string;
@@ -46,11 +55,14 @@ function categoryLabel(value: string) {
 export function KeuanganManager({
   rows,
   ibadah,
+  permission = FULL_PERMISSION,
 }: {
   rows: KeuanganRow[];
   ibadah: IbadahOption[];
+  permission?: ResourcePermission;
 }) {
   const router = useRouter();
+  const canModify = permission.update || permission.delete;
   const [mode, setMode] = useState<DialogMode>(null);
   const [selected, setSelected] = useState<KeuanganRow | null>(null);
   const [query, setQuery] = useState("");
@@ -105,9 +117,11 @@ export function KeuanganManager({
             Kelola penerimaan persembahan dan hubungkan dengan ibadah bila tersedia.
           </p>
         </div>
-        <Button type="button" onClick={() => openDialog("create")}>
-          <Plus aria-hidden="true" size={18} /> Tambah penerimaan
-        </Button>
+        {permission.create && (
+          <Button type="button" onClick={() => openDialog("create")}>
+            <Plus aria-hidden="true" size={18} /> Tambah penerimaan
+          </Button>
+        )}
       </header>
 
       <section
@@ -185,26 +199,32 @@ export function KeuanganManager({
                     {row.ibadah ?? "Tidak terkait ibadah"}
                   </p>
                 </div>
-                <div className="flex shrink-0 gap-1">
-                  <Button
-                    aria-label={`Edit penerimaan ${row.nm_pemberi ?? "tanpa nama"}`}
-                    square
-                    type="button"
-                    variant="ghost"
-                    onClick={() => openDialog("edit", row)}
-                  >
-                    <Pencil aria-hidden="true" size={17} />
-                  </Button>
-                  <Button
-                    aria-label={`Hapus penerimaan ${row.nm_pemberi ?? "tanpa nama"}`}
-                    square
-                    type="button"
-                    variant="ghost"
-                    onClick={() => openDialog("delete", row)}
-                  >
-                    <Trash2 aria-hidden="true" size={17} />
-                  </Button>
-                </div>
+                {canModify && (
+                  <div className="flex shrink-0 gap-1">
+                    {permission.update && (
+                      <Button
+                        aria-label={`Edit penerimaan ${row.nm_pemberi ?? "tanpa nama"}`}
+                        square
+                        type="button"
+                        variant="ghost"
+                        onClick={() => openDialog("edit", row)}
+                      >
+                        <Pencil aria-hidden="true" size={17} />
+                      </Button>
+                    )}
+                    {permission.delete && (
+                      <Button
+                        aria-label={`Hapus penerimaan ${row.nm_pemberi ?? "tanpa nama"}`}
+                        square
+                        type="button"
+                        variant="ghost"
+                        onClick={() => openDialog("delete", row)}
+                      >
+                        <Trash2 aria-hidden="true" size={17} />
+                      </Button>
+                    )}
+                  </div>
+                )}
               </div>
               <p className="mt-5 break-words text-xl font-bold text-[var(--forest)]">
                 {rupiah.format(row.jumlah)}

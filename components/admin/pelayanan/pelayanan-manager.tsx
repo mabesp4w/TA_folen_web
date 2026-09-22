@@ -15,8 +15,35 @@ import {
 import { PelayananForm } from "./pelayanan-form";
 import {
   initialPelayananActionState,
+  JABATAN_PENGURUS,
+  MAJELIS_POSITIONS,
   PELAYANAN_TYPES,
 } from "./schema";
+import type { ResourcePermission } from "@/lib/permissions";
+
+// Label jabatan majelis (nilai tersimpan huruf besar).
+const MAJELIS_LABELS: Record<(typeof MAJELIS_POSITIONS)[number], string> = {
+  PENATUA: "Penatua",
+  SYAMAS: "Syamas",
+};
+
+// Opsi filter jabatan sesuai jenis pelayanan terpilih (selain pendeta).
+function jabatanOptions(type: string): { value: string; label: string }[] {
+  const majelis = MAJELIS_POSITIONS.map((value) => ({ value, label: MAJELIS_LABELS[value] }));
+  const pengurus = JABATAN_PENGURUS.map((value) => ({ value, label: value }));
+  if (type === "MAJELIS") return majelis;
+  if (type === "PENGURUS") return pengurus;
+  // "Semua jenis" (tetap bukan pendeta): gabungkan keduanya.
+  return [...majelis, ...pengurus];
+}
+
+// Izin default penuh — dipakai bila prop tidak diberikan (mis. ADMIN).
+const FULL_PERMISSION: ResourcePermission = {
+  view: true,
+  create: true,
+  update: true,
+  delete: true,
+};
 
 export type PelayananRow = {
   id: string;
@@ -44,6 +71,8 @@ type Props = {
   query: string;
   type: string;
   status: string;
+  jabatan: string;
+  permission?: ResourcePermission;
 };
 
 const typeLabels = {
@@ -62,8 +91,9 @@ function formatDate(value: string | null) {
   }).format(new Date(value));
 }
 
-export function PelayananManager({ rows, jemaat, unsur, query, type, status }: Props) {
+export function PelayananManager({ rows, jemaat, unsur, query, type, status, jabatan, permission = FULL_PERMISSION }: Props) {
   const router = useRouter();
+  const canModify = permission.update || permission.delete;
   const searchParams = useSearchParams();
   const [mode, setMode] = useState<DialogMode>(null);
   const [selected, setSelected] = useState<PelayananRow | null>(null);
@@ -92,6 +122,8 @@ export function PelayananManager({ rows, jemaat, unsur, query, type, status }: P
     const params = new URLSearchParams(searchParams.toString());
     if (value) params.set(name, value);
     else params.delete(name);
+    // Mengganti jenis pelayanan me-reset filter jabatan (opsinya berbeda).
+    if (name === "type") params.delete("jabatan");
     router.replace(`/admin/pelayanan${params.size ? `?${params.toString()}` : ""}`);
   }
 
@@ -112,13 +144,15 @@ export function PelayananManager({ rows, jemaat, unsur, query, type, status }: P
               Kelola masa bakti pendeta, majelis, dan pengurus unsur kategorial.
             </p>
           </div>
-          <Button onClick={() => openDialog("create")}>
-            <Plus aria-hidden="true" size={18} /> Tambah pelayanan
-          </Button>
+          {permission.create && (
+            <Button onClick={() => openDialog("create")}>
+              <Plus aria-hidden="true" size={18} /> Tambah pelayanan
+            </Button>
+          )}
         </header>
 
         <div className="rounded-2xl border border-base-300 bg-base-100 p-4 shadow-sm">
-          <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_14rem_12rem]">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <InputText
               defaultValue={query}
               label="Cari pelayan"
@@ -135,6 +169,18 @@ export function PelayananManager({ rows, jemaat, unsur, query, type, status }: P
               placeholder="Semua jenis"
               onChange={(event: ChangeEvent<HTMLSelectElement>) => updateFilter("type", event.target.value)}
             />
+            {/* Filter jabatan hanya muncul bila jenis pelayanan bukan pendeta. */}
+            {type !== "PENDETA" && (
+              <Select
+                key={type || "all"}
+                defaultValue={jabatan}
+                label="Jabatan"
+                name="jabatan-filter"
+                options={jabatanOptions(type)}
+                placeholder="Semua jabatan"
+                onChange={(event: ChangeEvent<HTMLSelectElement>) => updateFilter("jabatan", event.target.value)}
+              />
+            )}
             <Select
               defaultValue={status}
               label="Status"
@@ -175,14 +221,20 @@ export function PelayananManager({ rows, jemaat, unsur, query, type, status }: P
                           : `${row.jabatan} · ${row.unsur}${row.sektor ? ` sektor ${row.sektor}` : ""}`}
                     </p>
                   </div>
-                  <div className="flex shrink-0 gap-1">
-                    <Button aria-label={`Edit ${row.name}`} square variant="ghost" onClick={() => openDialog("edit", row)}>
-                      <Pencil aria-hidden="true" size={17} />
-                    </Button>
-                    <Button aria-label={`Hapus ${row.name}`} square variant="ghost" onClick={() => openDialog("delete", row)}>
-                      <Trash2 aria-hidden="true" size={17} />
-                    </Button>
-                  </div>
+                  {canModify && (
+                    <div className="flex shrink-0 gap-1">
+                      {permission.update && (
+                        <Button aria-label={`Edit ${row.name}`} square variant="ghost" onClick={() => openDialog("edit", row)}>
+                          <Pencil aria-hidden="true" size={17} />
+                        </Button>
+                      )}
+                      {permission.delete && (
+                        <Button aria-label={`Hapus ${row.name}`} square variant="ghost" onClick={() => openDialog("delete", row)}>
+                          <Trash2 aria-hidden="true" size={17} />
+                        </Button>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <dl className="mt-5 grid grid-cols-2 gap-3 border-t border-base-200 pt-4 text-sm">
                   <div>

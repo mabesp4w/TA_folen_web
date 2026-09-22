@@ -409,6 +409,7 @@ export const ModelName = {
   GaleriAlbum: 'GaleriAlbum',
   GaleriFoto: 'GaleriFoto',
   User: 'User',
+  RolePermission: 'RolePermission',
   Pendeta: 'Pendeta',
   Majelis: 'Majelis',
   BadanPengurus: 'BadanPengurus',
@@ -428,7 +429,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "rayon" | "keluarga" | "unsur" | "jemaat" | "ibadah" | "kehadiran" | "keuangan" | "pengumuman" | "renungan" | "galeriAlbum" | "galeriFoto" | "user" | "pendeta" | "majelis" | "badanPengurus" | "logAktivitas"
+    modelProps: "rayon" | "keluarga" | "unsur" | "jemaat" | "ibadah" | "kehadiran" | "keuangan" | "pengumuman" | "renungan" | "galeriAlbum" | "galeriFoto" | "user" | "rolePermission" | "pendeta" | "majelis" | "badanPengurus" | "logAktivitas"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1224,6 +1225,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    RolePermission: {
+      payload: Prisma.$RolePermissionPayload<ExtArgs>
+      fields: Prisma.RolePermissionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RolePermissionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePermissionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RolePermissionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePermissionPayload>
+        }
+        findFirst: {
+          args: Prisma.RolePermissionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePermissionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RolePermissionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePermissionPayload>
+        }
+        findMany: {
+          args: Prisma.RolePermissionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePermissionPayload>[]
+        }
+        create: {
+          args: Prisma.RolePermissionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePermissionPayload>
+        }
+        createMany: {
+          args: Prisma.RolePermissionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.RolePermissionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePermissionPayload>
+        }
+        update: {
+          args: Prisma.RolePermissionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePermissionPayload>
+        }
+        deleteMany: {
+          args: Prisma.RolePermissionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RolePermissionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.RolePermissionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RolePermissionPayload>
+        }
+        aggregate: {
+          args: Prisma.RolePermissionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRolePermission>
+        }
+        groupBy: {
+          args: Prisma.RolePermissionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RolePermissionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RolePermissionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RolePermissionCountAggregateOutputType> | number
+        }
+      }
+    }
     Pendeta: {
       payload: Prisma.$PendetaPayload<ExtArgs>
       fields: Prisma.PendetaFieldRefs
@@ -1684,6 +1751,21 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const RolePermissionScalarFieldEnum = {
+  id: 'id',
+  role: 'role',
+  resource: 'resource',
+  can_view: 'can_view',
+  can_create: 'can_create',
+  can_update: 'can_update',
+  can_delete: 'can_delete',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type RolePermissionScalarFieldEnum = (typeof RolePermissionScalarFieldEnum)[keyof typeof RolePermissionScalarFieldEnum]
+
+
 export const PendetaScalarFieldEnum = {
   id: 'id',
   id_jemaat: 'id_jemaat',
@@ -1887,6 +1969,15 @@ export const UserOrderByRelevanceFieldEnum = {
 } as const
 
 export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
+
+
+export const RolePermissionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  role: 'role',
+  resource: 'resource'
+} as const
+
+export type RolePermissionOrderByRelevanceFieldEnum = (typeof RolePermissionOrderByRelevanceFieldEnum)[keyof typeof RolePermissionOrderByRelevanceFieldEnum]
 
 
 export const PendetaOrderByRelevanceFieldEnum = {
@@ -2137,6 +2228,7 @@ export type GlobalOmitConfig = {
   galeriAlbum?: Prisma.GaleriAlbumOmit
   galeriFoto?: Prisma.GaleriFotoOmit
   user?: Prisma.UserOmit
+  rolePermission?: Prisma.RolePermissionOmit
   pendeta?: Prisma.PendetaOmit
   majelis?: Prisma.MajelisOmit
   badanPengurus?: Prisma.BadanPengurusOmit

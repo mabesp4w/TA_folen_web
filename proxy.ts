@@ -10,7 +10,11 @@ export function proxy(request: NextRequest) {
   }
 
   if (pathname.startsWith("/admin")) {
-    return session.role === "ADMIN"
+    // ADMIN + peran unsur boleh masuk area /admin. Penyaringan per-modul
+    // (apa yang boleh dilihat/diubah) ditangani layout & tiap halaman/aksi
+    // berdasarkan Hak Akses. Peran lain diarahkan keluar.
+    const allowed = ["ADMIN", "KETUA_UNSUR", "KOORDINATOR_UNSUR"];
+    return allowed.includes(session.role)
       ? NextResponse.next()
       : NextResponse.redirect(new URL("/", request.url));
   }

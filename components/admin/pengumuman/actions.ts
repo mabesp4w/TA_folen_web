@@ -2,12 +2,17 @@
 
 import { revalidatePath } from "next/cache";
 import { recordAdminAudit } from "@/lib/admin-audit";
-import { getAdminSession } from "@/lib/auth-server";
+import { authorizeAction } from "@/lib/permissions-server";
 import { sanitizeRichText } from "@/lib/html";
 import { prisma } from "@/lib/prisma";
 import { pengumumanSchema, type PengumumanActionState } from "./schema";
 
 const path = "/admin/pengumuman";
+const RESOURCE = "pengumuman";
+
+function unauthorized(): PengumumanActionState {
+  return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+}
 
 function parseForm(formData: FormData) {
   return pengumumanSchema.safeParse({
@@ -31,8 +36,8 @@ function failure(error: unknown): PengumumanActionState {
 }
 
 export async function createPengumumanAction(_state: PengumumanActionState, formData: FormData): Promise<PengumumanActionState> {
-  const session = await getAdminSession();
-  if (!session) return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+  const session = await authorizeAction(RESOURCE, "create");
+  if (!session) return unauthorized();
   const parsed = parseForm(formData);
   if (!parsed.success) return { status: "error", message: "Periksa kembali data pengumuman.", errors: parsed.error.flatten().fieldErrors };
 
@@ -47,8 +52,8 @@ export async function createPengumumanAction(_state: PengumumanActionState, form
 }
 
 export async function updatePengumumanAction(_state: PengumumanActionState, formData: FormData): Promise<PengumumanActionState> {
-  const session = await getAdminSession();
-  if (!session) return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+  const session = await authorizeAction(RESOURCE, "update");
+  if (!session) return unauthorized();
   const id = String(formData.get("id") ?? "");
   const parsed = parseForm(formData);
   if (!id || !parsed.success) return { status: "error", message: "Periksa kembali data pengumuman.", errors: parsed.success ? undefined : parsed.error.flatten().fieldErrors };
@@ -67,8 +72,8 @@ export async function updatePengumumanAction(_state: PengumumanActionState, form
 }
 
 export async function deletePengumumanAction(_state: PengumumanActionState, formData: FormData): Promise<PengumumanActionState> {
-  const session = await getAdminSession();
-  if (!session) return { status: "error", message: "Anda tidak memiliki akses untuk mengubah data." };
+  const session = await authorizeAction(RESOURCE, "delete");
+  if (!session) return unauthorized();
   const id = String(formData.get("id") ?? "");
   const ringkasan = String(formData.get("ringkasan") ?? "");
   if (!id) return { status: "error", message: "Pengumuman tidak ditemukan." };

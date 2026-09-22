@@ -63,6 +63,7 @@ export const ModelName = {
   GaleriAlbum: 'GaleriAlbum',
   GaleriFoto: 'GaleriFoto',
   User: 'User',
+  RolePermission: 'RolePermission',
   Pendeta: 'Pendeta',
   Majelis: 'Majelis',
   BadanPengurus: 'BadanPengurus',
@@ -240,6 +241,21 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const RolePermissionScalarFieldEnum = {
+  id: 'id',
+  role: 'role',
+  resource: 'resource',
+  can_view: 'can_view',
+  can_create: 'can_create',
+  can_update: 'can_update',
+  can_delete: 'can_delete',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type RolePermissionScalarFieldEnum = (typeof RolePermissionScalarFieldEnum)[keyof typeof RolePermissionScalarFieldEnum]
 
 
 export const PendetaScalarFieldEnum = {
@@ -445,6 +461,15 @@ export const UserOrderByRelevanceFieldEnum = {
 } as const
 
 export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
+
+
+export const RolePermissionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  role: 'role',
+  resource: 'resource'
+} as const
+
+export type RolePermissionOrderByRelevanceFieldEnum = (typeof RolePermissionOrderByRelevanceFieldEnum)[keyof typeof RolePermissionOrderByRelevanceFieldEnum]
 
 
 export const PendetaOrderByRelevanceFieldEnum = {

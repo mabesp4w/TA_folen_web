@@ -21,7 +21,7 @@ import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { PrismaClient } from "../lib/generated/prisma/client";
 import { hashPassword } from "../lib/auth";
 
-const ALLOWED_ROLES = ["ADMIN", "KETUA_UNSUR"] as const;
+const ALLOWED_ROLES = ["ADMIN", "KETUA_UNSUR", "KOORDINATOR_UNSUR"] as const;
 type Role = (typeof ALLOWED_ROLES)[number];
 
 const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);

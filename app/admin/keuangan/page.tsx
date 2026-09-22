@@ -3,11 +3,13 @@ import {
   KeuanganManager,
   type KeuanganRow,
 } from "@/components/admin/keuangan";
+import { requireResourceView } from "@/lib/permissions-server";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = { title: "Keuangan" };
 
 export default async function KeuanganPage() {
+  const { permission } = await requireResourceView("keuangan");
   const [keuangan, ibadah] = await Promise.all([
     prisma.keuangan.findMany({
       include: { ibadah: true },
@@ -45,6 +47,7 @@ export default async function KeuanganPage() {
           id: item.id,
           label: `${item.nm_ibadah ?? "Ibadah"} - ${dateFormatter.format(item.tgl)}`,
         }))}
+        permission={permission}
         rows={rows}
       />
     </main>
