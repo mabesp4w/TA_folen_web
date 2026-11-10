@@ -4,7 +4,6 @@ import type { LucideIcon } from "lucide-react";
 import {
   BookOpenText,
   CalendarDays,
-  Church,
   CircleDollarSign,
   ClipboardList,
   FileBarChart,
@@ -23,6 +22,7 @@ import {
   UsersRound,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -201,9 +201,14 @@ export function AppSidebar({
         aria-label="Navigasi utama"
       >
         <div className="flex h-20 items-center gap-3 border-b border-white/10 px-5">
-          <span className="grid size-11 place-items-center rounded-xl bg-[var(--gold)] text-[var(--forest-deep)]">
-            <Church size={25} aria-hidden="true" />
-          </span>
+          <Image
+            src="/logo-gki.svg"
+            alt=""
+            width={44}
+            height={44}
+            className="size-11 shrink-0"
+            unoptimized
+          />
           <div>
             <p className="font-semibold">GKI Syaloom</p>
             <p className="mt-1 text-xs uppercase tracking-[0.16em] text-white/60">

@@ -1,6 +1,7 @@
 /** @format */
 
-import { Church, HeartHandshake, Waves } from "lucide-react";
+import { HeartHandshake, Waves } from "lucide-react";
+import Image from "next/image";
 import { LoginAccessForm } from "../components/login/login-access-form";
 
 export default function Home() {
@@ -10,7 +11,14 @@ export default function Home() {
         <div className="story-content">
           <div className="church-mark" aria-label="GKI Syaloom Pasifik Indah">
             <span className="church-mark-icon" aria-hidden="true">
-              <Church size={26} strokeWidth={1.8} />
+              <Image
+                src="/logo-gki.svg"
+                alt=""
+                width={50}
+                height={50}
+                priority
+                unoptimized
+              />
             </span>
             <span>
               <strong>GKI Syaloom</strong>
@@ -51,7 +59,14 @@ export default function Home() {
       <section className="login-access" aria-labelledby="login-title">
         <div className="mobile-brand">
           <span className="church-mark-icon" aria-hidden="true">
-            <Church size={23} strokeWidth={1.8} />
+            <Image
+              src="/logo-gki.svg"
+              alt=""
+              width={44}
+              height={44}
+              priority
+              unoptimized
+            />
           </span>
           <span>
             <strong>GKI Syaloom</strong>
@@ -64,7 +79,7 @@ export default function Home() {
             <header className="login-heading">
               <span className="eyebrow">Selamat datang kembali</span>
               <h2 id="login-title">Masuk ke akun Anda</h2>
-              <p>Gunakan email.</p>
+              <p>Gunakan username dan password Anda.</p>
             </header>
             <LoginAccessForm />
           </div>

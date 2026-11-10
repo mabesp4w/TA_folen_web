@@ -1,5 +1,8 @@
 @import "tailwindcss";
-@plugin "daisyui";
+/* Hanya tema terang: pengaturan perangkat gelap tidak boleh mengubah palet. */
+@plugin "daisyui" {
+  themes: light --default;
+}
 @plugin "@tailwindcss/typography";
 
 /* Hasil generate tool graphify, bukan source UI. Jangan dipindai Tailwind:
@@ -7,6 +10,9 @@
 @source not "../graphify-out";
 
 :root {
+  /* Kunci skema warna agar kontrol native (input, select, scrollbar) tetap terang
+     dan Auto Dark Theme browser tidak membalik palet. */
+  color-scheme: only light;
   --ink: #173128;
   --muted: #69776f;
   --forest: #174c3a;
@@ -105,10 +111,10 @@ a { color: inherit; }
   width: 50px;
   height: 50px;
   place-items: center;
-  color: var(--forest-deep);
-  background: var(--gold);
-  border-radius: 50% 50% 46% 54% / 48% 45% 55% 52%;
+  border-radius: 50%;
+  overflow: hidden;
 }
+.church-mark-icon img { display: block; width: 100%; height: 100%; object-fit: contain; }
 
 .church-mark strong, .church-mark small, .mobile-brand strong, .mobile-brand small {
   display: block;

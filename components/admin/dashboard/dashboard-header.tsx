@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarDays, Plus } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 
 type DashboardHeaderProps = {
   roleLabel: string;
@@ -29,12 +29,6 @@ export function DashboardHeader({ roleLabel, isAdmin }: DashboardHeaderProps) {
             className="btn btn-outline border-[var(--line)] bg-[var(--paper)] text-[var(--ink)] shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
           >
             <CalendarDays size={18} aria-hidden="true" /> Lihat kalender
-          </Link>
-          <Link
-            href="/admin/jemaat"
-            className="btn border-0 bg-[var(--forest)] text-white shadow-none hover:bg-[var(--forest-deep)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-          >
-            <Plus size={18} aria-hidden="true" /> Tambah data
           </Link>
         </div>
       )}

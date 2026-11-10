@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState, type ChangeEvent } from "react";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   CakeSlice,
@@ -404,14 +405,24 @@ export function LaporanManager({
       </div>
 
       {/* Judul cetak */}
-      <div className="mb-4 hidden print:block">
-        <h2 className="text-lg font-bold">
-          Laporan {activeTab.label}
-          {(tab === "keuangan" || tab === "kehadiran") ? ` — ${year}` : ""}
-          {tab === "ulang-tahun" ? ` — ${BULAN[ulangTahun?.month ?? 0]}` : ""}
-          {rayonLabel ? ` · Rayon ${rayonLabel}` : ""}
-        </h2>
-        <p className="text-sm text-[var(--muted)]">GKI Syaloom Pasifik Indah</p>
+      <div className="mb-4 hidden items-center gap-3 print:flex">
+        <Image
+          src="/logo-gki.png"
+          alt=""
+          width={44}
+          height={44}
+          className="shrink-0"
+          unoptimized
+        />
+        <div>
+          <h2 className="text-lg font-bold">
+            Laporan {activeTab.label}
+            {(tab === "keuangan" || tab === "kehadiran") ? ` — ${year}` : ""}
+            {tab === "ulang-tahun" ? ` — ${BULAN[ulangTahun?.month ?? 0]}` : ""}
+            {rayonLabel ? ` · Rayon ${rayonLabel}` : ""}
+          </h2>
+          <p className="text-sm text-[var(--muted)]">GKI Syaloom Pasifik Indah</p>
+        </div>
       </div>
 
       {tab === "keuangan" && keuangan && <KeuanganSection data={keuangan} />}

@@ -98,10 +98,10 @@ export function LoginAccessForm() {
         error={errors.identity}
         icon={<UserRound aria-hidden="true" size={19} />}
         id="identity"
-        label="Email"
+        label="Username"
         name="identity"
         onChange={() => errors.identity && clearError("identity")}
-        placeholder="nama@email.com atau ID jemaat"
+        placeholder="Masukkan username anda"
         required
       />
 
