@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(yarn prisma *)",
+      "Bash(yarn lint *)",
+      "Bash(yarn build *)",
+      "Bash(yarn db:reset)",
+      "Bash(yarn db:seed)",
+      "Bash(export PRISMA_USER_CONSENT_FOR_DANGEROUS_AI_ACTION=\"Reset + seed ulang \\(Rekomendasi\\) - hapus semua data dan isi ulang contoh\")"
+    ]
+  }
+}
