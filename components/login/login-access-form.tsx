@@ -1,3 +1,5 @@
+/** @format */
+
 "use client";
 
 import type { FormEvent } from "react";
@@ -40,9 +42,10 @@ export function LoginAccessForm() {
     const password = String(formData.get("password") ?? "");
     const nextErrors: FormErrors = {};
 
-    if (!identity) nextErrors.identity = "Masukkan email atau identitas jemaat Anda.";
+    if (!identity) nextErrors.identity = "Masukkan email anda";
     if (!password) nextErrors.password = "Masukkan kata sandi Anda.";
-    else if (password.length < 6) nextErrors.password = "Kata sandi minimal 6 karakter.";
+    else if (password.length < 6)
+      nextErrors.password = "Kata sandi minimal 6 karakter.";
 
     if (Object.keys(nextErrors).length) {
       setErrors(nextErrors);
@@ -84,13 +87,18 @@ export function LoginAccessForm() {
   }
 
   return (
-    <form autoComplete="off" className="login-form" noValidate onSubmit={handleSubmit}>
+    <form
+      autoComplete="off"
+      className="login-form"
+      noValidate
+      onSubmit={handleSubmit}
+    >
       <InputText
         disabled={isLoading}
         error={errors.identity}
         icon={<UserRound aria-hidden="true" size={19} />}
         id="identity"
-        label="Email atau identitas jemaat"
+        label="Email"
         name="identity"
         onChange={() => errors.identity && clearError("identity")}
         placeholder="nama@email.com atau ID jemaat"
@@ -111,11 +119,20 @@ export function LoginAccessForm() {
       />
 
       <div className="form-options">
-        <Checkbox disabled={isLoading} id="remember" label="Ingat saya" name="remember" />
-        <span>Lupa kata sandi?</span>
+        <Checkbox
+          disabled={isLoading}
+          id="remember"
+          label="Ingat saya"
+          name="remember"
+        />
       </div>
 
-      <Button className="login-submit" disabled={isLoading} loading={isLoading} type="submit">
+      <Button
+        className="login-submit"
+        disabled={isLoading}
+        loading={isLoading}
+        type="submit"
+      >
         {isLoading ? "Memeriksa akun..." : "Masuk ke akun"}
       </Button>
 

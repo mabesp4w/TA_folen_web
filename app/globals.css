@@ -2,6 +2,10 @@
 @plugin "daisyui";
 @plugin "@tailwindcss/typography";
 
+/* Hasil generate tool graphify, bukan source UI. Jangan dipindai Tailwind:
+   file cache-nya bisa tidak terbaca dan membuat Turbopack panic. */
+@source not "../graphify-out";
+
 :root {
   --ink: #173128;
   --muted: #69776f;

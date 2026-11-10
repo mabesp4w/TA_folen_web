@@ -1,3 +1,5 @@
+/** @format */
+
 import { Church, HeartHandshake, Waves } from "lucide-react";
 import { LoginAccessForm } from "../components/login/login-access-form";
 
@@ -18,16 +20,22 @@ export default function Home() {
 
           <div className="story-message">
             <span className="eyebrow">Ruang bersama jemaat</span>
-            <h1 id="welcome-title">Bertumbuh dalam iman, berjalan dalam kasih.</h1>
+            <h1 id="welcome-title">
+              Bertumbuh dalam iman, berjalan dalam kasih.
+            </h1>
             <p>
-              Masuk untuk tetap terhubung dengan pelayanan, kegiatan, dan kehidupan
-              jemaat GKI Syaloom Pasifik Indah.
+              Masuk untuk tetap terhubung dengan pelayanan, kegiatan, dan
+              kehidupan jemaat GKI Syaloom Pasifik Indah.
             </p>
           </div>
 
           <div className="story-notes" aria-label="Nilai komunitas">
-            <span><HeartHandshake size={18} aria-hidden="true" /> Melayani bersama</span>
-            <span><Waves size={18} aria-hidden="true" /> Berakar di Tanah Papua</span>
+            <span>
+              <HeartHandshake size={18} aria-hidden="true" /> Melayani bersama
+            </span>
+            <span>
+              <Waves size={18} aria-hidden="true" /> Berakar di Tanah Papua
+            </span>
           </div>
         </div>
 
@@ -45,7 +53,10 @@ export default function Home() {
           <span className="church-mark-icon" aria-hidden="true">
             <Church size={23} strokeWidth={1.8} />
           </span>
-          <span><strong>GKI Syaloom</strong><small>Pasifik Indah</small></span>
+          <span>
+            <strong>GKI Syaloom</strong>
+            <small>Pasifik Indah</small>
+          </span>
         </div>
 
         <div className="login-card card bg-base-100">
@@ -53,15 +64,11 @@ export default function Home() {
             <header className="login-heading">
               <span className="eyebrow">Selamat datang kembali</span>
               <h2 id="login-title">Masuk ke akun Anda</h2>
-              <p>Gunakan email atau identitas jemaat yang terdaftar.</p>
+              <p>Gunakan email.</p>
             </header>
             <LoginAccessForm />
           </div>
         </div>
-
-        <p className="login-help">
-          Memerlukan bantuan? Hubungi sekretariat
-        </p>
       </section>
     </main>
   );
